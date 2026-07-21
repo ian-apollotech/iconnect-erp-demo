@@ -532,19 +532,35 @@ ${noteBox('Faithful to JDA: the <b>Assortment Cluster</b> is the store grouping;
   <div style="margin-top:10px"><button class="btn primary" data-route="assortplan">Open Assortment Plan →</button></div></div></div>`;
 };
 
-PAGES.assortplan = ()=>`
-${head('','Assortment Plan','Assign the SKU list a Company, Assortment Cluster, or Store carries. A store uses its own plan; if none, its Assortment Cluster’s; otherwise the Company default.', btn('Export','',iExport)+btn('New Assortment Plan','primary',iAdd))}
-${noteBox('<b>Single-level, full replacement.</b> Each plan is a complete SKU list for one level. Resolution precedence is <b>Store › Assortment Cluster › Company</b> — the most specific plan wins; a plan never merges with another level. A newer plan for the same target supersedes the prior one on its effective date.','indigo')}
+PAGES.assortplan = async ()=>{
+  const [rows, clusters, companies] = await Promise.all([api('/assortment-plans'), api('/assortment-clusters'), api('/companies')]);
+  const clusterById = byId(clusters), coById = byId(companies);
+  const stColor = {'Active':'green','Scheduled':'amber','Superseded':'gray','Inactive':'gray'};
+  return `
+${head('','Assortment Plan','Assign the SKU list a Company or Assortment Cluster carries. Resolution precedence is Store › Assortment Cluster › Company (the most specific plan wins).', btn('Export','',iExport)+btn('New Assortment Plan','primary',iAdd))}
+${noteBox('<b>Single-level, full replacement.</b> Each plan is a complete SKU list targeting an <b>Assortment Cluster</b> (Company is recorded alongside for scoping). A newer plan for the same target supersedes the prior one on its effective date.','indigo')}
 <div class="panel">
-  ${filterbar([{label:'Search',grow:1,ph:'Plan name or code…'},{label:'Company',html:'<select><option>All Companies</option><option>Puregold Price Club, Inc.</option><option>Ayagold Retailers Inc. (Merkado)</option></select>'},{label:'Level',html:'<select><option>All Levels</option><option>Company (all stores)</option><option>Assortment Cluster</option><option>Store</option></select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Scheduled</option><option>Superseded</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
+  ${filterbar([{label:'Search',grow:1,ph:'Plan name or code…'},{label:'Company',html:'<select><option>All Companies</option>'+companies.map(c=>'<option>'+esc(c.legalName)+'</option>').join('')+'</select>'},{label:'Assortment Cluster',html:'<select><option>All Clusters</option>'+clusters.map(c=>'<option>'+esc(c.name)+'</option>').join('')+'</select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Scheduled</option><option>Superseded</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
-    [{t:'Code',k:'code'},{t:'Plan Name',k:'nm'},{t:'Level',k:'lv'},{t:'Target',k:'tg'},{t:'Company',k:'co'},{t:'Ranged SKUs',k:'sk',num:1},{t:'Effective From',k:'ef'},{t:'Type',k:'ty'},{t:'Status',k:'st'},{t:'',k:'act'}],
-    [{code:'<span class="mono">AP-0001</span>',nm:'<span class="row-link">Urban-Large Core Range</span>',lv:badge('blue','Assortment Cluster'),tg:'CL-URB-L · Urban Large',co:'<span class="mono">PGOLD</span>',sk:'42,500',ef:'2026-06-01',ty:badge('blue','Regular'),st:badge('green','Active'),act:'<button class="btn ghost sm" data-assortdup="AP-0001">Duplicate</button>'},
-     {code:'<span class="mono">AP-0002</span>',nm:'<span class="row-link">Convenience Minimart Range</span>',lv:badge('blue','Assortment Cluster'),tg:'CL-CONV · Convenience',co:'<span class="mono">PGOLD</span>',sk:'6,400',ef:'2026-06-15',ty:badge('blue','Regular'),st:badge('green','Active'),act:'<button class="btn ghost sm" data-assortdup="AP-0002">Duplicate</button>'},
-     {code:'<span class="mono">AP-0003</span>',nm:'<span class="row-link">Puregold National Default</span>',lv:badge('gray','Company (all stores)'),tg:'All Stores',co:'<span class="mono">PGOLD</span>',sk:'12,800',ef:'2026-01-01',ty:badge('blue','Regular'),st:badge('green','Active'),act:'<button class="btn ghost sm" data-assortdup="AP-0003">Duplicate</button>'},
-     {code:'<span class="mono">AP-0004</span>',nm:'<span class="row-link">Ortigas Local Add-ins</span>',lv:badge('cyan','Store'),tg:'0102 · Ortigas Ext.',co:'<span class="mono">PGOLD</span>',sk:'320',ef:'2026-07-01',ty:badge('purple','Seasonal'),st:badge('amber','Scheduled'),act:'<button class="btn ghost sm" data-assortdup="AP-0004">Duplicate</button>'}])}</div>
-  ${pager(4,4)}
+    [{t:'Code',k:'code'},{t:'Plan Name',k:'nm'},{t:'Assortment Cluster',k:'cl'},{t:'Company',k:'co'},{t:'Ranged SKUs',k:'sk',num:1},{t:'Effective From',k:'ef'},{t:'Status',k:'st'},{t:'',k:'act'}],
+    rows.map(r=>{
+      const code = 'AP-'+String(r.id).padStart(4,'0');
+      const cluster = clusterById[r.clusterId]||{};
+      const co = coById[r.companyId]||{};
+      return {
+        code:'<span class="mono">'+esc(code)+'</span>',
+        nm:'<span class="row-link">'+esc(r.name)+'</span>',
+        cl:esc(cluster.name)||'—',
+        co:co.code?'<span class="mono">'+esc(co.code)+'</span>':'—',
+        sk:r.skuCount,
+        ef:esc(r.effectiveFrom)||'—',
+        st:badge(stColor[r.status]||'gray', esc(r.status)||'Active'),
+        act:'<button class="btn ghost sm" data-assortdup="'+esc(code)+'">Duplicate</button>'
+      };
+    }))}</div>
+  ${pager(rows.length, rows.length)}
 </div>`;
+};
 
 PAGES.replenpolicy = async ()=>{
   const [rows, companies] = await Promise.all([api('/replenishment-profiles'), api('/companies')]);
@@ -684,20 +700,48 @@ ${noteBox('This hierarchy belongs to the <b>selected vendor only</b> and is inde
 </div>`;
 };
 
-PAGES.vencatalog = ()=>`
+PAGES.vencatalog = async ()=>{
+  const [rows, companies, vendors, products, cats, allowances] = await Promise.all([
+    api('/vendor-products'), api('/companies'), api('/vendors'), api('/products'), api('/vendor-categories'), api('/vendor-allowances')
+  ]);
+  const coById = byId(companies), venById = byId(vendors), prodById = byId(products), catById = byId(cats), alById = byId(allowances);
+  const coOpts = '<option>All Companies</option>'+companies.map(c=>'<option>'+esc(c.legalName)+'</option>').join('');
+  const venOpts = '<option>All Vendors</option>'+vendors.map(v=>'<option>'+esc(v.name)+'</option>').join('');
+  const vcLabel = catId=>{
+    const node = catById[catId]; if(!node) return '—';
+    const parent = catById[node.parentCategoryId];
+    return esc((parent?parent.nodeName+' › ':'')+node.nodeName);
+  };
+  return `
 ${head('','Vendor Product','The Company · Vendor · SKU sourcing record — every SKU a vendor can supply and the ordering terms for sourcing it from them.', btn('Export','',iExport)+btn('Add Vendor Product','primary',iAdd))}
 ${noteBox('This is the <b>vendor-side view of the item↔vendor link</b>, keyed by <b>Company · Vendor · SKU</b>. <b>Cost / Case is owned by Cost Change Management (read-only here)</b>; <b>Order Pack</b> is chosen from the item’s <i>orderable</i> UOM levels; <b>Allowance</b> is reference-only. A line is <b>not orderable until an initial CCM cost event exists</b>, and the <b>Order Schedule</b> is referenced from the Vendor Schedule.','indigo')}
 <div class="panel">
-  ${filterbar([{label:'Company',html:'<select><option>PGOLD · Puregold</option><option>AYAG · Ayagold (Merkado)</option></select>'},{label:'Vendor',grow:1,html:'<select>'+VEN.map(v=>'<option>'+v+'</option>').join('')+'</select>'},{label:'Vendor Category',html:'<select><option>All Categories</option><option>Beverages › Coffee</option><option>Beverages › Cereal Drinks</option><option>Dairy › Powdered Milk</option><option>Culinary › Sauces & Mixes</option><option>Culinary › Seasoning</option></select>'},{label:'Source',html:'<select><option>All</option><option>Primary</option><option>Alternate</option></select>'},{label:'Status',html:'<select><option>Active</option><option>All</option></select>'}], btn('Load','primary'))}
+  ${filterbar([{label:'Company',html:'<select>'+coOpts+'</select>'},{label:'Vendor',grow:1,html:'<select>'+venOpts+'</select>'},{label:'Vendor Category',html:'<select><option>All Categories</option></select>'},{label:'Source',html:'<select><option>All</option><option>Primary</option><option>Alternate</option></select>'},{label:'Status',html:'<select><option>Active</option><option>All</option></select>'}], btn('Load','primary'))}
   <div class="panel-body flush">${table(
-    [{t:'Item Code',k:'ic'},{t:'Company',k:'co'},{t:'Description',k:'d'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case (CCM)',k:'c',num:1},{t:'Allowance',k:'al'},{t:'Source',k:'pr'}],
-    [{ic:'<span class="mono">100238</span>',co:'<span class="mono">PGOLD</span>',d:'<span class="row-link">Nescafé Classic 100g</span>',vi:'<span class="mono">N-COF-100</span>',vc:'Beverages › Coffee',p:'CASE-24',moq:'20 cs',oi:'5 cs',sch:'Mon · Thu',lt:'3 days',c:'₱ 2,832',al:badge('blue','3.5% Rebate'),pr:badge('green','Primary')},
-     {ic:'<span class="mono">100561</span>',co:'<span class="mono">PGOLD</span>',d:'<span class="row-link">Bear Brand Powdered 300g</span>',vi:'<span class="mono">N-DRY-300</span>',vc:'Dairy › Powdered Milk',p:'CASE-48',moq:'15 cs',oi:'5 cs',sch:'Mon · Thu',lt:'3 days',c:'₱ 4,128',al:'—',pr:badge('green','Primary')},
-     {ic:'<span class="mono">100774</span>',co:'<span class="mono">PGOLD</span>',d:'<span class="row-link">Milo Activ-Go 300g</span>',vi:'<span class="mono">N-BEV-300</span>',vc:'Beverages › Cereal Drinks',p:'CASE-24',moq:'12 cs',oi:'4 cs',sch:'Thu',lt:'3 days',c:'₱ 2,556',al:badge('purple','Promo Allow.'),pr:badge('green','Primary')},
-     {ic:'<span class="mono">100902</span>',co:'<span class="mono">PGOLD</span>',d:'<span class="row-link">Nestlé All Purpose Cream 250ml</span>',vi:'<span class="mono">N-CUL-250</span>',vc:'Culinary › Sauces & Mixes',p:'CASE-24',moq:'10 cs',oi:'2 cs',sch:'Mon',lt:'4 days',c:'₱ 1,944',al:'—',pr:badge('gray','Alternate')},
-     {ic:'<span class="mono">101033</span>',co:'<span class="mono">PGOLD</span>',d:'<span class="row-link">Maggi Magic Sarap 8g</span>',vi:'<span class="mono">N-CUL-008</span>',vc:'Culinary › Seasoning',p:'CASE-100',moq:'8 cs',oi:'2 cs',sch:'Mon',lt:'4 days',c:'₱ 960',al:badge('blue','2% Rebate'),pr:badge('green','Primary')}])}</div>
-  ${pager(5,128)}
+    [{t:'Item Code',k:'ic'},{t:'Company',k:'co'},{t:'Vendor',k:'ven'},{t:'Description',k:'d'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case (CCM)',k:'c',num:1},{t:'Allowance',k:'al'},{t:'Source',k:'pr'}],
+    rows.map(r=>{
+      const prod = prodById[r.productId]||{};
+      const allow = alById[r.allowanceId];
+      return {
+        ic:'<span class="mono">'+esc(prod.code)+'</span>',
+        co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
+        ven:esc((venById[r.vendorId]||{}).name)||'—',
+        d:'<span class="row-link">'+esc(prod.description)+'</span>',
+        vi:esc(r.vendorItemNo)||'—',
+        vc:vcLabel(r.vendorCategoryId),
+        p:esc(r.orderPackUom)||'—',
+        moq:r.moqCases==null?'—':r.moqCases+' cs',
+        oi:r.orderIncrementCases==null?'—':r.orderIncrementCases+' cs',
+        sch:esc(r.orderSchedule)||'—',
+        lt:esc(r.leadTime)||'—',
+        c:r.costPerCase==null?'—':peso(r.costPerCase),
+        al:allow?badge('blue',esc(allow.allowanceType)):'—',
+        pr:badge(r.sourcePriority==='Primary'?'green':'gray', esc(r.sourcePriority)||'Alternate')
+      };
+    }))}</div>
+  ${pager(rows.length, rows.length)}
 </div>`;
+};
 
 PAGES.allowance = async ()=>{
   const [rows, vendors] = await Promise.all([api('/vendor-allowances'), api('/vendors')]);
@@ -773,6 +817,34 @@ ${head('5','Item Hierarchy','One global merchandise tree — Department → Sub-
 PAGES.item = async ()=>{
   const [rows, nodes] = await Promise.all([api('/products'), api('/merch-nodes')]);
   const nodeById = byId(nodes);
+  // Item Detail below is a static mock panel (General / Pack&UOM / Price&Cost tabs remain hardcoded
+  // to the "Alaska Fresh Milk 1L" sample) — only the Suppliers tab is wired live, per the minimum-scope
+  // instruction, since making the whole detail panel row-selectable/data-driven is out of scope here.
+  const target = rows.find(r=>r.code==='100482') || rows[0] || {};
+  let supplierRows = [];
+  if(target.id){
+    const [venProds, vendors, cats] = await Promise.all([
+      api('/vendor-products?productId='+target.id), api('/vendors'), api('/vendor-categories')
+    ]);
+    const venById = byId(vendors), catById = byId(cats);
+    const vcLabel = catId=>{
+      const node = catById[catId]; if(!node) return '—';
+      const parent = catById[node.parentCategoryId];
+      return esc((parent?parent.nodeName+' › ':'')+node.nodeName);
+    };
+    supplierRows = venProds.map(vp=>({
+      v: esc((venById[vp.vendorId]||{}).name)||'—',
+      vi: '<span class="mono">'+esc(vp.vendorItemNo)+'</span>',
+      vc: vcLabel(vp.vendorCategoryId),
+      p: esc(vp.orderPackUom)||'—',
+      moq: vp.moqCases==null?'—':vp.moqCases+' cs',
+      oi: vp.orderIncrementCases==null?'—':vp.orderIncrementCases+' cs',
+      sch: esc(vp.orderSchedule)||'—',
+      lt: esc(vp.leadTime)||'—',
+      c: vp.costPerCase==null?'—':peso(vp.costPerCase),
+      pr: badge(vp.sourcePriority==='Primary'?'green':'gray', esc(vp.sourcePriority)||'Alternate')
+    }));
+  }
   return `
 ${head('6','Item Maintenance','Master item catalog. Manage identity, hierarchy placement, pack config, supplier links, pricing and cost defaults.', btn('Import','',iExport)+btn('New Item','primary',iAdd))}
 <div class="panel">
@@ -798,7 +870,7 @@ ${head('6','Item Maintenance','Master item catalog. Manage identity, hierarchy p
   ${pager(rows.length, rows.length)}
 </div>
 <div class="panel">
-  ${ph('Item Detail','100482 · Alaska Fresh Milk 1L', btn('Duplicate','sm')+btn('View Inventory','sm'))}
+  ${ph('Item Detail', esc(target.code)+' · '+esc(target.description), btn('Duplicate','sm')+btn('View Inventory','sm'))}
   <div class="panel-body flush">
     ${tabs('itemtab',[
       {label:'General',body:`<div class="panel-body"><div class="form-grid">
@@ -828,12 +900,11 @@ ${head('6','Item Maintenance','Master item catalog. Manage identity, hierarchy p
         [{l:'Base',u:'PC',q:'1',b:'<span class="mono">4800016641107</span>',o:badge('gray','No'),s:badge('green','Yes')},
          {l:'Inner',u:'PACK-6',q:'6',b:'<span class="mono">14800016641104</span>',o:badge('green','Yes'),s:badge('gray','No')},
          {l:'Case',u:'CASE-12',q:'12',b:'<span class="mono">24800016641101</span>',o:badge('green','Yes'),s:badge('gray','No')}])}</div>`},
-      {label:'Suppliers',cnt:2,body:`<div class="panel-body">
-        ${noteBox('Vendor supply data is held on the <b>item↔vendor link</b> — so the primary and alternate vendor can carry different terms. This is the item-side view; the same lines are maintained per vendor in <b>Vendor Product</b>, and each vendor category is drawn from that vendor’s own 2-level Category Hierarchy.')}
+      {label:'Suppliers',cnt:supplierRows.length,body:`<div class="panel-body">
+        ${noteBox('Vendor supply data is held on the <b>item↔vendor link</b> — so the primary and alternate vendor can carry different terms. This is the item-side view (read-only); <b>Cost / Case is owned by Cost Change Management</b>. The same lines are maintained per vendor in <b>Vendor Product</b>, and each vendor category is drawn from that vendor’s own 2-level Category Hierarchy.')}
         ${table(
-        [{t:'Vendor',k:'v'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Order Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case',k:'c',num:1},{t:'Primary',k:'pr'}],
-        [{v:'Alaska Milk Corp.',vi:'<span class="mono">AMC-FM1000</span>',vc:'Dairy › Chilled Milk',p:'CASE-12',moq:'10 cs',oi:'5 cs',sch:'Mon · Wed · Fri',lt:'2 days',c:'₱ 698.40',pr:badge('green','Primary')},
-         {v:'Metro Dairy Dist.',vi:'<span class="mono">MDD-0771</span>',vc:'Dairy › Distributor',p:'CASE-12',moq:'8 cs',oi:'4 cs',sch:'Tue · Fri',lt:'3 days',c:'₱ 705.00',pr:badge('gray','Alternate')}])}</div>`},
+        [{t:'Vendor',k:'v'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Order Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case (CCM)',k:'c',num:1},{t:'Source',k:'pr'}],
+        supplierRows.length?supplierRows:[{v:'<span class="t-sub">No linked vendors for this item yet.</span>',vi:'',vc:'',p:'',moq:'',oi:'',sch:'',lt:'',c:'',pr:''}])}</div>`},
       {label:'Price & Cost',body:`<div class="panel-body"><div class="form-grid">
         <div class="fg"><label>Standard Cost (net)</label><input value="58.20"></div>
         <div class="fg"><label>Base Retail (VAT-inc)</label><input value="72.00"></div>
@@ -1643,12 +1714,18 @@ function initAssortScope(root){
   const level=root.querySelector('#apLevel'), scope=root.querySelector('#apScope'), company=root.querySelector('#apCompany');
   if(!level||!scope) return;
   function build(){
-    const ci=company?Math.max(0,BUYERS.indexOf(company.value)):0;
+    const companyName = company?company.value:AW.header.company;
+    const ci=Math.max(0,BUYERS.indexOf(companyName));
+    const co=(AW.companies||[]).find(c=>c.legalName===companyName);
     const lv=level.value; let opts;
-    if(lv.startsWith('Company')) opts=['All Stores (company default)'];
-    else if(lv==='Assortment Cluster') opts=CLUSTERS.filter(z=>z.co===ci).map(z=>`${z.code} · ${z.name}`);
-    else opts=STORES.filter(s=>s.co===ci).map(s=>`${s.code} · ${s.name}`);
-    scope.innerHTML=(opts.length?opts:['— none for this company —']).map(o=>`<option>${o}</option>`).join('');
+    // Assortment Cluster options are loaded live from /api/assortment-clusters (real ids, carried
+    // via data-id) so the wizard can submit a real clusterId; Company/Store options remain the
+    // static mock lists — the API's AssortmentPlanDtos.Request only has clusterId (required) and
+    // companyId, no storeId, so Store-level targets can't be captured as a distinct id yet.
+    if(lv.startsWith('Company')) opts=[{label:'All Stores (company default)'}];
+    else if(lv==='Assortment Cluster') opts=(AW.clusters||[]).filter(z=>!co||z.companyId===co.id).map(z=>({id:z.id,label:esc((z.code?z.code+' · ':'')+z.name)}));
+    else opts=STORES.filter(s=>s.co===ci).map(s=>({label:`${s.code} · ${s.name}`}));
+    scope.innerHTML=(opts.length?opts:[{label:'— none for this company —'}]).map(o=>`<option${o.id!=null?` data-id="${o.id}"`:''}>${o.label}</option>`).join('');
     scope.disabled=lv.startsWith('Company');
   }
   level.addEventListener('change',build);
@@ -1657,12 +1734,17 @@ function initAssortScope(root){
 }
 /* ===================== ASSORTMENT PLAN WIZARD ===================== */
 let AW=null;
-function openAssortWizard(seed){
+async function openAssortWizard(seed){
+  let clusters=[], companies=[], products=[];
+  try{
+    [clusters, companies, products] = await Promise.all([api('/assortment-clusters'), api('/companies'), api('/products')]);
+  }catch(e){ console.error('Assortment wizard reference data load failed', e); }
   AW={step:1,
-    header: seed&&seed.header ? Object.assign({},seed.header) : {name:'',company:BUYERS[0],level:'Company (all stores)',scope:'All Stores (company default)',type:'Regular',eff:'',desc:''},
+    header: seed&&seed.header ? Object.assign({},seed.header) : {name:'',company:BUYERS[0],level:'Company (all stores)',scope:'All Stores (company default)',type:'Regular',eff:'',desc:'',scopeClusterId:null},
     items: seed&&seed.items ? seed.items.map(x=>Object.assign({},x)) : [],
     ref: (seed&&seed.ref) || 'AP-0005 · Draft',
-    seededFrom: (seed&&seed.from) || null};
+    seededFrom: (seed&&seed.from) || null,
+    clusters, companies, products};
   window.__ret='assortplan';
   renderAssortWizard();
 }
@@ -1768,12 +1850,52 @@ function apCapture(){
     if(g('apName'))AW.header.name=g('apName').value;
     if(g('apCompany'))AW.header.company=g('apCompany').value;
     if(g('apLevel'))AW.header.level=g('apLevel').value;
-    if(g('apScope'))AW.header.scope=g('apScope').value;
+    if(g('apScope')){
+      AW.header.scope=g('apScope').value;
+      const opt=g('apScope').selectedOptions[0];
+      AW.header.scopeClusterId = (opt&&opt.dataset.id) ? Number(opt.dataset.id) : null;
+    }
     if(g('apType'))AW.header.type=g('apType').value;
     if(g('apDesc'))AW.header.desc=g('apDesc').value;
   } else if(AW.step===2){ const e=document.getElementById('apEff'); if(e)AW.header.eff=e.value; }
 }
 function apGo(n){if(n<1||n>4)return;apCapture();AW.step=n;renderAssortWizard();}
+// Resolves the real clusterId to submit: prefers the id captured live off the #apScope select
+// (data-id), falling back to a name/code match against the loaded clusters — needed when the
+// wizard was opened from a Duplicate seed, whose scope string isn't tied to a captured id.
+function apResolveClusterId(){
+  if(AW.header.scopeClusterId) return AW.header.scopeClusterId;
+  const scope=AW.header.scope||'';
+  const match=(AW.clusters||[]).find(z=>scope===((z.code?z.code+' · ':'')+z.name) || scope===z.name);
+  return match?match.id:null;
+}
+async function apSubmit(){
+  const h=AW.header;
+  const clusterId=apResolveClusterId();
+  if(!h.name){ alert('Save failed — Plan Name is required.'); return; }
+  if(!clusterId){
+    alert('Save failed — select an Assortment Cluster target. The API currently requires a Cluster for every plan (Company/Store-level scope is not yet stored server-side).');
+    return;
+  }
+  const co=(AW.companies||[]).find(c=>c.legalName===h.company);
+  const body={
+    name: h.name,
+    clusterId: clusterId,
+    companyId: co?co.id:null,
+    effectiveFrom: h.eff||null,
+    // Best-effort productId resolution: the wizard's SKU picker (PRODUCTS, shared with the Price/Cost
+    // wizards) uses its own mock codes, distinct from the seeded backend Product catalog — matched
+    // here by description where possible; unmatched lines still post with productCode + description.
+    lines: AW.items.map(it=>{
+      const match=(AW.products||[]).find(p=>p.description===it.name);
+      return {productId: match?match.id:null, productCode: it.code, description: it.name};
+    })
+  };
+  try{
+    await api('/assortment-plans',{method:'POST',body:JSON.stringify(body)});
+    route('assortplan');
+  }catch(e){ alert('Save failed — '+e.message); }
+}
 function renderAssortWizard(){
   const m=document.getElementById('main');
   const labels=['Identity & Scope','Effectivity','SKU List','Review'];
@@ -1784,7 +1906,7 @@ function renderAssortWizard(){
     +`<div class="panel"><div class="panel-head"><h3>New Assortment Plan</h3><span class="sub">${AW.ref}${AW.seededFrom?' · duplicated from '+AW.seededFrom:''}</span></div>${stepbar}${body}${nav}</div>`;
   m.scrollTop=0; renderSidebar('assortplan');
   document.querySelectorAll('[data-apstep]').forEach(e=>e.onclick=()=>apGo(+e.dataset.apstep));
-  document.querySelectorAll('[data-apnav]').forEach(b=>b.onclick=()=>{const a=b.dataset.apnav;if(a==='cancel'||a==='submit')route('assortplan');else if(a==='back')apGo(AW.step-1);else if(a==='next')apGo(AW.step+1);});
+  document.querySelectorAll('[data-apnav]').forEach(b=>b.onclick=()=>{const a=b.dataset.apnav;if(a==='cancel')route('assortplan');else if(a==='submit')apSubmit();else if(a==='back')apGo(AW.step-1);else if(a==='next')apGo(AW.step+1);});
   if(AW.step===1)apWireStep1();
   else if(AW.step===2 && typeof apWireStep2==='function')apWireStep2();
   else if(AW.step===3 && typeof apWireStep3==='function')apWireStep3();
@@ -1871,6 +1993,22 @@ const SAVE = {
   vencat:   {route:'/vendor-categories', page:'vencat', body:m=>({vendorId:selId(m,'Vendor'),level:gv(m,'Level'),parentCategoryId:selId(m,'Parent Category'),nodeName:gv(m,'Node Name'),nodeCode:gv(m,'Node Code'),allowanceEligible:gv(m,'Allowance / Promo Eligible'),status:'Active'})},
   vendorschedule:{route:'/vendor-schedules', page:'vendorschedule', body:m=>({companyId:selId(m,'Company'),vendorId:selId(m,'Vendor'),orderDays:gv(m,'Order Days'),leadTimeDays:Number(gv(m,'Lead Time (days)')),deliveryDays:gv(m,'Delivery Days (optional)'),status:'Active'})},
   allowance:{route:'/vendor-allowances', page:'allowance', body:m=>({vendorId:selId(m,'Vendor'),allowanceType:gv(m,'Allowance Type'),basis:gv(m,'Basis'),rateAmount:gv(m,'Rate / Amount'),validFrom:gv(m,'Valid From'),validTo:gv(m,'Valid To'),status:'Active'})},
+  vencatalog:{route:'/vendor-products', page:'vencatalog', body:m=>({
+    companyId:selId(m,'Company'),
+    vendorId:selId(m,'Vendor'),
+    productId:selId(m,'Item / SKU'),
+    vendorItemNo:gv(m,'Vendor Item #'),
+    vendorCategoryId:selId(m,'Vendor Category'),
+    sourcePriority:gv(m,'Source Priority')||'Alternate',
+    orderPackUom:gv(m,'Order Pack / UOM'),
+    moqCases:Number(gv(m,'MOQ (cases)'))||null,
+    orderIncrementCases:Number(gv(m,'Order Increment (cases)'))||null,
+    orderSchedule:gv(m,'Order Schedule'),
+    leadTime:gv(m,'Lead Time'),
+    allowanceId:selId(m,'Allowance'),
+    status:'Active'
+    // costPerCase intentionally NOT submitted — CCM-owned, read-only field in this form.
+  })},
   item: {route:'/products', page:'item', body:m=>({
     description: gv(m,'Description')||gv(m,'Product Description'),
     primaryBarcode: gv(m,'Primary Barcode'),
@@ -1932,6 +2070,19 @@ async function fillFKSelects(key, m){
     } else if(key==='node'){
       const nodes = await api('/merch-nodes');
       fillSelectFK(m,'Parent Node', nodes.map(n=>({id:n.id, label:n.code+' · '+n.name})), 'label');
+    } else if(key==='vencatalog'){
+      const [companies,vendors,products,cats,allowances] = await Promise.all([
+        api('/companies'), api('/vendors'), api('/products'), api('/vendor-categories'), api('/vendor-allowances')
+      ]);
+      const catById = byId(cats);
+      fillSelectFK(m,'Company',companies,'legalName');
+      fillSelectFK(m,'Vendor',vendors,'name');
+      fillSelectFK(m,'Item / SKU', products.map(p=>({id:p.id, label:p.code+' · '+p.description})), 'label');
+      fillSelectFK(m,'Vendor Category', cats.filter(c=>c.level==='Sub-Category (L2)').map(c=>{
+        const parent=catById[c.parentCategoryId];
+        return {id:c.id, label:(parent?parent.nodeName+' › ':'')+c.nodeName};
+      }), 'label', {none:'— None —'});
+      fillSelectFK(m,'Allowance', allowances.map(a=>({id:a.id, label:(a.ref||('Allowance #'+a.id))+' · '+(a.allowanceType||'')})), 'label', {none:'— None —'});
     }
   }catch(e){ console.error('FK select load failed', e); }
 }
