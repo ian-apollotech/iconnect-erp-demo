@@ -59,6 +59,17 @@ class BranchApiTest {
     }
 
     @Test
+    void rejectsNonExistentPriceZone() throws Exception {
+        Long companyId = createCompany("BRTESTCO3");
+        String body = """
+            {"code":"BR003","name":"Test Branch 4","format":"Extra","region":"NCR","companyId":%d,
+             "priceZoneId":999999}
+            """.formatted(companyId);
+        mvc.perform(post("/api/branches").contentType("application/json").content(body))
+           .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void rejectsBlankCode() throws Exception {
         Long companyId = createCompany("BRTESTCO2");
         String body = """
