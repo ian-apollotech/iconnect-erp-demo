@@ -346,6 +346,20 @@ function noteBox(html,color){
 
 const PAGES = {};
 
+async function api(path, opts){
+  const res = await fetch('/api'+path, {
+    headers:{'Content-Type':'application/json'},
+    ...opts
+  });
+  if(!res.ok){
+    let msg = 'Request failed ('+res.status+')';
+    try{ const e = await res.json(); msg = e.message || (e.errors && Object.entries(e.errors).map(([k,v])=>k+': '+v).join(', ')) || msg; }catch(_){}
+    throw new Error(msg);
+  }
+  return res.status===204 ? null : res.json();
+}
+function money(v){ return v==null||v==='' ? null : Number(String(v).replace(/[₱,\s]/g,'')); }
+
 PAGES.home = ()=>`
 ${head('','Dashboard','Operational snapshot across Puregold Price Club — 437 stores nationwide across 3 store formats (Price Club · Extra · Minimart).', btn('Export Summary','',iExport)+btn('New Purchase Order','primary',iAdd))}
 ${filterbar([{label:'Company',html:'<select><option>All Companies</option><option>Puregold Price Club, Inc.</option><option>Ayagold Retailers Inc.</option></select>'},{label:'Branch',html:'<select><option>All Branches</option><option>0102 · Ortigas Ext.</option><option>0107 · Araneta Cubao</option><option>0233 · Cebu (Mandaue)</option></select>'}], btn('Apply','primary'))}
@@ -381,17 +395,19 @@ ${filterbar([{label:'Company',html:'<select><option>All Companies</option><optio
     <div class="k">Net Variance</div><div class="v" style="color:var(--red)">₱ (1,240.00)</div>
   </div></div></div>`;
 
-PAGES.company = ()=>`
+PAGES.company = async ()=>{
+  const rows = await api('/companies');
+  return `
 ${head('1','Company Maintenance','Corporate legal entities operating under the group. Configure fiscal calendar, tax, and default accounting.', btn('Export','',iExport)+btn('New Company','primary',iAdd))}
-${noteBox('Per the JDA spec, a <b>Company is regarded as the Chain</b> — the top pricing level covering all of its stores. There is no separate Chain record: “Chain-level” price/cost events scope to the Company. The store <b>formats</b> it operates (Price Club · Extra · Minimart · Merkado) are a store attribute, usable as the <b>Basis</b> of a Price Zone or Cost Zone.','indigo')}
+${noteBox('Per the JDA spec, a <b>Company is regarded as the Chain</b> — the top pricing level covering all of its stores.','indigo')}
 <div class="panel">
-  ${filterbar([{label:'Search',grow:1,ph:'Company code, legal name or TIN…'},{label:'Currency',html:'<select><option>All</option><option>PHP</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Inactive</option><option>All</option></select>'}], btn('Apply','primary'))}
+  ${filterbar([{label:'Search',grow:1,ph:'Company code, legal name or TIN…'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
-    [{t:'',k:'c'},{t:'Code',k:'code'},{t:'Legal Name',k:'name'},{t:'TIN',k:'tin'},{t:'Formats',k:'z',num:1},{t:'Branches',k:'b',num:1},{t:'Currency',k:'cur'},{t:'Status',k:'st'}],
-    [{c:'<input type="checkbox" class="chk">',code:'<span class="mono">PGOLD</span>',name:'<span class="row-link">Puregold Price Club, Inc.</span>',tin:'<span class="mono">201-810-736-000</span>',z:'3',b:'437',cur:'PHP',st:badge('green','Active')},
-     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">AYAG</span>',name:'<span class="row-link">Ayagold Retailers Inc. (Merkado)</span>',tin:'<span class="mono">008-217-540-000</span>',z:'1',b:'3',cur:'PHP',st:badge('green','Active')}])}</div>
-  ${pager(2,2)}
+    [{t:'Code',k:'code'},{t:'Legal Name',k:'name'},{t:'TIN',k:'tin'},{t:'Branches',k:'b',num:1},{t:'Currency',k:'cur'},{t:'Status',k:'st'}],
+    rows.map(r=>({code:'<span class="mono">'+r.code+'</span>',name:'<span class="row-link">'+r.legalName+'</span>',tin:r.tin||'—',b:r.branchCount,cur:r.baseCurrency||'PHP',st:badge(r.status==='Active'?'green':'gray',r.status||'Active')})))}</div>
+  ${pager(rows.length, rows.length)}
 </div>`;
+};
 
 PAGES.branch = ()=>`
 ${head('2','Store Branch Maintenance','Physical stores operating under a company. Each store has a Format (Price Club / Extra / Minimart / Merkado) and a Region, and holds stock across one or more Inventory Locations.', btn('Import','',iExport)+btn('New Branch','primary',iAdd))}
@@ -1077,11 +1093,12 @@ const ci = (v,w)=>`<input value="${v}" style="width:${w||84}px;padding:4px 6px;b
 function ff(f){
   const req=f.req?' <span class="req">*</span>':'';
   const cls='fg'+(f.span==='full'?' full':'');
+  const df=` data-f="${f.l}"`;
   let c;
-  if(f.type==='select') c=`<select${f.id?` id="${f.id}"`:''}>${(f.opt||[]).map(o=>`<option>${o}</option>`).join('')}</select>`;
-  else if(f.type==='area') c=`<textarea rows="${f.rows||2}" ${f.ph?`placeholder="${f.ph}"`:''}>${f.v||''}</textarea>`;
+  if(f.type==='select') c=`<select${f.id?` id="${f.id}"`:''}${df}>${(f.opt||[]).map(o=>`<option>${o}</option>`).join('')}</select>`;
+  else if(f.type==='area') c=`<textarea rows="${f.rows||2}"${df} ${f.ph?`placeholder="${f.ph}"`:''}>${f.v||''}</textarea>`;
   else if(f.type==='storepicker') c=storePicker();
-  else c=`<input type="${f.type||'text'}" ${f.v!=null?`value="${f.v}"`:''} ${f.ph?`placeholder="${f.ph}"`:''} ${f.ro?'readonly':''}>`;
+  else c=`<input type="${f.type||'text'}"${df} ${f.v!=null?`value="${f.v}"`:''} ${f.ph?`placeholder="${f.ph}"`:''} ${f.ro?'readonly':''}>`;
   return `<div class="${cls}"><label>${f.l}${req}</label>${c}${f.hint?`<div class="hint">${f.hint}</div>`:''}</div>`;
 }
 function lineTable(l){
@@ -1740,6 +1757,7 @@ const CREATE = {
       {l:'Formula Parameters',f:[{l:'Coverage / Review Period (days)',type:'number',v:'7'},{l:'Safety Stock (days cover)',type:'number',v:'5'},{l:'Service Level',type:'select',opt:['95.0%','97.5%','98.0%','99.0%']},{l:'Round to Order Increment',type:'select',opt:['Yes','No']},{l:'Enforce MOQ',type:'select',opt:['Yes','No']},{l:'Show full assortment (0-qty lines)',type:'select',opt:['Yes','No — only due-today lines']}]}]},
 };
 const CREATE_BTN = {'New User':'user','New Purchase Order':'po','New Item':'item','New Vendor':'vendor','New Category':'vencat','New Sub-Category':'vencat','Add Vendor Product':'vencatalog','New Vendor Schedule':'vendorschedule','New Calendar Exception':'ordercalendar','New Company':'company','New Branch':'branch','New Price Zone':'pricezone','New Cost Zone':'costzone','New Assortment Cluster':'cluster','New Replenishment Profile':'replenpolicy','New Replenishment Policy':'rpolicy','New Price Event':'price','New Cost Event':'cost','New Assortment Plan':'assort','New Allowance':'allowance','New Transfer':'transfer','New RTV':'rtv','New Adjustment':'adjust','New Conversion':'makeup','New Node':'node','New Receipt':'receipt','Upload Batch':'salesbatch','Run Now':'replenrun'};
+function gv(m,label){ const el=m.querySelector('[data-f="'+CSS.escape(label)+'"]'); return el?el.value:''; }
 function openCreate(key){
   if(key==='price'){ openPriceWizard(); return; }
   if(key==='cost'){ openCostWizard(); return; }
@@ -1749,7 +1767,24 @@ function openCreate(key){
   const m=document.getElementById('main');
   m.innerHTML=createForm(cfg); m.scrollTop=0;
   renderSidebar(cfg.list);
-  m.querySelectorAll('[data-back],[data-save]').forEach(b=>b.onclick=()=>route(window.__ret||'home'));
+  m.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>route(window.__ret||'home'));
+  m.querySelectorAll('[data-save]').forEach(b=>b.onclick=async ()=>{
+    if(key==='company'){
+      try{
+        await api('/companies',{method:'POST',body:JSON.stringify({
+          code:gv(m,'Company Code'), legalName:gv(m,'Legal Name'),
+          tradeName:gv(m,'Trade Name'), tin:gv(m,'TIN'),
+          fiscalYearStart:gv(m,'Fiscal Year Start'), baseCurrency:gv(m,'Base Currency'),
+          defaultVat:gv(m,'Default VAT'), priceIncludesVat:gv(m,'Price Includes VAT'),
+          registeredAddress:gv(m,'Registered Address'), contactPerson:gv(m,'Contact Person'),
+          status:'Active'
+        })});
+        route('company');
+      }catch(e){ alert('Save failed — '+e.message); }
+      return;
+    }
+    route(window.__ret||'home');
+  });
   if(m.querySelector('#storePicker')) initStorePicker();
   if(m.querySelector('#pcaType')) initPcaType(m);
   if(m.querySelector('#priceScope')) initPriceScope(m);
@@ -2013,9 +2048,7 @@ function bindUM(){
   document.querySelectorAll('#main .row-link').forEach(el=>{const t=el.textContent.trim();if(ROLES.some(r=>r.n===t)){el.style.cursor='pointer';el.onclick=()=>openRoleEditor(t);}});
 }
 
-function route(id){
-  const page = PAGES[id] || (()=>`<div class="empty">Module not found.</div>`);
-  document.getElementById('main').innerHTML = page();
+function postRender(id){
   document.getElementById('main').scrollTop = 0;
   renderSidebar(id);
   bindTabs();
@@ -2031,6 +2064,19 @@ function route(id){
   document.querySelectorAll('#main [data-costdup]').forEach(b=>b.onclick=()=>openCostWizard(costSeed(b.dataset.costdup)));
   document.querySelectorAll('#main [data-assortdup]').forEach(b=>b.onclick=()=>openAssortWizard(assortSeed(b.dataset.assortdup)));
   document.querySelectorAll('#main [data-route]').forEach(el=>el.onclick=()=>route(el.dataset.route));
+}
+function route(id){
+  const main = document.getElementById('main');
+  const page = PAGES[id] || (()=>`<div class="empty">Module not found.</div>`);
+  const out = page();
+  if(out && typeof out.then==='function'){
+    main.innerHTML = '<div class="empty">Loading…</div>';
+    out.then(html=>{ main.innerHTML = html; postRender(id); })
+       .catch(e=>{ main.innerHTML = '<div class="empty">Failed to load — '+e.message+'</div>'; });
+  } else {
+    main.innerHTML = out;
+    postRender(id);
+  }
 }
 function bindTabs(){
   document.querySelectorAll('.tab').forEach(t=>{
