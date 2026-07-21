@@ -72,4 +72,17 @@ class AssortmentPlanApiTest {
         mvc.perform(post("/api/assortment-plans").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void rejectsNonExistentCompany() throws Exception {
+        Long companyId = createCompany("APTESTCO2");
+        Long clusterId = createCluster(companyId, "APTEST-CL2");
+
+        String body = """
+            {"name":"Bad Company Plan","clusterId":%d,"companyId":999999,"lines":[]}
+            """.formatted(clusterId);
+
+        mvc.perform(post("/api/assortment-plans").contentType("application/json").content(body))
+           .andExpect(status().isBadRequest());
+    }
 }

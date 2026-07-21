@@ -6,6 +6,8 @@ import com.puregold.iconnect.company.CompanyRepository;
 import com.puregold.iconnect.product.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.function.Consumer;
+
 @Service
 public class VendorProductService extends AbstractCrudService<VendorProduct> {
 
@@ -32,15 +34,39 @@ public class VendorProductService extends AbstractCrudService<VendorProduct> {
     public VendorProduct createFromClient(VendorProduct link) {
         link.setCostPerCase(null);
         if ("Primary".equals(link.getSourcePriority())) {
-            vendorProducts.findByProductIdAndSourcePriority(link.getProductId(), "Primary")
-                .ifPresent(existing -> {
-                    if (link.getId() == null || !existing.getId().equals(link.getId())) {
-                        existing.setSourcePriority("Alternate");
-                        vendorProducts.save(existing);
-                    }
-                });
+            demoteOtherPrimaries(link);
         }
         return create(link);
+    }
+
+    /**
+     * Entry point for client-originated update/save (PUT). Mirrors createFromClient's
+     * single-Primary enforcement so promoting a link to "Primary" via update also demotes
+     * any other existing Primary for the same product. costPerCase is left untouched here —
+     * applyChanges (built from the request DTO) never copies it, so the CCM-owned value already
+     * on the row survives the update unchanged.
+     */
+    public VendorProduct updateFromClient(Long id, Consumer<VendorProduct> applyChanges) {
+        return update(id, entity -> {
+            applyChanges.accept(entity);
+            if ("Primary".equals(entity.getSourcePriority())) {
+                demoteOtherPrimaries(entity);
+            }
+        });
+    }
+
+    /**
+     * Enforces the single-Primary-per-product invariant: if another link for the same product
+     * currently holds "Primary" and it isn't this link itself, demote it to "Alternate".
+     */
+    private void demoteOtherPrimaries(VendorProduct link) {
+        vendorProducts.findByProductIdAndSourcePriority(link.getProductId(), "Primary")
+            .ifPresent(existing -> {
+                if (link.getId() == null || !existing.getId().equals(link.getId())) {
+                    existing.setSourcePriority("Alternate");
+                    vendorProducts.save(existing);
+                }
+            });
     }
 
     @Override

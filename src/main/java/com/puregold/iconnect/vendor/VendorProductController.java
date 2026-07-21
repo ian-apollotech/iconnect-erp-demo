@@ -6,7 +6,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +44,16 @@ public class VendorProductController
     public ResponseEntity<VendorProductDtos.Response> create(@Valid @RequestBody VendorProductDtos.Request req) {
         VendorProduct saved = vendorProductService.createFromClient(toEntity(req));
         return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(saved));
+    }
+
+    // Overrides the base update() so every client-originated save routes through
+    // updateFromClient — re-applying the single-Primary demotion (createFromClient already
+    // does this on POST, but the inherited PUT path otherwise never runs it).
+    @Override
+    @PutMapping("/{id}")
+    public VendorProductDtos.Response update(@PathVariable Long id, @Valid @RequestBody VendorProductDtos.Request req) {
+        VendorProduct saved = vendorProductService.updateFromClient(id, entity -> apply(req, entity));
+        return toResponse(saved);
     }
 
     @Override

@@ -51,6 +51,32 @@ class VendorProductServiceTest {
             .extracting(VendorProduct::getId).isEqualTo(second.getId());
     }
 
+    @Test
+    void settingSecondPrimaryDemotesFirstViaUpdate() {
+        VendorProduct first = service.createFromClient(withVendor(newLink("Primary"), v1));
+        VendorProduct second = service.createFromClient(withVendor(newLink("Alternate"), v2));
+
+        VendorProduct updated = service.updateFromClient(second.getId(), entity -> entity.setSourcePriority("Primary"));
+
+        assertThat(repo.findById(first.getId()).get().getSourcePriority()).isEqualTo("Alternate");
+        assertThat(repo.findByProductIdAndSourcePriority(productId, "Primary")).get()
+            .extracting(VendorProduct::getId).isEqualTo(updated.getId());
+        // Must not throw NonUniqueResultException — exactly one Primary remains for the product.
+        assertThat(repo.findByProductIdAndSourcePriority(productId, "Primary")).isPresent();
+    }
+
+    @Test
+    void updateFromClientDoesNotClearCostPerCase() {
+        VendorProduct link = service.createFromClient(withVendor(newLink("Alternate"), v1));
+        VendorProduct managed = repo.findById(link.getId()).get();
+        managed.setCostPerCase(new BigDecimal("12.50"));
+        repo.save(managed);
+
+        VendorProduct updated = service.updateFromClient(link.getId(), entity -> entity.setVendorItemNo("NEW-ITEM"));
+
+        assertThat(updated.getCostPerCase()).isEqualByComparingTo("12.50");
+    }
+
     private VendorProduct newLink(String priority) {
         VendorProduct v = new VendorProduct();
         v.setCompanyId(companyId); v.setProductId(productId); v.setVendorId(v1);
