@@ -359,6 +359,7 @@ async function api(path, opts){
   return res.status===204 ? null : res.json();
 }
 function money(v){ return v==null||v==='' ? null : Number(String(v).replace(/[₱,\s]/g,'')); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 PAGES.home = ()=>`
 ${head('','Dashboard','Operational snapshot across Puregold Price Club — 437 stores nationwide across 3 store formats (Price Club · Extra · Minimart).', btn('Export Summary','',iExport)+btn('New Purchase Order','primary',iAdd))}
@@ -404,7 +405,7 @@ ${noteBox('Per the JDA spec, a <b>Company is regarded as the Chain</b> — the t
   ${filterbar([{label:'Search',grow:1,ph:'Company code, legal name or TIN…'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
     [{t:'Code',k:'code'},{t:'Legal Name',k:'name'},{t:'TIN',k:'tin'},{t:'Branches',k:'b',num:1},{t:'Currency',k:'cur'},{t:'Status',k:'st'}],
-    rows.map(r=>({code:'<span class="mono">'+r.code+'</span>',name:'<span class="row-link">'+r.legalName+'</span>',tin:r.tin||'—',b:r.branchCount,cur:r.baseCurrency||'PHP',st:badge(r.status==='Active'?'green':'gray',r.status||'Active')})))}</div>
+    rows.map(r=>({code:'<span class="mono">'+esc(r.code)+'</span>',name:'<span class="row-link">'+esc(r.legalName)+'</span>',tin:esc(r.tin)||'—',b:r.branchCount,cur:esc(r.baseCurrency)||'PHP',st:badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')})))}</div>
   ${pager(rows.length, rows.length)}
 </div>`;
 };
