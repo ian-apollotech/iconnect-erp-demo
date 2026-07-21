@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iConnect ERP – New Receive</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #DC2626; --red-dark: #B91C1C; --red-light: #FEF2F2; --red-mid: #FECACA;
+      --green: #059669; --green-bg: #ECFDF5; --green-light: #D1FAE5;
+      --blue: #2563EB; --blue-bg: #EFF6FF; --blue-mid: #BFDBFE;
+      --amber: #D97706; --amber-bg: #FFFBEB;
+      --purple: #7C3AED; --purple-bg: #F5F3FF;
+      --teal: #0D9488; --teal-bg: #F0FDFA; --teal-mid: #99F6E4;
+      --gray-50: #F8FAFC; --gray-100: #F1F5F9; --gray-200: #E2E8F0;
+      --gray-300: #CBD5E1; --gray-400: #94A3B8; --gray-500: #64748B;
+      --gray-700: #334155; --gray-900: #111827;
+      --sidebar-w: 220px; --nav-h: 56px;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; }
+
+    .topnav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: #fff; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 24px; z-index: 100; gap: 16px; }
+    .topnav .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; color: var(--gray-900); text-decoration: none; width: var(--sidebar-w); }
+    .logo-icon { width: 30px; height: 30px; background: var(--red); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 800; }
+    .topnav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+    .nav-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--red-light); border: 2px solid var(--red-mid); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--red); }
+    .role-select-wrap { position: relative; display: flex; align-items: center; }
+    .role-select { appearance: none; -webkit-appearance: none; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 20px; padding: 7px 32px 7px 14px; font-size: 12.5px; font-weight: 600; color: var(--gray-700); cursor: pointer; outline: none; transition: border-color .15s; }
+    .role-select:focus { border-color: var(--red); background: #fff; }
+    .role-select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--gray-400); pointer-events: none; }
+    .nav-user { font-size: 13px; color: var(--gray-700); }
+    .nav-user span { font-weight: 600; display: block; }
+    .nav-user small { color: var(--gray-500); font-size: 11px; }
+
+    .sidebar { position: fixed; top: var(--nav-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--gray-200); padding: 20px 0; overflow-y: auto; }
+    .sidebar-section { padding: 0 12px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-400); margin-top: 12px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; font-size: 13.5px; color: var(--gray-700); text-decoration: none; border-radius: 6px; margin: 1px 8px; }
+    .nav-item:hover { background: var(--gray-100); }
+    .nav-item.active { background: var(--red-light); color: var(--red); font-weight: 600; }
+    .nav-item svg { flex-shrink: 0; }
+
+    .main { margin-left: var(--sidebar-w); margin-top: var(--nav-h); padding: 32px; max-width: 960px; }
+    .page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .back-btn { display: flex; align-items: center; gap: 6px; color: var(--gray-500); font-size: 13px; text-decoration: none; padding: 6px 10px; border-radius: 6px; }
+    .back-btn:hover { background: var(--gray-100); color: var(--gray-700); }
+    .page-title { font-size: 20px; font-weight: 700; }
+
+    /* Stepper */
+    .stepper { display: flex; margin-bottom: 32px; background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+    .step { flex: 1; display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-right: 1px solid var(--gray-200); }
+    .step:last-child { border-right: none; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--gray-300); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--gray-400); flex-shrink: 0; }
+    .step.done .step-num { background: var(--green); border-color: var(--green); color: #fff; }
+    .step.active .step-num { background: var(--red); border-color: var(--red); color: #fff; }
+    .step-label { font-size: 12px; font-weight: 500; color: var(--gray-400); }
+    .step.done .step-label, .step.active .step-label { color: var(--gray-900); font-weight: 600; }
+
+    /* Cards */
+    .card { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; padding: 28px; margin-bottom: 20px; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+    .card-sub { font-size: 13px; color: var(--gray-500); margin-bottom: 20px; }
+
+    /* Source type selector */
+    .source-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .source-card { border: 2px solid var(--gray-200); border-radius: 10px; padding: 20px; cursor: pointer; transition: all .15s; }
+    .source-card:hover { border-color: var(--red-mid); }
+    .source-card.selected-po { border-color: var(--blue); background: var(--blue-bg); }
+    .source-card.selected-dispatch { border-color: var(--purple); background: var(--purple-bg); }
+    .source-card.selected-vendor { border-color: var(--teal); background: var(--teal-bg); }
+    .source-card-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--gray-100); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
+    .source-card.selected-po .source-card-icon { background: var(--blue-mid); }
+    .source-card.selected-dispatch .source-card-icon { background: #DDD6FE; }
+    .source-card.selected-vendor .source-card-icon { background: var(--teal-mid); }
+    .source-card-title { font-size: 13.5px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+    .source-card-desc { font-size: 12px; color: var(--gray-500); line-height: 1.5; }
+
+    /* form */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 13px; font-weight: 600; color: var(--gray-700); }
+    label .req { color: var(--red); margin-left: 2px; }
+    input, select, textarea { border: 1px solid var(--gray-200); border-radius: 7px; padding: 9px 12px; font-size: 13.5px; color: var(--gray-900); outline: none; width: 100%; transition: border-color .15s; font-family: inherit; }
+    input:focus, select:focus { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-light); }
+    .field-hint { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; }
+
+    /* Blind receive notice */
+    .blind-notice { background: #F1F5F9; border: 1px solid var(--gray-200); border-radius: 8px; padding: 12px 16px; display: flex; gap: 10px; align-items: flex-start; margin-bottom: 16px; }
+    .blind-notice svg { flex-shrink: 0; color: var(--gray-500); margin-top: 1px; }
+    .blind-notice p { font-size: 12.5px; color: var(--gray-600); line-height: 1.5; }
+    .blind-notice strong { color: var(--gray-900); }
+
+    /* Add mode tabs */
+    .add-mode-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+    .add-mode-tab { padding: 7px 16px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--gray-200); background: #fff; color: var(--gray-500); transition: all .15s; }
+    .add-mode-tab.active { background: var(--red); color: #fff; border-color: var(--red); }
+
+    /* Autocomplete */
+    .autocomplete-wrap { position: relative; margin-bottom: 0; }
+    .autocomplete-input { display: flex; align-items: center; gap: 8px; border: 1px solid var(--gray-200); border-radius: 7px; padding: 9px 12px; background: #fff; }
+    .autocomplete-input input { border: none; outline: none; font-size: 13.5px; color: var(--gray-900); width: 100%; background: none; }
+    .autocomplete-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.1); z-index: 50; max-height: 260px; overflow-y: auto; display: none; }
+    .autocomplete-dropdown.open { display: block; }
+    .ac-item { padding: 10px 14px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--gray-100); }
+    .ac-item:last-child { border-bottom: none; }
+    .ac-item:hover { background: var(--red-light); }
+    .ac-item-name { font-size: 13.5px; font-weight: 500; color: var(--gray-900); }
+    .ac-item-sku { font-size: 11.5px; color: var(--gray-400); font-family: monospace; margin-top: 2px; }
+
+    /* Category Modal */
+    .cat-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; }
+    .cat-modal-overlay.open { display: flex; }
+    .cat-modal { background: #fff; border-radius: 12px; width: 100%; max-width: 860px; height: 580px; display: flex; flex-direction: column; box-shadow: 0 24px 64px rgba(0,0,0,.2); overflow: hidden; }
+    .cat-modal-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--gray-200); flex-shrink: 0; }
+    .cat-modal-title { font-size: 15px; font-weight: 700; color: var(--gray-900); display: flex; align-items: center; gap: 8px; }
+    .cat-modal-close { background: none; border: none; cursor: pointer; color: var(--gray-400); font-size: 18px; padding: 4px 8px; border-radius: 6px; line-height: 1; }
+    .cat-modal-close:hover { background: var(--gray-100); color: var(--gray-700); }
+    .cat-modal-body { display: flex; flex: 1; overflow: hidden; }
+    .cat-modal-sidebar { width: 200px; flex-shrink: 0; border-right: 1px solid var(--gray-200); display: flex; flex-direction: column; overflow: hidden; }
+    .cat-sidebar-hdr { padding: 12px 14px 8px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--gray-400); }
+    .cat-sidebar-list { overflow-y: auto; flex: 1; padding: 0 8px 8px; }
+    .cat-sidebar-item { display: flex; align-items: center; justify-content: space-between; padding: 9px 10px; border-radius: 7px; cursor: pointer; margin-bottom: 2px; transition: background .1s; }
+    .cat-sidebar-item:hover { background: var(--gray-100); }
+    .cat-sidebar-item.active { background: var(--red-light); }
+    .cat-sidebar-item-name { font-size: 13px; font-weight: 500; color: var(--gray-700); }
+    .cat-sidebar-item.active .cat-sidebar-item-name { color: var(--red); font-weight: 700; }
+    .cat-count-badge { font-size: 11px; font-weight: 600; background: var(--gray-100); color: var(--gray-500); padding: 1px 7px; border-radius: 10px; flex-shrink: 0; }
+    .cat-sidebar-item.active .cat-count-badge { background: var(--red-mid); color: var(--red); }
+    .cat-modal-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .cat-main-topbar { padding: 12px 16px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; gap: 12px; flex-shrink: 0; flex-wrap: wrap; gap: 8px; }
+    .cat-search-input { display: flex; align-items: center; gap: 8px; border: 1px solid var(--gray-200); border-radius: 7px; padding: 7px 12px; flex: 1; min-width: 200px; background: var(--gray-50); }
+    .cat-search-input input { border: none; outline: none; background: none; font-size: 13px; color: var(--gray-900); width: 100%; font-family: inherit; }
+    .cat-main-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .cat-count-label { font-size: 12.5px; color: var(--gray-500); white-space: nowrap; }
+    .cat-ctrl-btn { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--gray-200); background: #fff; color: var(--gray-600); transition: background .12s; white-space: nowrap; }
+    .cat-ctrl-btn:hover { background: var(--gray-100); }
+    .cat-main-items { flex: 1; overflow-y: auto; }
+    .cat-items-table { width: 100%; border-collapse: collapse; }
+    .cat-items-table thead th { position: sticky; top: 0; background: var(--gray-50); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-500); padding: 9px 14px; text-align: left; border-bottom: 1px solid var(--gray-200); z-index: 1; }
+    .cat-items-table tbody tr { border-bottom: 1px solid var(--gray-100); cursor: pointer; transition: background .08s; }
+    .cat-items-table tbody tr:last-child { border-bottom: none; }
+    .cat-items-table tbody tr:hover { background: #FAFAFA; }
+    .cat-items-table tbody tr.row-picked { background: var(--green-bg); }
+    .cat-items-table tbody tr.row-picked:hover { background: #D1FAE5; }
+    .cat-items-table td { padding: 9px 14px; font-size: 13px; color: var(--gray-700); vertical-align: middle; }
+    .cat-row-check { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--gray-300); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .1s; }
+    .row-picked .cat-row-check { background: var(--green); border-color: var(--green); color: #fff; }
+    .cat-main-pagination { padding: 10px 16px; border-top: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: var(--gray-50); }
+    .cat-page-info { font-size: 12.5px; color: var(--gray-500); }
+    .cat-page-btns { display: flex; gap: 4px; }
+    .cat-page-btn { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--gray-200); background: #fff; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--gray-600); display: flex; align-items: center; justify-content: center; transition: all .1s; }
+    .cat-page-btn:hover { background: var(--gray-100); }
+    .cat-page-btn.active { background: var(--red); color: #fff; border-color: var(--red); }
+    .cat-page-btn:disabled { opacity: .4; pointer-events: none; }
+    .cat-modal-footer { padding: 14px 20px; border-top: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: var(--gray-50); }
+    .cat-footer-sel { font-size: 13.5px; font-weight: 600; color: var(--gray-700); }
+    .cat-footer-sel span { color: var(--red); }
+    .cat-footer-cancel { padding: 9px 18px; border-radius: 7px; border: 1px solid var(--gray-200); background: #fff; color: var(--gray-700); font-size: 13.5px; font-weight: 600; cursor: pointer; }
+    .cat-footer-cancel:hover { background: var(--gray-100); }
+    .cat-footer-add { padding: 9px 18px; border-radius: 7px; border: none; background: var(--red); color: #fff; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background .12s; }
+    .cat-footer-add:hover { background: var(--red-dark); }
+    .cat-footer-add:disabled { opacity: .45; pointer-events: none; }
+
+    /* Receive items table — with quantity lines */
+    .receive-items { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .receive-item-block { border: 1px solid var(--gray-200); border-radius: 8px; overflow: hidden; }
+    .receive-item-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); }
+    .receive-item-name { font-weight: 600; font-size: 13.5px; color: var(--gray-900); }
+    .receive-item-sku { font-family: monospace; font-size: 11.5px; color: var(--gray-400); margin-left: 8px; }
+    .receive-item-unit { font-size: 12px; color: var(--gray-500); }
+    .remove-item-btn { background: none; border: none; cursor: pointer; color: var(--gray-400); padding: 4px 6px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+    .remove-item-btn:hover { color: var(--red); background: var(--red-light); }
+    .qty-lines { padding: 10px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .qty-line { display: grid; grid-template-columns: 140px 1fr 32px; gap: 10px; align-items: center; }
+    .qty-line-type { font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-received { background: var(--green); }
+    .dot-lost { background: var(--amber); }
+    .dot-rejected { background: var(--red); }
+    .qty-line input[type="number"] { padding: 6px 10px; text-align: right; }
+    .add-line-btn { background: none; border: 1px dashed var(--gray-300); border-radius: 6px; padding: 6px 12px; font-size: 12px; color: var(--gray-500); cursor: pointer; display: flex; align-items: center; gap: 6px; margin-top: 4px; width: fit-content; }
+    .add-line-btn:hover { background: var(--gray-50); border-color: var(--gray-400); }
+    .del-line-btn { background: none; border: none; cursor: pointer; color: var(--gray-400); padding: 2px; border-radius: 4px; display: flex; align-items: center; }
+    .del-line-btn:hover { color: var(--red); }
+
+    /* Review */
+    .review-section { margin-bottom: 20px; }
+    .review-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin-bottom: 10px; }
+    .review-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13.5px; }
+    .review-row:last-child { border-bottom: none; }
+    .review-key { color: var(--gray-500); }
+    .review-val { font-weight: 600; color: var(--gray-900); }
+
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: 7px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; transition: background .15s; }
+    .btn-primary { background: var(--red); color: #fff; }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-secondary { background: #fff; color: var(--gray-700); border: 1px solid var(--gray-200); }
+    .btn-secondary:hover { background: var(--gray-50); }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-success:hover { background: #047857; }
+    .step-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="logo" href="index.html">
+    <div class="logo-icon">iC</div>
+    iConnect ERP
+  </a>
+  <div class="topnav-right">
+    <div class="role-select-wrap">
+      <select class="role-select" id="roleSelect" onchange="setRole(this.value)">
+        <option value="dispatcher">Dispatcher</option>
+        <option value="dispatch-approver">Dispatch Approver</option>
+        <option value="receiver">Receiver</option>
+        <option value="resolver">Resolver</option>
+      </select>
+    </div>
+    <div class="nav-user" id="navUser">
+      <span id="navUserName">Ana Cruz</span>
+      <small id="navUserRole">Receiver · Global Retail Inc.</small>
+    </div>
+    <div class="nav-avatar" id="navAvatar">AC</div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Main</div>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </a>
+  <a class="nav-item" href="index.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    Purchase Orders
+  </a>
+  <div class="sidebar-section">Inventory Movement</div>
+  <a class="nav-item" href="dispatch-list.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    Dispatch
+  </a>
+  <a class="nav-item active" href="receive-list.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Receive
+  </a>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <a href="receive-list.html" class="back-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    <div class="page-title">New Receive</div>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="step active" id="step-ind-1">
+      <div class="step-num">1</div>
+      <div class="step-label">Source</div>
+    </div>
+    <div class="step" id="step-ind-2">
+      <div class="step-num">2</div>
+      <div class="step-label">Reference & Location</div>
+    </div>
+    <div class="step" id="step-ind-3">
+      <div class="step-num">3</div>
+      <div class="step-label">Items & Counts</div>
+    </div>
+    <div class="step" id="step-ind-4">
+      <div class="step-num">4</div>
+      <div class="step-label">Review & Submit</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Source Type -->
+  <div id="s1">
+    <div class="card">
+      <div class="card-title">Select Receive Source</div>
+      <div class="card-sub">What is the origin of the items being received?</div>
+      <div class="source-selector">
+        <div class="source-card selected-po" id="src-po" onclick="selectSource('po')">
+          <div class="source-card-icon">
+            <svg width="22" height="22" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+          <div class="source-card-title">From Purchase Order</div>
+          <div class="source-card-desc">Receiving items ordered from a vendor via an approved Purchase Order</div>
+        </div>
+        <div class="source-card" id="src-dispatch" onclick="selectSource('dispatch')">
+          <div class="source-card-icon">
+            <svg width="22" height="22" fill="none" stroke="var(--purple)" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+          <div class="source-card-title">From Dispatch</div>
+          <div class="source-card-desc">Receiving items from an approved internal transfer between facilities or locations</div>
+        </div>
+        <div class="source-card" id="src-vendor" onclick="selectSource('vendor')">
+          <div class="source-card-icon">
+            <svg width="22" height="22" fill="none" stroke="var(--teal)" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+          </div>
+          <div class="source-card-title">Direct from Vendor</div>
+          <div class="source-card-desc">Receiving items directly from a vendor without a linked Purchase Order</div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <span></span>
+      <button class="btn btn-primary" onclick="goStep(2)">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2: Reference & Location -->
+  <div id="s2" style="display:none">
+    <div class="card">
+      <div class="card-title" id="refCardTitle">Purchase Order Reference</div>
+      <div class="card-sub">Select the source reference and receiving location</div>
+
+      <!-- PO source -->
+      <div id="refPO">
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Purchase Order <span class="req">*</span></label>
+            <select>
+              <option value="">— select approved PO —</option>
+              <option selected>PO-2026-0043 · Metro Wholesale Ltd. · Apr 10, 2026</option>
+              <option>PO-2026-0044 · Sunrise Foods Inc. · Apr 12, 2026</option>
+              <option>PO-2026-0046 · Pacific Distributors · Apr 15, 2026</option>
+            </select>
+            <div class="field-hint">Only approved POs that are not yet fully received are listed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dispatch source -->
+      <div id="refDispatch" style="display:none">
+        <div class="form-row single">
+          <div class="form-group">
+            <label>Dispatch Reference <span class="req">*</span></label>
+            <select>
+              <option value="">— select dispatch —</option>
+              <option>DIS-2026-0021 · Quezon City Depot → Pasig Store · In Transit</option>
+              <option>DIS-2026-0020 · Makati Warehouse → Alabang Branch · In Transit</option>
+            </select>
+            <div class="field-hint">Only approved/in-transit dispatches addressed to your facility are listed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendor source -->
+      <div id="refVendor" style="display:none">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vendor Name <span class="req">*</span></label>
+            <input type="text" placeholder="Enter vendor name" />
+          </div>
+          <div class="form-group">
+            <label>Vendor Delivery Reference</label>
+            <input type="text" placeholder="e.g. delivery note, DR number" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Receiving location (common) -->
+      <div class="form-row" style="margin-top:8px;">
+        <div class="form-group">
+          <label>Receiving Facility <span class="req">*</span></label>
+          <select id="receivingFacility">
+            <option value="">— select facility —</option>
+          </select>
+          <div class="field-hint" id="receivingFacilityHint">Only your assigned facilities are shown</div>
+        </div>
+        <div class="form-group">
+          <label>Receiving Location <span class="req">*</span></label>
+          <select>
+            <option>Loading Bay</option>
+            <option>Receiving Area</option>
+            <option>Main Floor</option>
+            <option>Cold Storage</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label>Receive Date <span class="req">*</span></label>
+          <input type="date" value="2026-04-10" />
+        </div>
+      </div>
+      <div class="form-row single">
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea rows="2" placeholder="Optional notes about this receive…" style="resize:vertical;"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="goStep(1)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <button class="btn btn-primary" onclick="goStep(3)">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 3: Items & Counts -->
+  <div id="s3" style="display:none">
+    <div class="card">
+      <div class="card-title">Items &amp; Quantities</div>
+      <div class="card-sub">Add items and enter your count. Receiving is blind — enter only what you physically count.</div>
+
+      <div class="blind-notice">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="1" y1="1" x2="23" y2="23" stroke-width="2.5"/></svg>
+        <p><strong>Blind Receiving:</strong> Expected quantities from the source document are not shown. Count what you physically receive and enter the actual quantities. If items were lost in transit, add a Lost line. If items arrived but are refused, add a Rejected line.</p>
+      </div>
+
+      <!-- Add mode tabs -->
+      <div class="add-mode-tabs">
+        <button class="add-mode-tab active" id="modeSearchTab" onclick="setAddMode('search')">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="display:inline;vertical-align:-2px;margin-right:4px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Search Item
+        </button>
+        <button class="add-mode-tab" id="modeCatTab" onclick="openCatModal()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="display:inline;vertical-align:-2px;margin-right:4px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Browse by Category
+        </button>
+      </div>
+
+      <!-- Search mode -->
+      <div id="modeSearch">
+        <div class="autocomplete-wrap">
+          <div class="autocomplete-input">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="acInput" placeholder="Search by SKU or item name…" oninput="onAcInput(this.value)" />
+          </div>
+          <div class="autocomplete-dropdown" id="acDropdown"></div>
+        </div>
+      </div>
+
+      <!-- Items with quantity lines -->
+      <div class="receive-items" id="receiveItems">
+        <!-- Sample pre-filled items -->
+        <div class="receive-item-block" data-id="ITM-002">
+          <div class="receive-item-header">
+            <div>
+              <span class="receive-item-name">Whole Milk 1L</span>
+              <span class="receive-item-sku">ITM-002</span>
+              <span class="receive-item-unit" style="margin-left:8px;">/ carton</span>
+            </div>
+            <button class="remove-item-btn" onclick="removeReceiveItem(this)">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Remove
+            </button>
+          </div>
+          <div class="qty-lines" id="lines-ITM-002">
+            <div class="qty-line">
+              <div class="qty-line-type"><span class="dot dot-received"></span> Received</div>
+              <input type="number" min="0" value="22" placeholder="0" />
+              <button class="del-line-btn" onclick="removeQtyLine(this)" title="Remove line">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="qty-line">
+              <div class="qty-line-type"><span class="dot dot-lost"></span> Lost</div>
+              <input type="number" min="0" value="2" placeholder="0" />
+              <button class="del-line-btn" onclick="removeQtyLine(this)" title="Remove line">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style="padding:4px 14px 10px;">
+            <button class="add-line-btn" onclick="addQtyLine(this, 'ITM-002')">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add line (Lost / Rejected)
+            </button>
+          </div>
+        </div>
+
+        <div class="receive-item-block" data-id="ITM-008">
+          <div class="receive-item-header">
+            <div>
+              <span class="receive-item-name">All-Purpose Flour 1kg</span>
+              <span class="receive-item-sku">ITM-008</span>
+              <span class="receive-item-unit" style="margin-left:8px;">/ bag</span>
+            </div>
+            <button class="remove-item-btn" onclick="removeReceiveItem(this)">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Remove
+            </button>
+          </div>
+          <div class="qty-lines" id="lines-ITM-008">
+            <div class="qty-line">
+              <div class="qty-line-type"><span class="dot dot-received"></span> Received</div>
+              <input type="number" min="0" value="50" placeholder="0" />
+              <button class="del-line-btn" onclick="removeQtyLine(this)" title="Remove line">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="qty-line">
+              <div class="qty-line-type"><span class="dot dot-rejected"></span> Rejected</div>
+              <input type="number" min="0" value="3" placeholder="0" />
+              <button class="del-line-btn" onclick="removeQtyLine(this)" title="Remove line">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+          <div style="padding:4px 14px 10px;">
+            <button class="add-line-btn" onclick="addQtyLine(this, 'ITM-008')">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add line (Lost / Rejected)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="goStep(2)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <button class="btn btn-primary" onclick="goStep(4)">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 4: Review & Submit -->
+  <div id="s4" style="display:none">
+    <div class="card">
+      <div class="card-title">Review Receive</div>
+      <div class="card-sub">Confirm your count before submission. Once submitted, other counters will submit their own independent counts.</div>
+
+      <div class="review-section">
+        <div class="review-label">Receive Details</div>
+        <div class="review-row"><span class="review-key">Receive Number</span><span class="review-val" style="font-family:monospace;color:var(--red)">REC-2026-0032</span></div>
+        <div class="review-row"><span class="review-key">Source</span><span class="review-val" style="color:var(--blue)">Purchase Order · PO-2026-0043</span></div>
+        <div class="review-row"><span class="review-key">Vendor</span><span class="review-val">Metro Wholesale Ltd.</span></div>
+        <div class="review-row"><span class="review-key">Receive Date</span><span class="review-val">Apr 10, 2026</span></div>
+        <div class="review-row"><span class="review-key">Receiving Location</span><span class="review-val">Makati Warehouse · Loading Bay</span></div>
+      </div>
+
+      <div class="review-section">
+        <div class="review-label">My Count</div>
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:left;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--gray-500);padding:8px 0;border-bottom:1px solid var(--gray-200);">Item</th>
+              <th style="text-align:right;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--green);padding:8px 0;border-bottom:1px solid var(--gray-200);">Received</th>
+              <th style="text-align:right;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--amber);padding:8px 0;border-bottom:1px solid var(--gray-200);">Lost</th>
+              <th style="text-align:right;font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--red);padding:8px 0;border-bottom:1px solid var(--gray-200);">Rejected</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:9px 0;font-size:13.5px;border-bottom:1px solid var(--gray-100);">Whole Milk 1L <span style="font-size:11px;font-family:monospace;color:var(--gray-400)">ITM-002</span></td>
+              <td style="padding:9px 0;text-align:right;font-weight:600;color:var(--green);border-bottom:1px solid var(--gray-100);">22</td>
+              <td style="padding:9px 0;text-align:right;font-weight:600;color:var(--amber);border-bottom:1px solid var(--gray-100);">2</td>
+              <td style="padding:9px 0;text-align:right;font-weight:600;color:var(--gray-400);border-bottom:1px solid var(--gray-100);">—</td>
+            </tr>
+            <tr>
+              <td style="padding:9px 0;font-size:13.5px;">All-Purpose Flour 1kg <span style="font-size:11px;font-family:monospace;color:var(--gray-400)">ITM-008</span></td>
+              <td style="padding:9px 0;text-align:right;font-weight:600;color:var(--green);">50</td>
+              <td style="padding:9px 0;text-align:right;font-weight:600;color:var(--gray-400);">—</td>
+              <td style="padding:9px 0;text-align:right;font-weight:600;color:var(--red);">3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="background:var(--blue-bg);border:1px solid var(--blue-mid);border-radius:8px;padding:12px 16px;display:flex;gap:10px;align-items:flex-start;">
+        <svg width="16" height="16" fill="none" stroke="var(--blue)" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div style="font-size:12.5px;color:#1D4ED8;">This submits <strong>your count only</strong>. Other counters will submit their own. If all counts agree, the receive is <strong>auto-confirmed</strong>. Discrepancies will be flagged for resolution.</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="goStep(3)">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </button>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-secondary" onclick="saveDraft()">Save Draft</button>
+        <button class="btn btn-success" onclick="submitCount()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Submit My Count
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Category Browse Modal -->
+<div class="cat-modal-overlay" id="catModalOverlay">
+  <div class="cat-modal">
+    <div class="cat-modal-hdr">
+      <div class="cat-modal-title">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Browse by Category
+      </div>
+      <button class="cat-modal-close" onclick="closeCatModal()">✕</button>
+    </div>
+    <div class="cat-modal-body">
+      <div class="cat-modal-sidebar">
+        <div class="cat-sidebar-hdr">Categories</div>
+        <div class="cat-sidebar-list" id="catSidebarList"></div>
+      </div>
+      <div class="cat-modal-main">
+        <div class="cat-main-topbar">
+          <div class="cat-search-input">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="catSearchInput" placeholder="Search items in this category…" oninput="onCatSearch(this.value)" />
+          </div>
+          <div class="cat-main-controls">
+            <span class="cat-count-label" id="catCountLabel">0 items</span>
+            <button class="cat-ctrl-btn" onclick="selectPageItems()">Select page</button>
+            <button class="cat-ctrl-btn" onclick="clearAllPicked()">Clear all</button>
+          </div>
+        </div>
+        <div class="cat-main-items">
+          <table class="cat-items-table">
+            <thead>
+              <tr>
+                <th style="width:36px;"></th>
+                <th style="width:110px;">SKU</th>
+                <th>Item Name</th>
+                <th style="width:90px;">Unit</th>
+              </tr>
+            </thead>
+            <tbody id="catItemsBody"></tbody>
+          </table>
+        </div>
+        <div class="cat-main-pagination">
+          <span class="cat-page-info" id="catPageInfo">Page 1 of 1</span>
+          <div class="cat-page-btns" id="catPageBtns"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cat-modal-footer">
+      <div class="cat-footer-sel">
+        <span id="catSelCount">0</span> items selected
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="cat-footer-cancel" onclick="closeCatModal()">Cancel</button>
+        <button class="cat-footer-add" id="catFooterAdd" onclick="addModalSelected()" disabled>
+          Add Items
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const ROLE_CONFIG = {
+    'dispatcher':        { name: 'Carlos Reyes', roleLabel: 'Dispatcher · Global Retail Inc.',        avatar: 'CR', bg: '#FEF2F2',  color: '#DC2626', border: '#FECACA', receivingFacilities: [] },
+    'dispatch-approver': { name: 'David Ng',     roleLabel: 'Dispatch Approver · Global Retail Inc.', avatar: 'DN', bg: '#FFFBEB',  color: '#D97706', border: '#FDE68A', receivingFacilities: [] },
+    'receiver':          { name: 'Ana Cruz',     roleLabel: 'Receiver · Global Retail Inc.',          avatar: 'AC', bg: '#EFF6FF',  color: '#2563EB', border: '#BFDBFE', receivingFacilities: ['Makati Warehouse', 'BGC Branch'] },
+    'resolver':          { name: 'Marco Lim',    roleLabel: 'Resolver · Global Retail Inc.',          avatar: 'ML', bg: '#ECFDF5',  color: '#059669', border: '#D1FAE5', receivingFacilities: ['Makati Warehouse'] }
+  };
+
+  let currentStep = 1;
+  let sourceType = 'po';
+  let addMode = 'search';
+  const pickedInCat = new Set();
+
+  // Generate a large realistic catalog (~50 items per category)
+  const CATALOG_SEED = {
+    'Beverages':    [['Arabica Coffee','bag'],['Robusta Coffee','bag'],['Green Tea','box'],['Black Tea','box'],['Oolong Tea','box'],['Orange Juice','case'],['Apple Juice','case'],['Mango Juice','case'],['Mineral Water','case'],['Sparkling Water','case'],['Energy Drink','can'],['Sports Drink','bottle'],['Milk Tea','pack'],['Chocolate Drink','pack'],['Soy Milk','carton']],
+    'Dairy':        [['Fresh Milk','carton'],['Whole Milk','carton'],['Low-fat Milk','carton'],['Butter','pack'],['Salted Butter','pack'],['Cream Cheese','tub'],['Cheddar Cheese','block'],['Mozzarella','pack'],['Yogurt','cup'],['Greek Yogurt','cup'],['Heavy Cream','bottle'],['Condensed Milk','can'],['Evaporated Milk','can'],['Ice Cream','tub'],['Whipping Cream','pack']],
+    'Dry Goods':    [['Jasmine Rice','sack'],['Brown Rice','sack'],['Glutinous Rice','sack'],['All-Purpose Flour','bag'],['Bread Flour','bag'],['Cake Flour','bag'],['Rolled Oats','box'],['Instant Oats','box'],['Pasta Spaghetti','pack'],['Pasta Penne','pack'],['Instant Noodles','pack'],['Glass Noodles','pack'],['Cornstarch','bag'],['Baking Soda','box'],['Baking Powder','can']],
+    'Fresh Produce':[['Roma Tomatoes','kg'],['Cherry Tomatoes','pack'],['Cucumber','kg'],['Broccoli','head'],['Cauliflower','head'],['Spinach','bunch'],['Kale','bunch'],['Carrots','kg'],['Potatoes','kg'],['Sweet Potato','kg'],['Onion Red','kg'],['Onion White','kg'],['Garlic Bulb','pack'],['Bell Pepper Red','kg'],['Bell Pepper Green','kg']],
+    'Frozen':       [['Frozen Chicken Breast','pack'],['Frozen Chicken Thigh','pack'],['Frozen Beef Strips','pack'],['Frozen Pork Belly','pack'],['Frozen Shrimp','pack'],['Frozen Fish Fillet','pack'],['Frozen Mixed Veg','bag'],['Frozen Corn','bag'],['Frozen Peas','bag'],['Frozen French Fries','bag'],['Frozen Pizza','box'],['Frozen Dumplings','pack'],['Ice Cream Novelty','box'],['Frozen Spring Rolls','pack'],['Frozen Waffles','box']],
+    'Condiments':   [['Soy Sauce','bottle'],['Oyster Sauce','bottle'],['Fish Sauce','bottle'],['Vinegar','bottle'],['Olive Oil','bottle'],['Vegetable Oil','bottle'],['Sesame Oil','bottle'],['Tomato Ketchup','bottle'],['Mustard','jar'],['Mayonnaise','jar'],['Hot Sauce','bottle'],['Worcestershire','bottle'],['Hoisin Sauce','jar'],['Teriyaki Sauce','bottle'],['Coconut Aminos','bottle']],
+    'Snacks':       [['Potato Chips','bag'],['Tortilla Chips','bag'],['Cheese Crackers','box'],['Rice Crackers','bag'],['Popcorn','bag'],['Trail Mix','bag'],['Granola Bar','box'],['Chocolate Bar','pack'],['Gummy Bears','bag'],['Hard Candy','bag'],['Pretzels','bag'],['Peanuts Salted','can'],['Cashews','can'],['Almonds','bag'],['Dried Mango','pack']],
+    'Household':    [['Dishwashing Liquid','bottle'],['Laundry Detergent','pouch'],['Fabric Softener','bottle'],['All-Purpose Cleaner','bottle'],['Toilet Bowl Cleaner','bottle'],['Glass Cleaner','bottle'],['Floor Cleaner','bottle'],['Garbage Bags','roll'],['Paper Towels','pack'],['Tissue Paper','pack'],['Sponge','pack'],['Rubber Gloves','pair'],['Aluminum Foil','roll'],['Plastic Wrap','roll'],['Zip-lock Bags','box']],
+  };
+
+  const CATALOG = [];
+  const BRANDS = ['FreshFarm','Metro','Sunrise','Pacific','NaturePlus','EverGood','PrimeMart','GreenLeaf','Harvest','Artisan'];
+  let _sku = 1;
+  Object.entries(CATALOG_SEED).forEach(([cat, items]) => {
+    items.forEach(([base, unit]) => {
+      BRANDS.slice(0, 4).forEach(brand => {
+        CATALOG.push({ id: 'SKU-' + String(_sku++).padStart(4,'0'), name: brand + ' ' + base, unit, cat });
+      });
+    });
+  });
+
+  function goStep(n) {
+    document.getElementById('s'+currentStep).style.display = 'none';
+    updateStepIndicator(n);
+    currentStep = n;
+    document.getElementById('s'+n).style.display = 'block';
+    window.scrollTo(0, 0);
+  }
+
+  function updateStepIndicator(to) {
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('step-ind-'+i);
+      const numEl = el.querySelector('.step-num');
+      el.classList.remove('active', 'done');
+      if (i < to) {
+        el.classList.add('done');
+        numEl.innerHTML = '<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+      } else if (i === to) {
+        el.classList.add('active');
+        numEl.textContent = i;
+      } else {
+        numEl.textContent = i;
+      }
+    }
+  }
+
+  function selectSource(type) {
+    sourceType = type;
+    ['po','dispatch','vendor'].forEach(t => {
+      document.getElementById('src-'+t).className = 'source-card' + (t === type ? ' selected-'+t : '');
+    });
+    document.getElementById('refPO').style.display = type === 'po' ? '' : 'none';
+    document.getElementById('refDispatch').style.display = type === 'dispatch' ? '' : 'none';
+    document.getElementById('refVendor').style.display = type === 'vendor' ? '' : 'none';
+    const titles = { po: 'Purchase Order Reference', dispatch: 'Dispatch Reference', vendor: 'Vendor Information' };
+    document.getElementById('refCardTitle').textContent = titles[type];
+  }
+
+  function setAddMode(mode) {
+    addMode = mode;
+    document.getElementById('modeSearchTab').classList.toggle('active', mode === 'search');
+    document.getElementById('modeSearch').style.display = mode === 'search' ? '' : 'none';
+  }
+
+  function onAcInput(val) {
+    const drop = document.getElementById('acDropdown');
+    if (!val.trim()) { drop.classList.remove('open'); return; }
+    const q = val.toLowerCase();
+    const results = CATALOG.filter(i => i.name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q));
+    if (!results.length) { drop.classList.remove('open'); return; }
+    drop.innerHTML = results.map(i => `
+      <div class="ac-item" onclick="addReceiveItem('${i.id}','${i.name}','${i.unit}')">
+        <div><div class="ac-item-name">${i.name}</div><div class="ac-item-sku">${i.id}</div></div>
+        <div style="font-size:12px;color:var(--gray-500)">${i.unit}</div>
+      </div>`).join('');
+    drop.classList.add('open');
+  }
+
+  function addReceiveItem(id, name, unit) {
+    document.getElementById('acDropdown').classList.remove('open');
+    document.getElementById('acInput').value = '';
+    addItemBlock(id, name, unit);
+  }
+
+  const ITEMS_PER_PAGE = 20;
+  let catModalCat = Object.keys(CATALOG_SEED)[0];
+  let catModalPage = 1;
+  let catModalFilter = '';
+
+  function openCatModal() {
+    catModalFilter = '';
+    catModalPage = 1;
+    document.getElementById('catSearchInput').value = '';
+    renderCatSidebar();
+    renderCatModalItems();
+    document.getElementById('catModalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCatModal() {
+    document.getElementById('catModalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderCatSidebar() {
+    const cats = Object.keys(CATALOG_SEED);
+    document.getElementById('catSidebarList').innerHTML = cats.map(cat => {
+      const count = CATALOG.filter(i => i.cat === cat).length;
+      return `<div class="cat-sidebar-item ${cat === catModalCat ? 'active' : ''}" onclick="setCatModalCat('${cat}')">
+        <span class="cat-sidebar-item-name">${cat}</span>
+        <span class="cat-count-badge">${count}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function setCatModalCat(cat) {
+    catModalCat = cat;
+    catModalPage = 1;
+    catModalFilter = '';
+    document.getElementById('catSearchInput').value = '';
+    renderCatSidebar();
+    renderCatModalItems();
+  }
+
+  function onCatSearch(val) {
+    catModalFilter = val.toLowerCase();
+    catModalPage = 1;
+    renderCatModalItems();
+  }
+
+  function getFilteredItems() {
+    return CATALOG.filter(i => i.cat === catModalCat &&
+      (i.name.toLowerCase().includes(catModalFilter) || i.id.toLowerCase().includes(catModalFilter)));
+  }
+
+  function renderCatModalItems() {
+    const items = getFilteredItems();
+    const totalPages = Math.max(1, Math.ceil(items.length / ITEMS_PER_PAGE));
+    catModalPage = Math.min(catModalPage, totalPages);
+    const start = (catModalPage - 1) * ITEMS_PER_PAGE;
+    const pageItems = items.slice(start, start + ITEMS_PER_PAGE);
+    const end = Math.min(start + ITEMS_PER_PAGE, items.length);
+
+    document.getElementById('catCountLabel').textContent =
+      items.length === 0 ? 'No items' : `Showing ${start + 1}–${end} of ${items.length}`;
+
+    document.getElementById('catItemsBody').innerHTML = pageItems.length === 0
+      ? `<tr><td colspan="4" style="padding:32px;text-align:center;color:var(--gray-400);">No items found</td></tr>`
+      : pageItems.map(i => {
+          const picked = pickedInCat.has(i.id);
+          return `<tr class="${picked ? 'row-picked' : ''}" onclick="toggleModalItem('${i.id}')">
+            <td><div class="cat-row-check">${picked ? '<svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' : ''}</div></td>
+            <td style="font-family:monospace;font-size:12px;color:var(--gray-400)">${i.id}</td>
+            <td style="font-weight:500;">${i.name}</td>
+            <td style="font-size:12.5px;color:var(--gray-500);">${i.unit}</td>
+          </tr>`;
+        }).join('');
+
+    document.getElementById('catPageInfo').textContent = `Page ${catModalPage} of ${totalPages}`;
+    const pageBtns = document.getElementById('catPageBtns');
+    if (totalPages <= 1) { pageBtns.innerHTML = ''; updateCatFooter(); return; }
+    let html = `<button class="cat-page-btn" onclick="setCatPage(${catModalPage-1})" ${catModalPage===1?'disabled':''}>‹</button>`;
+    const range = getPageRange(catModalPage, totalPages);
+    range.forEach(p => {
+      if (p === '…') html += `<button class="cat-page-btn" disabled style="border:none;background:none;color:var(--gray-400);">…</button>`;
+      else html += `<button class="cat-page-btn ${p===catModalPage?'active':''}" onclick="setCatPage(${p})">${p}</button>`;
+    });
+    html += `<button class="cat-page-btn" onclick="setCatPage(${catModalPage+1})" ${catModalPage===totalPages?'disabled':''}>›</button>`;
+    pageBtns.innerHTML = html;
+
+    updateCatFooter();
+  }
+
+  function getPageRange(current, total) {
+    if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+    if (current <= 4) return [1,2,3,4,5,'…',total];
+    if (current >= total - 3) return [1,'…',total-4,total-3,total-2,total-1,total];
+    return [1,'…',current-1,current,current+1,'…',total];
+  }
+
+  function setCatPage(p) {
+    const items = getFilteredItems();
+    const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+    catModalPage = Math.max(1, Math.min(p, totalPages));
+    renderCatModalItems();
+  }
+
+  function toggleModalItem(id) {
+    if (pickedInCat.has(id)) pickedInCat.delete(id);
+    else pickedInCat.add(id);
+    renderCatModalItems();
+  }
+
+  function selectPageItems() {
+    const items = getFilteredItems();
+    const start = (catModalPage - 1) * ITEMS_PER_PAGE;
+    items.slice(start, start + ITEMS_PER_PAGE).forEach(i => pickedInCat.add(i.id));
+    renderCatModalItems();
+  }
+
+  function clearAllPicked() {
+    pickedInCat.clear();
+    renderCatModalItems();
+  }
+
+  function updateCatFooter() {
+    const n = pickedInCat.size;
+    document.getElementById('catSelCount').textContent = n;
+    const btn = document.getElementById('catFooterAdd');
+    btn.disabled = n === 0;
+    btn.textContent = n > 0 ? `Add ${n} Item${n>1?'s':''}` : 'Add Items';
+  }
+
+  function addModalSelected() {
+    pickedInCat.forEach(id => {
+      const item = CATALOG.find(i => i.id === id);
+      if (item) addItemBlock(item.id, item.name, item.unit);
+    });
+    pickedInCat.clear();
+    closeCatModal();
+  }
+
+  document.getElementById('catModalOverlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeCatModal();
+  });
+
+  function addItemBlock(id, name, unit) {
+    if (document.querySelector(`[data-id="${id}"]`)) return;
+    const block = document.createElement('div');
+    block.className = 'receive-item-block';
+    block.setAttribute('data-id', id);
+    block.innerHTML = `
+      <div class="receive-item-header">
+        <div>
+          <span class="receive-item-name">${name}</span>
+          <span class="receive-item-sku">${id}</span>
+          <span class="receive-item-unit" style="margin-left:8px;">/ ${unit}</span>
+        </div>
+        <button class="remove-item-btn" onclick="removeReceiveItem(this)">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Remove
+        </button>
+      </div>
+      <div class="qty-lines" id="lines-${id}">
+        ${makeQtyLine('received')}
+      </div>
+      <div style="padding:4px 14px 10px;">
+        <button class="add-line-btn" onclick="addQtyLine(this,'${id}')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add line (Lost / Rejected)
+        </button>
+      </div>`;
+    document.getElementById('receiveItems').appendChild(block);
+  }
+
+  function makeQtyLine(type) {
+    const dotClass = { received: 'dot-received', lost: 'dot-lost', rejected: 'dot-rejected' };
+    const label = type.charAt(0).toUpperCase() + type.slice(1);
+    return `<div class="qty-line">
+      <div class="qty-line-type"><span class="dot ${dotClass[type]}"></span> ${label}</div>
+      <input type="number" min="0" value="0" placeholder="0" />
+      <button class="del-line-btn" onclick="removeQtyLine(this)" title="Remove line">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
+  }
+
+  function addQtyLine(btn, itemId) {
+    const linesContainer = document.getElementById('lines-'+itemId);
+    const existing = Array.from(linesContainer.querySelectorAll('.qty-line-type')).map(el => el.textContent.trim().toLowerCase());
+    const options = ['received','lost','rejected'].filter(t => !existing.includes(t));
+    if (!options.length) { alert('All quantity types already added for this item.'); return; }
+    linesContainer.insertAdjacentHTML('beforeend', makeQtyLine(options[0]));
+  }
+
+  function removeQtyLine(btn) {
+    const line = btn.closest('.qty-line');
+    const container = line.parentElement;
+    if (container.querySelectorAll('.qty-line').length <= 1) {
+      alert('Each item must have at least one quantity line.');
+      return;
+    }
+    line.remove();
+  }
+
+  function removeReceiveItem(btn) {
+    btn.closest('.receive-item-block').remove();
+  }
+
+  function saveDraft() {
+    alert('Draft saved! You can return to this receive from the list.');
+    window.location.href = 'receive-list.html';
+  }
+
+  function submitCount() {
+    window.location.href = 'receive-detail.html';
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.autocomplete-wrap')) {
+      const drop = document.getElementById('acDropdown');
+      if (drop) drop.classList.remove('open');
+    }
+  });
+
+  function setRole(role) {
+    localStorage.setItem('erpInvRole', role);
+    document.getElementById('roleSelect').value = role;
+    applyNavUser(role);
+    populateReceivingFacility(role);
+  }
+
+  function applyNavUser(role) {
+    const cfg = ROLE_CONFIG[role];
+    document.getElementById('navUserName').textContent = cfg.name;
+    document.getElementById('navUserRole').textContent = cfg.roleLabel;
+    const av = document.getElementById('navAvatar');
+    av.textContent = cfg.avatar;
+    av.style.background = cfg.bg;
+    av.style.color = cfg.color;
+    av.style.borderColor = cfg.border;
+  }
+
+  function populateReceivingFacility(role) {
+    const facilities = (ROLE_CONFIG[role] || {}).receivingFacilities || [];
+    const sel = document.getElementById('receivingFacility');
+    if (!sel) return;
+    if (facilities.length === 1) {
+      sel.innerHTML = `<option value="${facilities[0]}">${facilities[0]}</option>`;
+      sel.disabled = true;
+      document.getElementById('receivingFacilityHint').textContent = 'Auto-selected based on your assignment';
+    } else {
+      sel.disabled = false;
+      sel.innerHTML = '<option value="">— select facility —</option>'
+        + facilities.map(f => `<option>${f}</option>`).join('');
+      document.getElementById('receivingFacilityHint').textContent = 'Only your assigned facilities are shown';
+    }
+  }
+
+  const savedRole = localStorage.getItem('erpInvRole') || 'receiver';
+  document.getElementById('roleSelect').value = savedRole;
+  applyNavUser(savedRole);
+  populateReceivingFacility(savedRole);
+</script>
+</body>
+</html>

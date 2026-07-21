@@ -1,0 +1,209 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic [ref=e9]: Company
+      - combobox [ref=e10] [cursor=pointer]:
+        - option "Puregold Price Club, Inc." [selected]
+        - option "Ayagold Retailers Inc."
+      - generic [ref=e11]: Branch
+      - combobox [ref=e12] [cursor=pointer]:
+        - option "All Branches" [selected]
+        - option "0102 · Ortigas Ext."
+        - option "0107 · Araneta Cubao"
+        - option "0233 · Cebu (Mandaue)"
+    - generic [ref=e13]:
+      - generic "Tasks" [ref=e14] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e19] [cursor=pointer]: "3"
+      - generic [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: RC
+        - generic [ref=e26]:
+          - generic [ref=e27]: Rica Cruz
+          - generic [ref=e28]: Merchandise Admin
+  - navigation [ref=e29]:
+    - generic [ref=e859]:
+      - heading "Overview" [level=4] [ref=e860]
+      - generic [ref=e861] [cursor=pointer]: Dashboard
+    - generic [ref=e865]:
+      - heading "Master Data" [level=4] [ref=e866]
+      - generic [ref=e867] [cursor=pointer]:
+        - generic [ref=e870]: Company Maintenance
+        - generic [ref=e871]: "1"
+      - generic [ref=e872] [cursor=pointer]:
+        - generic [ref=e875]: Store Branch Maintenance
+        - generic [ref=e876]: "2"
+      - generic [ref=e877] [cursor=pointer]:
+        - generic [ref=e880]: Vendor Maintenance
+        - generic [ref=e881]: "3"
+      - generic [ref=e882] [cursor=pointer]:
+        - generic [ref=e885]: Vendor Allowance
+        - generic [ref=e886]: "4"
+      - generic [ref=e887] [cursor=pointer]:
+        - generic [ref=e890]: Item Hierarchy
+        - generic [ref=e891]: "5"
+      - generic [ref=e892] [cursor=pointer]:
+        - generic [ref=e895]: Item Maintenance
+        - generic [ref=e896]: "6"
+    - generic [ref=e897]:
+      - heading "Inventory & Pricing" [level=4] [ref=e898]
+      - generic [ref=e899] [cursor=pointer]:
+        - generic [ref=e902]: Product Inventory
+        - generic [ref=e903]: "7"
+      - generic [ref=e904] [cursor=pointer]:
+        - generic [ref=e907]: Price Change Mgmt
+        - generic [ref=e908]: "8"
+      - generic [ref=e909] [cursor=pointer]:
+        - generic [ref=e912]: Cost Change Mgmt
+        - generic [ref=e913]: "9"
+    - generic [ref=e914]:
+      - heading "Procurement" [level=4] [ref=e915]
+      - generic [ref=e916] [cursor=pointer]:
+        - generic [ref=e919]: Purchase Order
+        - generic [ref=e920]: "10"
+      - generic [ref=e921] [cursor=pointer]:
+        - generic [ref=e924]: Auto Replenishment
+        - generic [ref=e925]: "11"
+      - generic [ref=e926] [cursor=pointer]:
+        - generic [ref=e929]: PO Receiving
+        - generic [ref=e930]: "12"
+    - generic [ref=e931]:
+      - heading "Store Operations" [level=4] [ref=e932]
+      - generic [ref=e933] [cursor=pointer]:
+        - generic [ref=e936]: Store-to-Store Transfer
+        - generic [ref=e937]: "13"
+      - generic [ref=e938] [cursor=pointer]:
+        - generic [ref=e941]: Return To Vendor
+        - generic [ref=e942]: "14"
+      - generic [ref=e943] [cursor=pointer]:
+        - generic [ref=e946]: Inventory Adjustment
+        - generic [ref=e947]: "15"
+      - generic [ref=e948] [cursor=pointer]:
+        - generic [ref=e951]: Make-up / Break-up
+        - generic [ref=e952]: "16"
+    - generic [ref=e953]:
+      - heading "Sales" [level=4] [ref=e954]
+      - generic [ref=e955] [cursor=pointer]:
+        - generic [ref=e958]: POS Sales
+        - generic [ref=e959]: "17"
+    - generic [ref=e960]:
+      - heading "User Management" [level=4] [ref=e961]
+      - generic [ref=e962] [cursor=pointer]: Users
+      - generic [ref=e966] [cursor=pointer]: Roles
+      - generic [ref=e970] [cursor=pointer]: Branch Access
+      - generic [ref=e974] [cursor=pointer]: Audit Log
+  - main [ref=e149]:
+    - generic [ref=e978]: iConnect ERP › Module 11 › Auto Replenishment
+    - generic [ref=e979]:
+      - generic [ref=e980]:
+        - heading "Auto Replenishment" [level=1] [ref=e981]
+        - paragraph [ref=e982]: Demand-driven PO generation. Regular PO per vendor/store (DTS or Cross-dock) and consolidated Mother-PO for one vendor across many stores.
+      - generic [ref=e983]:
+        - button "Run Parameters" [ref=e984] [cursor=pointer]
+        - button "Generate Proposals" [ref=e985] [cursor=pointer]
+    - generic [ref=e988]:
+      - generic [ref=e989]:
+        - generic [ref=e990]: Proposals Pending
+        - generic [ref=e991]: "86"
+      - generic [ref=e992]:
+        - generic [ref=e993]: Auto-Approved
+        - generic [ref=e994]: "142"
+        - generic [ref=e995]: within tolerance
+      - generic [ref=e996]:
+        - generic [ref=e997]: Below ROP (SKU/Branch)
+        - generic [ref=e998]: 1,204
+      - generic [ref=e999]:
+        - generic [ref=e1000]: Next Run
+        - generic [ref=e1001]: 18:00 today
+    - generic [ref=e1002]:
+      - generic [ref=e1003]:
+        - generic [ref=e1004] [cursor=pointer]: Regular PO (per Vendor / Store)
+        - generic [ref=e1005] [cursor=pointer]: Mother-PO (1 Vendor / Multi-Store)
+        - generic [ref=e1006] [cursor=pointer]: Vendor Schedule & Params
+      - generic [ref=e1007]:
+        - generic [ref=e1008]:
+          - generic [ref=e1009]:
+            - generic [ref=e1010]: Vendor
+            - combobox [ref=e1011]:
+              - option "All Vendors" [selected]
+              - option "Nestlé"
+              - option "Alaska"
+          - generic [ref=e1012]:
+            - generic [ref=e1013]: Branch
+            - combobox [ref=e1014]:
+              - option "All Branches" [selected]
+              - option "0102"
+              - option "0107"
+          - generic [ref=e1015]:
+            - generic [ref=e1016]: Delivery
+            - combobox [ref=e1017]:
+              - option "All" [selected]
+              - option "Direct-To-Store (DTS)"
+              - option "Cross-dock"
+          - button "Apply" [ref=e1018] [cursor=pointer]
+        - generic [ref=e1019]:
+          - text: 12 proposals selected.
+          - button "Convert to PO" [ref=e1020] [cursor=pointer]
+        - table [ref=e1022]:
+          - rowgroup [ref=e1023]:
+            - row [ref=e1024]:
+              - columnheader [ref=e1025]
+              - columnheader "Proposal" [ref=e1026]
+              - columnheader "Vendor" [ref=e1027]
+              - columnheader "Branch" [ref=e1028]
+              - columnheader "Delivery" [ref=e1029]
+              - columnheader "SKUs" [ref=e1030]
+              - columnheader "Sugg. Qty (cs)" [ref=e1031]
+              - columnheader "Value" [ref=e1032]
+          - rowgroup [ref=e1033]:
+            - row [ref=e1034]:
+              - cell [ref=e1035]:
+                - checkbox [ref=e1036] [cursor=pointer]
+              - cell "RP-70112" [ref=e1037]
+              - cell "Nestlé PH" [ref=e1038]
+              - cell "0102 Ortigas" [ref=e1039]
+              - cell "DTS" [ref=e1040]
+              - cell "38" [ref=e1042]
+              - cell "96" [ref=e1043]
+              - cell "₱ 420,900" [ref=e1044]
+            - row [ref=e1045]:
+              - cell [ref=e1046]:
+                - checkbox [ref=e1047] [cursor=pointer]
+              - cell "RP-70113" [ref=e1048]
+              - cell "Alaska Milk" [ref=e1049]
+              - cell "0102 Ortigas" [ref=e1050]
+              - cell "Cross-dock" [ref=e1051]
+              - cell "12" [ref=e1053]
+              - cell "44" [ref=e1054]
+              - cell "₱ 184,200" [ref=e1055]
+            - row [ref=e1056]:
+              - cell [ref=e1057]:
+                - checkbox [ref=e1058] [cursor=pointer]
+              - cell "RP-70118" [ref=e1059]
+              - cell "Universal Robina" [ref=e1060]
+              - cell "0233 Cebu" [ref=e1061]
+              - cell "DTS" [ref=e1062]
+              - cell "54" [ref=e1064]
+              - cell "120" [ref=e1065]
+              - cell "₱ 302,140" [ref=e1066]
+            - row [ref=e1067]:
+              - cell [ref=e1068]:
+                - checkbox [ref=e1069] [cursor=pointer]
+              - cell "RP-70121" [ref=e1070]
+              - cell "San Miguel" [ref=e1071]
+              - cell "0311 Davao" [ref=e1072]
+              - cell "DTS" [ref=e1073]
+              - cell "22" [ref=e1075]
+              - cell "60" [ref=e1076]
+              - cell "₱ 218,300" [ref=e1077]
+        - generic [ref=e1078]:
+          - generic [ref=e1079]: Showing 4 of 86 records
+          - generic [ref=e1080]:
+            - button "‹ Prev" [ref=e1081] [cursor=pointer]
+            - button "1" [ref=e1082] [cursor=pointer]
+            - button "2" [ref=e1083] [cursor=pointer]
+            - button "3" [ref=e1084] [cursor=pointer]
+            - button "Next ›" [ref=e1085] [cursor=pointer]

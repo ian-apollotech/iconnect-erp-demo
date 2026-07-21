@@ -1,0 +1,158 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic "Tasks" [ref=e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e14] [cursor=pointer]: "3"
+      - generic [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: RC
+        - generic [ref=e21]:
+          - generic [ref=e22]: Rica Cruz
+          - generic [ref=e23]: Merchandise Admin
+  - navigation [ref=e24]:
+    - generic [ref=e3783]:
+      - heading "Overview" [level=4] [ref=e3784]
+      - generic [ref=e3785] [cursor=pointer]: Dashboard
+    - generic [ref=e3789]:
+      - heading "Master Data" [level=4] [ref=e3790]
+      - generic [ref=e3791] [cursor=pointer]:
+        - generic [ref=e3794]: Company Maintenance
+        - generic [ref=e3795]: "1"
+      - generic [ref=e3796]:
+        - heading "Store Branch Maintenance" [level=5] [ref=e3797]
+        - generic [ref=e3798] [cursor=pointer]:
+          - generic [ref=e3801]: Branch
+          - generic [ref=e3802]: "2"
+      - generic [ref=e3803]:
+        - heading "Store Grouping" [level=5] [ref=e3804]
+        - generic [ref=e3805] [cursor=pointer]: Price Zone
+        - generic [ref=e3809] [cursor=pointer]: Cost Zone
+        - generic [ref=e3813] [cursor=pointer]: Store Cluster
+        - generic [ref=e3817] [cursor=pointer]: Assortment Plan
+        - generic [ref=e3821] [cursor=pointer]: Replenishment Policy
+      - generic [ref=e3825]:
+        - heading "Vendor Maintenance" [level=5] [ref=e3826]
+        - generic [ref=e3827] [cursor=pointer]:
+          - generic [ref=e3830]: Vendor
+          - generic [ref=e3831]: "3"
+        - generic [ref=e3832] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=e3836] [cursor=pointer]: Vendor Catalog
+        - generic [ref=e3840] [cursor=pointer]:
+          - generic [ref=e3843]: Vendor Allowance
+          - generic [ref=e3844]: "4"
+      - generic [ref=e3845]:
+        - heading "Product Maintenance" [level=5] [ref=e3846]
+        - generic [ref=e3847] [cursor=pointer]:
+          - generic [ref=e3850]: Category Hierarchy
+          - generic [ref=e3851]: "5"
+        - generic [ref=e3852] [cursor=pointer]:
+          - generic [ref=e3855]: Product
+          - generic [ref=e3856]: "6"
+    - generic [ref=e3857]:
+      - heading "Inventory & Pricing" [level=4] [ref=e3858]
+      - generic [ref=e3859] [cursor=pointer]:
+        - generic [ref=e3862]: Product Inventory
+        - generic [ref=e3863]: "7"
+      - generic [ref=e3864] [cursor=pointer]:
+        - generic [ref=e3867]: Price Change Mgmt
+        - generic [ref=e3868]: "8"
+      - generic [ref=e3869] [cursor=pointer]:
+        - generic [ref=e3872]: Cost Change Mgmt
+        - generic [ref=e3873]: "9"
+    - generic [ref=e3874]:
+      - heading "Procurement" [level=4] [ref=e3875]
+      - generic [ref=e3876] [cursor=pointer]:
+        - generic [ref=e3879]: Purchase Order
+        - generic [ref=e3880]: "10"
+      - generic [ref=e3881] [cursor=pointer]:
+        - generic [ref=e3884]: Auto Replenishment
+        - generic [ref=e3885]: "11"
+      - generic [ref=e3886] [cursor=pointer]:
+        - generic [ref=e3889]: PO Receiving
+        - generic [ref=e3890]: "12"
+    - generic [ref=e3891]:
+      - heading "Store Operations" [level=4] [ref=e3892]
+      - generic [ref=e3893] [cursor=pointer]:
+        - generic [ref=e3896]: Store-to-Store Transfer
+        - generic [ref=e3897]: "13"
+      - generic [ref=e3898] [cursor=pointer]:
+        - generic [ref=e3901]: Return To Vendor
+        - generic [ref=e3902]: "14"
+      - generic [ref=e3903] [cursor=pointer]:
+        - generic [ref=e3906]: Inventory Adjustment
+        - generic [ref=e3907]: "15"
+      - generic [ref=e3908] [cursor=pointer]:
+        - generic [ref=e3911]: Make-up / Break-up
+        - generic [ref=e3912]: "16"
+    - generic [ref=e3913]:
+      - heading "Sales" [level=4] [ref=e3914]
+      - generic [ref=e3915] [cursor=pointer]:
+        - generic [ref=e3918]: POS Sales
+        - generic [ref=e3919]: "17"
+    - generic [ref=e3920]:
+      - heading "User Management" [level=4] [ref=e3921]
+      - generic [ref=e3922] [cursor=pointer]: Users
+      - generic [ref=e3926] [cursor=pointer]: Roles
+      - generic [ref=e3930] [cursor=pointer]: Branch Access
+      - generic [ref=e3934] [cursor=pointer]: Audit Log
+  - main [ref=e180]:
+    - generic [ref=e3938]: iConnect ERP › New Assortment Plan
+    - generic [ref=e3940]:
+      - heading "New Assortment Plan" [level=1] [ref=e3941]
+      - paragraph [ref=e3942]: Set identity & scope, effectivity, choose the SKU range, then review and save.
+    - generic [ref=e3943]:
+      - generic [ref=e3944]:
+        - heading "New Assortment Plan" [level=3] [ref=e3945]
+        - generic [ref=e3946]: New (copy of AP-0002) · Draft · duplicated from AP-0002
+      - generic [ref=e3948]:
+        - generic [ref=e3949]:
+          - generic [ref=e3950]: "1"
+          - text: Identity & Scope
+        - generic [ref=e3951]:
+          - generic [ref=e3952]: "2"
+          - text: Effectivity
+        - generic [ref=e3953]:
+          - generic [ref=e3954]: "3"
+          - text: SKU List
+        - generic [ref=e3955]:
+          - generic [ref=e3956]: "4"
+          - text: Review
+      - generic [ref=e3958]:
+        - generic [ref=e3959]:
+          - generic [ref=e3960]: Plan Name *
+          - textbox [ref=e3961]: Convenience Minimart Range (copy)
+        - generic [ref=e3962]:
+          - generic [ref=e3963]: Company *
+          - combobox [ref=e3964]:
+            - option "Puregold Price Club, Inc." [selected]
+            - option "Ayagold Retailers Inc. (Merkado)"
+        - generic [ref=e3965]:
+          - generic [ref=e3966]: Assignment Level *
+          - combobox [ref=e3967]:
+            - option "Company (all stores)"
+            - option "Store Cluster" [selected]
+            - option "Store"
+        - generic [ref=e3968]:
+          - generic [ref=e3969]: Target
+          - combobox [ref=e3970]:
+            - option "CL-URB-L · Urban Large"
+            - option "CL-URB-S · Urban Small"
+            - option "CL-CONV · Convenience" [selected]
+            - option "CL-PROV · Provincial Mixed"
+        - generic [ref=e3971]:
+          - generic [ref=e3972]: Assortment Type *
+          - combobox [ref=e3973]:
+            - option "Regular" [selected]
+            - option "Seasonal"
+            - option "Promotional"
+            - option "New-Store"
+        - generic [ref=e3974]:
+          - generic [ref=e3975]: Description
+          - textbox [ref=e3976]
+      - generic [ref=e3977]:
+        - button "Cancel" [ref=e3979] [cursor=pointer]
+        - button "Next ›" [ref=e3981] [cursor=pointer]

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iConnect ERP – Receives</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red:        #DC2626;
+      --red-dark:   #B91C1C;
+      --red-light:  #FEF2F2;
+      --red-mid:    #FECACA;
+      --green:      #059669;
+      --green-bg:   #ECFDF5;
+      --blue:       #2563EB;
+      --blue-bg:    #EFF6FF;
+      --amber:      #D97706;
+      --amber-bg:   #FFFBEB;
+      --purple:     #7C3AED;
+      --purple-bg:  #F5F3FF;
+      --teal:       #0D9488;
+      --teal-bg:    #F0FDFA;
+      --gray-50:    #F8FAFC;
+      --gray-100:   #F1F5F9;
+      --gray-200:   #E2E8F0;
+      --gray-400:   #94A3B8;
+      --gray-500:   #64748B;
+      --gray-700:   #334155;
+      --gray-900:   #111827;
+      --sidebar-w:  220px;
+      --nav-h:      56px;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; }
+
+    .topnav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); background: #fff; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; padding: 0 24px; z-index: 100; gap: 16px; }
+    .topnav .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; color: var(--gray-900); text-decoration: none; width: var(--sidebar-w); }
+    .logo-icon { width: 30px; height: 30px; background: var(--red); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 800; }
+    .topnav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+    .role-select-wrap { position: relative; display: flex; align-items: center; }
+    .role-select { appearance: none; -webkit-appearance: none; background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 20px; padding: 7px 32px 7px 14px; font-size: 12.5px; font-weight: 600; color: var(--gray-700); cursor: pointer; outline: none; transition: border-color .15s; }
+    .role-select:focus { border-color: var(--red); background: #fff; }
+    .role-select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--gray-400); pointer-events: none; }
+    .nav-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--red-light); border: 2px solid var(--red-mid); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--red); cursor: pointer; }
+    .nav-user { font-size: 13px; color: var(--gray-700); }
+    .nav-user span { font-weight: 600; display: block; }
+    .nav-user small { color: var(--gray-500); font-size: 11px; }
+
+    .sidebar { position: fixed; top: var(--nav-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--gray-200); padding: 20px 0; overflow-y: auto; }
+    .sidebar-section { padding: 0 12px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-400); margin-top: 12px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; font-size: 13.5px; color: var(--gray-700); text-decoration: none; border-radius: 6px; margin: 1px 8px; cursor: pointer; }
+    .nav-item:hover { background: var(--gray-100); }
+    .nav-item.active { background: var(--red-light); color: var(--red); font-weight: 600; }
+    .nav-item svg { flex-shrink: 0; }
+    .sidebar-pending { margin: 8px 12px; padding: 10px 12px; background: var(--amber-bg); border: 1px solid #FDE68A; border-radius: 8px; display: none; }
+    .sidebar-pending.show { display: block; }
+    .sidebar-pending-label { font-size: 12px; font-weight: 700; color: var(--amber); }
+    .sidebar-pending-count { font-size: 22px; font-weight: 800; color: var(--amber); margin-top: 2px; }
+    .sidebar-pending-sub { font-size: 11px; color: #92400E; margin-top: 1px; }
+
+    .main { margin-left: var(--sidebar-w); margin-top: var(--nav-h); padding: 32px; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .page-title { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; transition: background .15s; }
+    .btn-primary { background: var(--red); color: #fff; }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-outline { background: #fff; color: var(--gray-700); border: 1px solid var(--gray-200); }
+    .btn-outline:hover { background: var(--gray-50); }
+
+    .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 20px; }
+    .stat-label { font-size: 12px; color: var(--gray-500); font-weight: 500; margin-bottom: 6px; }
+    .stat-value { font-size: 26px; font-weight: 700; color: var(--gray-900); }
+    .stat-sub { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+
+    .filter-bar { display: flex; align-items: center; gap: 4px; margin-bottom: 16px; background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; padding: 4px; width: fit-content; flex-wrap: wrap; }
+    .filter-tab { padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--gray-500); border: none; background: none; }
+    .filter-tab.active { background: var(--red); color: #fff; font-weight: 600; }
+    .filter-tab:hover:not(.active) { background: var(--gray-100); color: var(--gray-700); }
+
+    .card { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+    .card-header { padding: 16px 20px; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 14px; font-weight: 600; color: var(--gray-700); }
+    .search-box { display: flex; align-items: center; gap: 8px; border: 1px solid var(--gray-200); border-radius: 7px; padding: 6px 12px; font-size: 13px; color: var(--gray-500); background: var(--gray-50); }
+    .search-box input { border: none; background: none; outline: none; font-size: 13px; color: var(--gray-700); width: 200px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-500); padding: 11px 16px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); text-align: left; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--gray-100); transition: background .1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--red-light); }
+    td { padding: 13px 16px; font-size: 13.5px; color: var(--gray-700); vertical-align: middle; }
+    td.mono { font-family: monospace; font-size: 13px; color: var(--red); font-weight: 600; }
+
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .7; }
+    .badge-draft      { background: #F1F5F9; color: #334155; }
+    .badge-counting   { background: var(--blue-bg); color: var(--blue); }
+    .badge-resolution { background: var(--amber-bg); color: #B45309; }
+    .badge-confirmed  { background: var(--green-bg); color: var(--green); }
+    .badge-cancelled  { background: #F8FAFC; color: #64748B; }
+
+    .source-chip { font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 5px; display: inline-block; }
+    .source-po      { background: var(--blue-bg); color: var(--blue); }
+    .source-dispatch { background: var(--purple-bg); color: var(--purple); }
+    .source-vendor  { background: var(--teal-bg); color: var(--teal); }
+
+    .counters-cell { display: flex; align-items: center; gap: 4px; }
+    .counter-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .counter-dot.agreed { background: var(--green); }
+    .counter-dot.pending { background: var(--gray-300); border: 1px solid var(--gray-400); }
+    .counter-dot.conflict { background: var(--amber); }
+    .counters-label { font-size: 12px; color: var(--gray-500); }
+
+    .action-btn { padding: 5px 12px; border-radius: 5px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid var(--gray-200); background: #fff; color: var(--gray-700); text-decoration: none; display: inline-block; transition: background .12s; }
+    .action-btn:hover { background: var(--gray-100); }
+    .action-btn.primary { background: var(--red-light); color: var(--red); border-color: var(--red-mid); }
+    .action-btn.primary:hover { background: var(--red-mid); }
+    .action-btn.amber { background: var(--amber-bg); color: var(--amber); border-color: #FDE68A; }
+    .action-btn.amber:hover { background: #FDE68A; }
+  </style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a class="logo" href="index.html">
+    <div class="logo-icon">iC</div>
+    iConnect ERP
+  </a>
+  <div class="topnav-right">
+    <div class="role-select-wrap">
+      <select class="role-select" id="roleSelect" onchange="setRole(this.value)">
+        <option value="dispatcher">Dispatcher</option>
+        <option value="dispatch-approver">Dispatch Approver</option>
+        <option value="receiver">Receiver</option>
+        <option value="resolver">Resolver</option>
+      </select>
+    </div>
+    <div class="nav-user" id="navUser">
+      <span id="navUserName">Ana Cruz</span>
+      <small id="navUserRole">Receiver · Global Retail Inc.</small>
+    </div>
+    <div class="nav-avatar" id="navAvatar">AC</div>
+  </div>
+</nav>
+
+<aside class="sidebar">
+  <div class="sidebar-section">Main</div>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </a>
+  <a class="nav-item" href="index.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    Purchase Orders
+  </a>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+    Vendors
+  </a>
+  <div class="sidebar-section">Inventory Movement</div>
+  <a class="nav-item" href="dispatch-list.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    Dispatch
+  </a>
+  <a class="nav-item active" href="receive-list.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Receive
+  </a>
+
+  <div class="sidebar-pending" id="sidebarPending">
+    <div class="sidebar-pending-label">Needs Resolution</div>
+    <div class="sidebar-pending-count">3</div>
+    <div class="sidebar-pending-sub">Receives with discrepancies</div>
+  </div>
+
+  <div class="sidebar-section">Reports</div>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Analytics
+  </a>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Reports
+  </a>
+  <div class="sidebar-section">Account</div>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    Settings
+  </a>
+</aside>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Receives</div>
+      <div style="font-size:13px;color:var(--gray-500);margin-top:3px;" id="pageSubtitle">Record and verify inbound inventory</div>
+    </div>
+    <a href="receive-create.html" class="btn btn-primary" id="newReceiveBtn">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Receive
+    </a>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Receives</div>
+      <div class="stat-value">31</div>
+      <div class="stat-sub">This month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Counting</div>
+      <div class="stat-value" style="color:var(--blue)">5</div>
+      <div class="stat-sub">In progress</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Needs Resolution</div>
+      <div class="stat-value" style="color:var(--amber)">3</div>
+      <div class="stat-sub">Count discrepancies</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Confirmed</div>
+      <div class="stat-value" style="color:var(--green)">21</div>
+      <div class="stat-sub">Inventory updated</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Draft</div>
+      <div class="stat-value">2</div>
+      <div class="stat-sub">Not yet submitted</div>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-tab active" onclick="filterByStatus('all', this)">All (31)</button>
+    <button class="filter-tab" onclick="filterByStatus('draft', this)">Draft (2)</button>
+    <button class="filter-tab" onclick="filterByStatus('counting', this)">Counting (5)</button>
+    <button class="filter-tab" onclick="filterByStatus('resolution', this)">Needs Resolution (3)</button>
+    <button class="filter-tab" onclick="filterByStatus('confirmed', this)">Confirmed (21)</button>
+    <button class="filter-tab" onclick="filterByStatus('cancelled', this)">Cancelled (0)</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title" id="tableTitle">Receive List</div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <div class="search-box">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search receive number…" />
+        </div>
+        <button class="btn btn-outline" style="padding:7px 13px;font-size:13px;">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          Filter
+        </button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Receive #</th>
+          <th>Date</th>
+          <th>Source</th>
+          <th>Reference</th>
+          <th>Receiving Facility</th>
+          <th>Items</th>
+          <th>Counters</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="receiveTableBody">
+        <tr data-status="resolution">
+          <td class="mono">REC-2026-0031</td>
+          <td>Apr 10, 2026</td>
+          <td><span class="source-chip source-po">Purchase Order</span></td>
+          <td style="font-family:monospace;font-size:12px;color:var(--blue)">PO-2026-0044</td>
+          <td>
+            <div style="font-weight:500">BGC Branch</div>
+            <div style="font-size:11px;color:var(--gray-400)">Receiving Area</div>
+          </td>
+          <td>18 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot agreed"></span>
+              <span class="counter-dot conflict"></span>
+              <span class="counters-label">2/2 counted · 3 conflicts</span>
+            </div>
+          </td>
+          <td><span class="badge badge-resolution">Needs Resolution</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn amber">Resolve</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+        <tr data-status="counting">
+          <td class="mono">REC-2026-0030</td>
+          <td>Apr 9, 2026</td>
+          <td><span class="source-chip source-dispatch">Dispatch</span></td>
+          <td style="font-family:monospace;font-size:12px;color:var(--purple)">DIS-2026-0019</td>
+          <td>
+            <div style="font-weight:500">Pasig Store</div>
+            <div style="font-size:11px;color:var(--gray-400)">Receiving Area</div>
+          </td>
+          <td>11 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot agreed"></span>
+              <span class="counter-dot pending"></span>
+              <span class="counters-label">1/2 counted</span>
+            </div>
+          </td>
+          <td><span class="badge badge-counting">Counting</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-detail.html" class="action-btn primary">Count</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+        <tr data-status="counting">
+          <td class="mono">REC-2026-0029</td>
+          <td>Apr 9, 2026</td>
+          <td><span class="source-chip source-vendor">Direct Vendor</span></td>
+          <td style="font-size:12.5px;color:var(--gray-700)">FreshFarm Supplies Co.</td>
+          <td>
+            <div style="font-weight:500">Makati Warehouse</div>
+            <div style="font-size:11px;color:var(--gray-400)">Loading Bay</div>
+          </td>
+          <td>6 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot pending"></span>
+              <span class="counter-dot pending"></span>
+              <span class="counters-label">0/2 counted</span>
+            </div>
+          </td>
+          <td><span class="badge badge-counting">Counting</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-detail.html" class="action-btn primary">Count</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+        <tr data-status="confirmed">
+          <td class="mono">REC-2026-0028</td>
+          <td>Apr 8, 2026</td>
+          <td><span class="source-chip source-po">Purchase Order</span></td>
+          <td style="font-family:monospace;font-size:12px;color:var(--blue)">PO-2026-0046</td>
+          <td>
+            <div style="font-weight:500">Quezon City Depot</div>
+            <div style="font-size:11px;color:var(--gray-400)">Main Receiving</div>
+          </td>
+          <td>9 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot agreed"></span>
+              <span class="counter-dot agreed"></span>
+              <span class="counters-label">2/2 · All agreed</span>
+            </div>
+          </td>
+          <td><span class="badge badge-confirmed">Confirmed</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+        <tr data-status="confirmed">
+          <td class="mono">REC-2026-0027</td>
+          <td>Apr 7, 2026</td>
+          <td><span class="source-chip source-dispatch">Dispatch</span></td>
+          <td style="font-family:monospace;font-size:12px;color:var(--purple)">DIS-2026-0016</td>
+          <td>
+            <div style="font-weight:500">Alabang Branch</div>
+            <div style="font-size:11px;color:var(--gray-400)">Main Floor</div>
+          </td>
+          <td>5 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot agreed"></span>
+              <span class="counter-dot agreed"></span>
+              <span class="counters-label">2/2 · All agreed</span>
+            </div>
+          </td>
+          <td><span class="badge badge-confirmed">Confirmed</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+        <tr data-status="resolution">
+          <td class="mono">REC-2026-0026</td>
+          <td>Apr 6, 2026</td>
+          <td><span class="source-chip source-vendor">Direct Vendor</span></td>
+          <td style="font-size:12.5px;color:var(--gray-700)">Pacific Distributors</td>
+          <td>
+            <div style="font-weight:500">BGC Branch</div>
+            <div style="font-size:11px;color:var(--gray-400)">Receiving Area</div>
+          </td>
+          <td>7 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot agreed"></span>
+              <span class="counter-dot conflict"></span>
+              <span class="counters-label">2/2 counted · 1 conflict</span>
+            </div>
+          </td>
+          <td><span class="badge badge-resolution">Needs Resolution</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn amber">Resolve</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+        <tr data-status="draft">
+          <td class="mono">REC-2026-0025</td>
+          <td>Apr 5, 2026</td>
+          <td><span class="source-chip source-po">Purchase Order</span></td>
+          <td style="font-family:monospace;font-size:12px;color:var(--blue)">PO-2026-0043</td>
+          <td>
+            <div style="font-weight:500">Makati Warehouse</div>
+            <div style="font-size:11px;color:var(--gray-400)">Loading Bay</div>
+          </td>
+          <td>8 items</td>
+          <td>
+            <div class="counters-cell">
+              <span class="counter-dot pending"></span>
+              <span class="counter-dot pending"></span>
+              <span class="counters-label">Not started</span>
+            </div>
+          </td>
+          <td><span class="badge badge-draft">Draft</span></td>
+          <td>
+            <span class="receiver-only"><a href="receive-create.html" class="action-btn primary">Edit</a></span>
+            <span class="resolver-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+            <span class="readonly-only" style="display:none;"><a href="receive-detail.html" class="action-btn">View</a></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="padding:14px 20px;border-top:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:13px;color:var(--gray-500)" id="paginationInfo">Showing 7 of 31 receives</div>
+      <div style="display:flex;gap:6px;">
+        <button class="action-btn" style="padding:5px 10px;">← Prev</button>
+        <button class="action-btn" style="background:var(--red);color:#fff;border-color:var(--red);padding:5px 10px;">1</button>
+        <button class="action-btn" style="padding:5px 10px;">2</button>
+        <button class="action-btn" style="padding:5px 10px;">3</button>
+        <button class="action-btn" style="padding:5px 10px;">Next →</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const ROLE_CONFIG = {
+    'dispatcher':        { name: 'Carlos Reyes', roleLabel: 'Dispatcher · Global Retail Inc.',        avatar: 'CR', bg: '#FEF2F2',  color: '#DC2626', border: '#FECACA'  },
+    'dispatch-approver': { name: 'David Ng',     roleLabel: 'Dispatch Approver · Global Retail Inc.', avatar: 'DN', bg: '#FFFBEB',  color: '#D97706', border: '#FDE68A' },
+    'receiver':          { name: 'Ana Cruz',     roleLabel: 'Receiver · Global Retail Inc.',          avatar: 'AC', bg: '#EFF6FF',  color: '#2563EB', border: '#BFDBFE' },
+    'resolver':          { name: 'Marco Lim',    roleLabel: 'Resolver · Global Retail Inc.',          avatar: 'ML', bg: '#ECFDF5',  color: '#059669', border: '#D1FAE5' }
+  };
+  function setRole(role) {
+    localStorage.setItem('erpInvRole', role);
+    document.getElementById('roleSelect').value = role;
+    applyRole(role);
+  }
+  function applyNavUser(role) {
+    const cfg = ROLE_CONFIG[role];
+    document.getElementById('navUserName').textContent = cfg.name;
+    document.getElementById('navUserRole').textContent = cfg.roleLabel;
+    const av = document.getElementById('navAvatar');
+    av.textContent = cfg.avatar;
+    av.style.background = cfg.bg;
+    av.style.color = cfg.color;
+    av.style.borderColor = cfg.border;
+  }
+
+  function applyRole(role) {
+    applyNavUser(role);
+    const isReceiver = role === 'receiver';
+    const isResolver = role === 'resolver';
+    const isReadonly = role === 'dispatcher' || role === 'dispatch-approver';
+
+    document.getElementById('newReceiveBtn').style.display = isReceiver ? 'inline-flex' : 'none';
+    document.getElementById('sidebarPending').classList.toggle('show', isResolver);
+
+    if (isReceiver) {
+      document.getElementById('pageSubtitle').textContent = 'Record inbound inventory counts';
+      document.getElementById('tableTitle').textContent = 'Receive List';
+    } else if (isResolver) {
+      document.getElementById('pageSubtitle').textContent = 'Resolve count discrepancies';
+      document.getElementById('tableTitle').textContent = 'Receives Needing Resolution';
+    } else {
+      document.getElementById('pageSubtitle').textContent = 'View all receive records';
+      document.getElementById('tableTitle').textContent = 'Receive List';
+    }
+
+    document.querySelectorAll('.receiver-only').forEach(el => el.style.display = isReceiver ? 'inline' : 'none');
+    document.querySelectorAll('.resolver-only').forEach(el => el.style.display = isResolver ? 'inline' : 'none');
+    document.querySelectorAll('.readonly-only').forEach(el => el.style.display = isReadonly ? 'inline' : 'none');
+
+    if (isResolver) {
+      const resBtn = document.querySelector('[onclick*="resolution"]');
+      if (resBtn) filterByStatus('resolution', resBtn);
+    } else {
+      const allBtn = document.querySelector('[onclick*="\'all\'"]');
+      if (allBtn) filterByStatus('all', allBtn);
+    }
+  }
+
+  function filterByStatus(status, el) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    if (el) el.classList.add('active');
+    const rows = document.querySelectorAll('#receiveTableBody tr');
+    let visible = 0;
+    rows.forEach(row => {
+      const show = status === 'all' || row.getAttribute('data-status') === status;
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    const total = status === 'all' ? 31 : visible;
+    document.getElementById('paginationInfo').textContent = `Showing ${visible} of ${total} receives`;
+  }
+
+  const saved = localStorage.getItem('erpInvRole') || 'receiver';
+  document.getElementById('roleSelect').value = saved;
+  applyRole(saved);
+</script>
+</body>
+</html>

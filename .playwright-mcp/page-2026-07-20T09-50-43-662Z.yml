@@ -1,0 +1,155 @@
+- generic [ref=f1e2]:
+  - banner [ref=f1e3]:
+    - generic [ref=f1e4]:
+      - generic [ref=f1e5]: iC
+      - generic [ref=f1e6]:
+        - text: iConnect ERP
+        - generic [ref=f1e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=f1e8]:
+      - generic "Tasks" [ref=f1e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=f1e14] [cursor=pointer]: "3"
+      - generic [ref=f1e19] [cursor=pointer]:
+        - generic [ref=f1e20]: RC
+        - generic [ref=f1e21]:
+          - generic [ref=f1e22]: Rica Cruz
+          - generic [ref=f1e23]: Merchandise Admin
+  - navigation [ref=f1e24]:
+    - generic [ref=f1e613]:
+      - heading "Overview" [level=4] [ref=f1e614]
+      - generic [ref=f1e615] [cursor=pointer]: Dashboard
+    - generic [ref=f1e619]:
+      - heading "Master Data" [level=4] [ref=f1e620]
+      - generic [ref=f1e621] [cursor=pointer]:
+        - generic [ref=f1e624]: Company Maintenance
+        - generic [ref=f1e625]: "1"
+      - generic [ref=f1e626]:
+        - heading "Store Branch Maintenance" [level=5] [ref=f1e627]
+        - generic [ref=f1e628] [cursor=pointer]:
+          - generic [ref=f1e631]: Branch
+          - generic [ref=f1e632]: "2"
+      - generic [ref=f1e633]:
+        - heading "Store Grouping" [level=5] [ref=f1e634]
+        - generic [ref=f1e635] [cursor=pointer]: Price Zone
+        - generic [ref=f1e639] [cursor=pointer]: Cost Zone
+        - generic [ref=f1e643] [cursor=pointer]: Store Cluster
+        - generic [ref=f1e647] [cursor=pointer]: Assortment Plan
+        - generic [ref=f1e651] [cursor=pointer]: Replenishment Policy
+      - generic [ref=f1e655]:
+        - heading "Vendor Maintenance" [level=5] [ref=f1e656]
+        - generic [ref=f1e657] [cursor=pointer]:
+          - generic [ref=f1e660]: Vendor
+          - generic [ref=f1e661]: "3"
+        - generic [ref=f1e662] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=f1e666] [cursor=pointer]: Vendor Catalog
+        - generic [ref=f1e670] [cursor=pointer]:
+          - generic [ref=f1e673]: Vendor Allowance
+          - generic [ref=f1e674]: "4"
+      - generic [ref=f1e675]:
+        - heading "Product Maintenance" [level=5] [ref=f1e676]
+        - generic [ref=f1e677] [cursor=pointer]:
+          - generic [ref=f1e680]: Category Hierarchy
+          - generic [ref=f1e681]: "5"
+        - generic [ref=f1e682] [cursor=pointer]:
+          - generic [ref=f1e685]: Product
+          - generic [ref=f1e686]: "6"
+    - generic [ref=f1e687]:
+      - heading "Inventory & Pricing" [level=4] [ref=f1e688]
+      - generic [ref=f1e689] [cursor=pointer]:
+        - generic [ref=f1e692]: Product Inventory
+        - generic [ref=f1e693]: "7"
+      - generic [ref=f1e694] [cursor=pointer]:
+        - generic [ref=f1e697]: Price Change Mgmt
+        - generic [ref=f1e698]: "8"
+      - generic [ref=f1e699] [cursor=pointer]:
+        - generic [ref=f1e702]: Cost Change Mgmt
+        - generic [ref=f1e703]: "9"
+    - generic [ref=f1e704]:
+      - heading "Procurement" [level=4] [ref=f1e705]
+      - generic [ref=f1e706] [cursor=pointer]:
+        - generic [ref=f1e709]: Purchase Order
+        - generic [ref=f1e710]: "10"
+      - generic [ref=f1e711] [cursor=pointer]:
+        - generic [ref=f1e714]: Auto Replenishment
+        - generic [ref=f1e715]: "11"
+      - generic [ref=f1e716] [cursor=pointer]:
+        - generic [ref=f1e719]: PO Receiving
+        - generic [ref=f1e720]: "12"
+    - generic [ref=f1e721]:
+      - heading "Store Operations" [level=4] [ref=f1e722]
+      - generic [ref=f1e723] [cursor=pointer]:
+        - generic [ref=f1e726]: Store-to-Store Transfer
+        - generic [ref=f1e727]: "13"
+      - generic [ref=f1e728] [cursor=pointer]:
+        - generic [ref=f1e731]: Return To Vendor
+        - generic [ref=f1e732]: "14"
+      - generic [ref=f1e733] [cursor=pointer]:
+        - generic [ref=f1e736]: Inventory Adjustment
+        - generic [ref=f1e737]: "15"
+      - generic [ref=f1e738] [cursor=pointer]:
+        - generic [ref=f1e741]: Make-up / Break-up
+        - generic [ref=f1e742]: "16"
+    - generic [ref=f1e743]:
+      - heading "Sales" [level=4] [ref=f1e744]
+      - generic [ref=f1e745] [cursor=pointer]:
+        - generic [ref=f1e748]: POS Sales
+        - generic [ref=f1e749]: "17"
+    - generic [ref=f1e750]:
+      - heading "User Management" [level=4] [ref=f1e751]
+      - generic [ref=f1e752] [cursor=pointer]: Users
+      - generic [ref=f1e756] [cursor=pointer]: Roles
+      - generic [ref=f1e760] [cursor=pointer]: Branch Access
+      - generic [ref=f1e764] [cursor=pointer]: Audit Log
+  - main [ref=f1e180]:
+    - generic [ref=f1e768]: iConnect ERP › New Assortment Plan
+    - generic [ref=f1e770]:
+      - heading "New Assortment Plan" [level=1] [ref=f1e771]
+      - paragraph [ref=f1e772]: Set identity & scope, effectivity, choose the SKU range, then review and save.
+    - generic [ref=f1e773]:
+      - generic [ref=f1e774]:
+        - heading "New Assortment Plan" [level=3] [ref=f1e775]
+        - generic [ref=f1e776]: New (copy of AP-0003) · Draft · duplicated from AP-0003
+      - generic [ref=f1e778]:
+        - generic [ref=f1e779]:
+          - generic [ref=f1e780]: "1"
+          - text: Identity & Scope
+        - generic [ref=f1e781]:
+          - generic [ref=f1e782]: "2"
+          - text: Effectivity
+        - generic [ref=f1e783]:
+          - generic [ref=f1e784]: "3"
+          - text: SKU List
+        - generic [ref=f1e785]:
+          - generic [ref=f1e786]: "4"
+          - text: Review
+      - generic [ref=f1e788]:
+        - generic [ref=f1e789]:
+          - generic [ref=f1e790]: Plan Name *
+          - textbox [ref=f1e791]: Puregold National Default (copy)
+        - generic [ref=f1e792]:
+          - generic [ref=f1e793]: Company *
+          - combobox [ref=f1e794]:
+            - option "Puregold Price Club, Inc." [selected]
+            - option "Ayagold Retailers Inc. (Merkado)"
+        - generic [ref=f1e795]:
+          - generic [ref=f1e796]: Assignment Level *
+          - combobox [ref=f1e797]:
+            - option "Company (all stores)" [selected]
+            - option "Store Cluster"
+            - option "Store"
+        - generic [ref=f1e798]:
+          - generic [ref=f1e799]: Target
+          - combobox [disabled] [ref=f1e800]:
+            - option "All Stores (company default)" [selected]
+        - generic [ref=f1e801]:
+          - generic [ref=f1e802]: Assortment Type *
+          - combobox [ref=f1e803]:
+            - option "Regular" [selected]
+            - option "Seasonal"
+            - option "Promotional"
+            - option "New-Store"
+        - generic [ref=f1e804]:
+          - generic [ref=f1e805]: Description
+          - textbox [ref=f1e806]
+      - generic [ref=f1e807]:
+        - button "Cancel" [ref=f1e809] [cursor=pointer]
+        - button "Next ›" [ref=f1e811] [cursor=pointer]

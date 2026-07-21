@@ -1,0 +1,106 @@
+%% JDA / Blue Yonder logical data model — Chain / Zone / Store (location & pricing slice)
+%% Reference: docs/puregold/Puregold JDA ERP_1.pdf (price-event levels Chain > Zone > Store).
+%% Key idea: Zone is a many-to-many price-zone membership (ZONE_GROUP > ZONE > ZONE_LOCATION),
+%% and store format is a location trait — so format AND geography are supported at once.
+%% Companion rendered explainer: docs/puregold/jda-location-pricing-schema.html
+erDiagram
+  COMPANY ||--o{ LOCATION : "owns"
+  COMPANY ||--o{ ZONE_GROUP : "defines"
+  LOCATION_TYPE ||--o{ LOCATION : "classifies"
+  LOCATION ||--o| LOCATION : "served by cross-dock"
+  LOCATION ||--o{ LOCATION_TRAIT_MAP : "tagged"
+  LOCATION_TRAIT ||--o{ LOCATION_TRAIT_MAP : "via"
+  TRAIT_TYPE ||--o{ LOCATION_TRAIT : "groups"
+  ZONE_GROUP ||--o{ ZONE : "contains"
+  ZONE ||--o{ ZONE_LOCATION : "assigns"
+  LOCATION ||--o{ ZONE_LOCATION : "member of"
+  VENDOR ||--o{ LOCATION_VENDOR : "supplies"
+  LOCATION ||--o{ LOCATION_VENDOR : "primary/alt"
+  PRICE_LEVEL ||--o{ PRICE_EVENT : "granularity"
+  COMPANY ||..o{ PRICE_EVENT : "scope = Chain"
+  ZONE ||..o{ PRICE_EVENT : "scope = Zone"
+  LOCATION ||..o{ PRICE_EVENT : "scope = Store"
+  PRICE_EVENT ||--o{ PRICE_EVENT_LINE : "lines"
+  ITEM ||--o{ PRICE_EVENT_LINE : "priced"
+
+  COMPANY {
+    int company_id PK
+    string legal_name
+    string tin
+    string currency
+    string role "regarded as Chain"
+  }
+  LOCATION {
+    int location_id PK
+    int company_id FK
+    int location_type_id FK
+    int crossdock_id FK "self-ref"
+    string store_code
+    string name
+    string status
+  }
+  LOCATION_TYPE {
+    int location_type_id PK
+    string name "Store / DC / Cross-dock"
+  }
+  ZONE_GROUP {
+    int zone_group_id PK
+    int company_id FK
+    string name "Format / Region / Tier..."
+    string purpose "Pricing / Cost / Replen"
+  }
+  ZONE {
+    int zone_id PK
+    int zone_group_id FK
+    string name
+  }
+  ZONE_LOCATION {
+    int zone_id FK
+    int location_id FK
+  }
+  TRAIT_TYPE {
+    int trait_type_id PK
+    string name "Format / Region / Climate"
+  }
+  LOCATION_TRAIT {
+    int trait_id PK
+    int trait_type_id FK
+    string value
+  }
+  LOCATION_TRAIT_MAP {
+    int location_id FK
+    int trait_id FK
+  }
+  PRICE_LEVEL {
+    int level_id PK
+    string name "Chain / Zone / Store"
+  }
+  PRICE_EVENT {
+    int event_id PK
+    int level_id FK
+    string scope_type "COMPANY|ZONE|LOCATION"
+    int scope_id "polymorphic"
+    string pca_type "Regular / Promo"
+    date start_date
+    date end_date
+  }
+  PRICE_EVENT_LINE {
+    int event_id FK
+    int item_id FK
+    decimal new_price
+  }
+  ITEM {
+    int item_id PK
+    string sku
+    string description
+  }
+  VENDOR {
+    int vendor_id PK
+    string name
+    bool rtv_allowed
+  }
+  LOCATION_VENDOR {
+    int location_id FK
+    int vendor_id FK
+    string source "Primary / Alternate"
+  }

@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iConnect ERP – New Purchase Order</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red:        #DC2626;
+      --red-dark:   #B91C1C;
+      --red-light:  #FEF2F2;
+      --red-mid:    #FECACA;
+      --green:      #059669;
+      --green-bg:   #ECFDF5;
+      --amber:      #D97706;
+      --amber-bg:   #FFFBEB;
+      --gray-50:    #F8FAFC;
+      --gray-100:   #F1F5F9;
+      --gray-200:   #E2E8F0;
+      --gray-300:   #CBD5E1;
+      --gray-400:   #94A3B8;
+      --gray-500:   #64748B;
+      --gray-700:   #334155;
+      --gray-900:   #111827;
+      --sidebar-w:  220px;
+      --nav-h:      56px;
+    }
+    body { font-family: system-ui, -apple-system, sans-serif; background: var(--gray-50); color: var(--gray-900); min-height: 100vh; }
+
+    /* ── Top Nav ── */
+    .topnav {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+      background: #fff; border-bottom: 1px solid var(--gray-200);
+      display: flex; align-items: center; padding: 0 24px; z-index: 100; gap: 16px;
+    }
+    .topnav .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; color: var(--gray-900); text-decoration: none; width: var(--sidebar-w); }
+    .logo-icon { width: 30px; height: 30px; background: var(--red); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 800; }
+    .topnav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+    /* Role Toggle */
+    .role-toggle { display: flex; align-items: center; background: var(--gray-100); border-radius: 20px; padding: 3px; gap: 2px; }
+    .role-btn { padding: 5px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; background: none; color: var(--gray-500); transition: all .15s; }
+    .role-btn.active { background: #fff; color: var(--red); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+
+    .nav-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--red-light); border: 2px solid var(--red-mid); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--red); }
+    .nav-user span { font-weight: 600; display: block; font-size: 13px; color: var(--gray-700); }
+    .nav-user small { color: var(--gray-500); font-size: 11px; }
+
+    /* ── Sidebar ── */
+    .sidebar { position: fixed; top: var(--nav-h); left: 0; bottom: 0; width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--gray-200); padding: 20px 0; overflow-y: auto; }
+    .sidebar-section { padding: 0 12px 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-400); margin-top: 12px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; font-size: 13.5px; color: var(--gray-700); text-decoration: none; border-radius: 6px; margin: 1px 8px; cursor: pointer; }
+    .nav-item:hover { background: var(--gray-100); }
+    .nav-item.active { background: var(--red-light); color: var(--red); font-weight: 600; }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar-w); margin-top: var(--nav-h); padding: 32px; }
+    .page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .back-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-500); text-decoration: none; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--gray-200); background: #fff; cursor: pointer; }
+    .back-btn:hover { background: var(--gray-50); }
+    .page-title { font-size: 20px; font-weight: 700; }
+    .po-ref { font-size: 13px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ── Rejection Banner ── */
+    .rejection-banner { background: var(--red-light); border: 1.5px solid var(--red-mid); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px; }
+    .rejection-banner svg { flex-shrink: 0; margin-top: 1px; }
+    .rejection-banner-title { font-size: 14px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+    .rejection-banner-body { font-size: 13px; color: #7F1D1D; line-height: 1.5; }
+
+    /* ── Stepper ── */
+    .stepper { display: flex; align-items: center; background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; padding: 20px 28px; margin-bottom: 28px; overflow-x: auto; }
+    .step { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 110px; }
+    .step-num { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; border: 2px solid var(--gray-200); color: var(--gray-400); background: #fff; }
+    .step.done .step-num { background: var(--green); border-color: var(--green); color: #fff; }
+    .step.active .step-num { background: var(--red); border-color: var(--red); color: #fff; }
+    .step.locked .step-num { background: var(--gray-100); border-color: var(--gray-300); color: var(--gray-400); }
+    .step-info { flex: 1; }
+    .step-label { font-size: 11px; color: var(--gray-400); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
+    .step.active .step-label { color: var(--red); }
+    .step.done .step-label { color: var(--green); }
+    .step-name { font-size: 13px; font-weight: 600; color: var(--gray-700); margin-top: 1px; }
+    .step.active .step-name { color: var(--gray-900); }
+    .step-divider { width: 40px; height: 1px; background: var(--gray-200); flex-shrink: 0; margin: 0 4px; }
+
+    /* ── Form Cards ── */
+    .section { display: none; }
+    .section.active { display: block; }
+    .card { background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; padding: 28px; margin-bottom: 20px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--gray-900); margin-bottom: 4px; }
+    .card-subtitle { font-size: 13px; color: var(--gray-500); margin-bottom: 24px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 12.5px; font-weight: 600; color: var(--gray-700); }
+    label .req { color: var(--red); }
+    input[type=text], input[type=date], input[type=number], select, textarea {
+      padding: 9px 12px; border: 1px solid var(--gray-200); border-radius: 7px; font-size: 13.5px; color: var(--gray-900);
+      background: #fff; outline: none; font-family: inherit; width: 100%;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.1); }
+    textarea { resize: vertical; min-height: 80px; }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+    .hint { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ── Vendor Cards ── */
+    .vendor-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .vendor-card { border: 2px solid var(--gray-200); border-radius: 9px; padding: 16px; cursor: pointer; transition: border-color .15s, background .15s; }
+    .vendor-card:hover { border-color: var(--red-mid); background: var(--red-light); }
+    .vendor-card.selected { border-color: var(--red); background: var(--red-light); }
+    .vendor-logo { width: 40px; height: 40px; border-radius: 8px; background: var(--gray-100); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: var(--gray-500); margin-bottom: 10px; }
+    .vendor-name { font-size: 13.5px; font-weight: 700; color: var(--gray-900); }
+    .vendor-meta { font-size: 11.5px; color: var(--gray-500); margin-top: 3px; }
+    .vendor-badge { display: inline-block; font-size: 10.5px; padding: 2px 7px; border-radius: 4px; margin-top: 7px; }
+
+    /* ── Toggle ── */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 9px; margin-bottom: 20px; }
+    .toggle-label { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+    .toggle-desc { font-size: 12.5px; color: var(--gray-500); margin-top: 2px; }
+    .toggle { position: relative; width: 44px; height: 24px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; inset: 0; background: var(--gray-200); border-radius: 12px; cursor: pointer; transition: background .2s; }
+    .slider:before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: transform .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+    input:checked + .slider { background: var(--red); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    /* ── Facility Tags ── */
+    .facility-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+    .facility-tag { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--gray-200); border-radius: 7px; font-size: 13px; background: #fff; }
+    .facility-tag.selected { border-color: var(--red); background: var(--red-light); color: var(--red); font-weight: 600; }
+    .facility-tag .remove { cursor: pointer; color: var(--gray-400); font-size: 16px; line-height: 1; }
+    .facility-tag .remove:hover { color: var(--red); }
+    .add-facility-btn { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px dashed var(--gray-300); border-radius: 7px; font-size: 13px; color: var(--gray-500); cursor: pointer; background: none; }
+    .add-facility-btn:hover { background: var(--gray-50); border-color: var(--red); color: var(--red); }
+
+    /* ── Items Table ── */
+    .items-table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--gray-500); padding: 10px 14px; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); text-align: left; white-space: nowrap; }
+    tbody tr { border-bottom: 1px solid var(--gray-100); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FAFBFC; }
+    td { padding: 12px 14px; font-size: 13.5px; color: var(--gray-700); vertical-align: middle; }
+    .item-name { font-weight: 600; color: var(--gray-900); }
+    .item-sku { font-size: 11.5px; color: var(--gray-400); margin-top: 2px; font-family: monospace; }
+    .qty-input { width: 80px; padding: 6px 10px; border: 1px solid var(--gray-200); border-radius: 6px; font-size: 13px; text-align: center; outline: none; }
+    .qty-input:focus { border-color: var(--red); box-shadow: 0 0 0 2px rgba(220,38,38,.08); }
+    .qty-input.warn { border-color: var(--amber); background: var(--amber-bg); }
+    .moq-warn { display: none; background: var(--amber-bg); border: 1px solid #FDE68A; border-radius: 6px; padding: 6px 10px; font-size: 11.5px; color: #92400E; margin-top: 5px; align-items: center; gap: 5px; }
+    .moq-warn.show { display: flex; }
+    .moq-badge { font-size: 11px; padding: 2px 7px; border-radius: 4px; background: #FEF3C7; color: var(--amber); font-weight: 600; border: 1px solid #FDE68A; white-space: nowrap; }
+    .add-item-row { padding: 12px 14px; border-top: 1px dashed var(--gray-200); }
+
+    /* ── Catalog Autocomplete ── */
+    .catalog-search-row { padding: 10px 14px; background: var(--gray-50); border-top: 1px dashed var(--gray-200); display: none; }
+    .catalog-search-row.show { display: block; }
+    .catalog-input-wrap { position: relative; max-width: 360px; }
+    .catalog-input-wrap input { padding-left: 36px; }
+    .catalog-input-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--gray-400); pointer-events: none; }
+    .catalog-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); z-index: 50; max-height: 280px; overflow-y: auto; display: none; }
+    .catalog-dropdown.show { display: block; }
+    .catalog-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; cursor: pointer; transition: background .1s; border-bottom: 1px solid var(--gray-100); }
+    .catalog-item:last-child { border-bottom: none; }
+    .catalog-item:hover { background: var(--red-light); }
+    .catalog-item-name { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+    .catalog-item-sku { font-size: 11.5px; color: var(--gray-400); font-family: monospace; }
+    .catalog-item-price { font-size: 12.5px; font-weight: 700; color: var(--red); }
+    .catalog-item-moq { font-size: 11px; color: var(--gray-500); }
+    .catalog-no-results { padding: 16px 14px; font-size: 13px; color: var(--gray-400); text-align: center; }
+
+    /* ── MOQ Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: #fff; border-radius: 12px; padding: 28px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+    .modal-icon { width: 48px; height: 48px; border-radius: 50%; background: var(--amber-bg); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .modal-body { font-size: 13.5px; color: var(--gray-500); line-height: 1.6; margin-bottom: 20px; }
+    .modal-body strong { color: var(--gray-900); }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; cursor: pointer; border: none; text-decoration: none; transition: background .15s; }
+    .btn-primary { background: var(--red); color: #fff; }
+    .btn-primary:hover { background: var(--red-dark); }
+    .btn-outline { background: #fff; color: var(--gray-700); border: 1px solid var(--gray-200); }
+    .btn-outline:hover { background: var(--gray-50); }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-sm { padding: 6px 14px; font-size: 12.5px; }
+
+    /* ── Footer Actions ── */
+    .footer-actions { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--gray-200); border-radius: 10px; padding: 16px 24px; position: sticky; bottom: 20px; }
+    .step-indicator { font-size: 13px; color: var(--gray-500); }
+    .footer-right { display: flex; gap: 10px; }
+
+    /* ── Review Summary ── */
+    .summary-section { margin-bottom: 24px; }
+    .summary-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--gray-200); }
+    .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 13.5px; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-key { color: var(--gray-500); }
+    .summary-val { color: var(--gray-900); font-weight: 500; text-align: right; }
+
+    /* ── Alert ── */
+    .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+    .alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+    .alert-warn { background: var(--amber-bg); border: 1px solid #FDE68A; color: #92400E; }
+    .alert-reject { background: var(--red-light); border: 1px solid #FCA5A5; color: #991B1B; }
+
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; background: var(--gray-100); color: var(--gray-700); }
+  </style>
+</head>
+<body>
+
+<!-- Top Nav -->
+<nav class="topnav">
+  <a class="logo" href="index.html">
+    <div class="logo-icon">iC</div>
+    iConnect ERP
+  </a>
+  <div class="topnav-right">
+    <div class="role-toggle" id="roleToggle">
+      <button class="role-btn active" id="roleBuyerBtn" onclick="setRole('buyer')">Buyer</button>
+      <button class="role-btn" id="roleApproverBtn" onclick="setRole('approver')">Approver</button>
+    </div>
+    <div class="nav-user">
+      <span id="navUserName">Sarah Mitchell</span>
+      <small id="navUserRole">Buyer · Global Retail Inc.</small>
+    </div>
+    <div class="nav-avatar" id="navAvatar">SM</div>
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-section">Main</div>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Dashboard
+  </a>
+  <a class="nav-item active" href="index.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    Purchase Orders
+  </a>
+  <a class="nav-item" href="#">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>
+    Vendors
+  </a>
+  <div class="sidebar-section">Reports</div>
+  <a class="nav-item" href="#"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Analytics</a>
+  <a class="nav-item" href="#"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Reports</a>
+  <div class="sidebar-section">Account</div>
+  <a class="nav-item" href="#"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg> Settings</a>
+</aside>
+
+<!-- Main -->
+<main class="main">
+  <!-- Header -->
+  <div class="page-header">
+    <a href="index.html" class="back-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    <div>
+      <div class="page-title" id="pageTitle">New Purchase Order</div>
+      <div class="po-ref">Draft · Auto-saved</div>
+    </div>
+  </div>
+
+  <!-- Rejection Banner (revise mode) -->
+  <div class="rejection-banner" id="rejectionBanner" style="display:none;">
+    <svg width="18" height="18" fill="none" stroke="var(--red)" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div>
+      <div class="rejection-banner-title">This PO was rejected.</div>
+      <div class="rejection-banner-body">Reason: Item quantities at Jurong West Store are below MOQ for SKU-00412 (Cooking Oil 2L). Please revise and resubmit.</div>
+    </div>
+  </div>
+
+  <!-- Stepper -->
+  <div class="stepper" id="stepper">
+    <div class="step" id="step-ind-1">
+      <div class="step-num">1</div>
+      <div class="step-info">
+        <div class="step-label">Step 1</div>
+        <div class="step-name">Select Buyer</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step" id="step-ind-2">
+      <div class="step-num">2</div>
+      <div class="step-info">
+        <div class="step-label">Step 2</div>
+        <div class="step-name">Select Seller</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step" id="step-ind-3">
+      <div class="step-num">3</div>
+      <div class="step-info">
+        <div class="step-label">Step 3</div>
+        <div class="step-name">PO Details</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step" id="step-ind-4">
+      <div class="step-num">4</div>
+      <div class="step-info">
+        <div class="step-label">Step 4</div>
+        <div class="step-name">Facilities</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step" id="step-ind-5">
+      <div class="step-num">5</div>
+      <div class="step-info">
+        <div class="step-label">Step 5</div>
+        <div class="step-name">Items &amp; Quantities</div>
+      </div>
+    </div>
+    <div class="step-divider"></div>
+    <div class="step" id="step-ind-6">
+      <div class="step-num">6</div>
+      <div class="step-info">
+        <div class="step-label">Step 6</div>
+        <div class="step-name">Review &amp; Submit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: Select Buyer ── -->
+  <div class="section" id="section-1">
+    <div class="card">
+      <div class="card-title">Select Buyer</div>
+      <div class="card-subtitle">Choose the buying organization and the contact person placing this order.</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Buying Organization <span class="req">*</span></label>
+          <select>
+            <option value="">— Select organization —</option>
+            <option selected>Global Retail Inc.</option>
+            <option>Summit Group Holdings</option>
+            <option>Eastern Foods Corp.</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Buyer Contact <span class="req">*</span></label>
+          <select>
+            <option value="">— Select contact —</option>
+            <option selected>Sarah Mitchell (sarah@globalretail.com)</option>
+            <option>Kevin Lim (kevin@globalretail.com)</option>
+          </select>
+          <div class="hint">The person responsible for this PO.</div>
+        </div>
+        <div class="form-group">
+          <label>Department</label>
+          <select>
+            <option>Procurement</option>
+            <option>Operations</option>
+            <option>Finance</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cost Center</label>
+          <input type="text" placeholder="e.g. CC-2040" value="CC-2040" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 2: Select Seller ── -->
+  <div class="section" id="section-2">
+    <div class="card">
+      <div class="card-title">Select Seller</div>
+      <div class="card-subtitle">Choose the vendor/supplier for this purchase order.</div>
+      <div style="margin-bottom:18px;">
+        <div style="position:relative;max-width:400px;">
+          <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray-400)" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search vendors…" style="padding-left:36px;" />
+        </div>
+      </div>
+      <div class="vendor-cards">
+        <div class="vendor-card" onclick="selectVendor(this)">
+          <div class="vendor-logo">FF</div>
+          <div class="vendor-name">FreshFarm Supplies Co.</div>
+          <div class="vendor-meta">John Tan · john@freshfarm.com</div>
+          <div class="vendor-meta" style="margin-top:4px;">📍 Philippines</div>
+          <span class="vendor-badge" style="background:var(--green-bg);color:var(--green);">Active</span>
+        </div>
+        <div class="vendor-card selected" onclick="selectVendor(this)">
+          <div class="vendor-logo" style="background:var(--red-light);color:var(--red);">MW</div>
+          <div class="vendor-name">Metro Wholesale Ltd.</div>
+          <div class="vendor-meta">Lisa Chen · lisa@metrowholesale.com</div>
+          <div class="vendor-meta" style="margin-top:4px;">📍 Philippines</div>
+          <span class="vendor-badge" style="background:var(--green-bg);color:var(--green);">Active</span>
+        </div>
+        <div class="vendor-card" onclick="selectVendor(this)">
+          <div class="vendor-logo">PD</div>
+          <div class="vendor-name">Pacific Distributors</div>
+          <div class="vendor-meta">Mark Rivera · mark@pacdist.com</div>
+          <div class="vendor-meta" style="margin-top:4px;">📍 Philippines</div>
+          <span class="vendor-badge" style="background:var(--green-bg);color:var(--green);">Active</span>
+        </div>
+        <div class="vendor-card" onclick="selectVendor(this)">
+          <div class="vendor-logo">SF</div>
+          <div class="vendor-name">Sunrise Foods Inc.</div>
+          <div class="vendor-meta">Amy Park · amy@sunrisefoods.com</div>
+          <div class="vendor-meta" style="margin-top:4px;">📍 Philippines</div>
+          <span class="vendor-badge" style="background:var(--amber-bg);color:var(--amber);">On Review</span>
+        </div>
+        <div class="vendor-card" onclick="selectVendor(this)">
+          <div class="vendor-logo">GT</div>
+          <div class="vendor-name">GreenTree Organics</div>
+          <div class="vendor-meta">Ben Lau · ben@greentree.com</div>
+          <div class="vendor-meta" style="margin-top:4px;">📍 Philippines</div>
+          <span class="vendor-badge" style="background:var(--green-bg);color:var(--green);">Active</span>
+        </div>
+        <div class="vendor-card" onclick="selectVendor(this)" style="display:flex;flex-direction:column;align-items:center;justify-content:center;border-style:dashed;">
+          <svg width="28" height="28" fill="none" stroke="var(--gray-400)" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:8px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <div style="font-size:13px;color:var(--gray-500);font-weight:500;">Invite New Vendor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: PO Details ── -->
+  <div class="section" id="section-3">
+    <div class="card">
+      <div class="card-title">Purchase Order Details</div>
+      <div class="card-subtitle">Fill in the order details. A PO number will be auto-generated but can be overridden.</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>PO Number <span class="req">*</span></label>
+          <input type="text" value="PO-2026-0049" />
+          <div class="hint">Auto-generated. Edit only if using a custom reference.</div>
+        </div>
+        <div class="form-group">
+          <label>Order Date <span class="req">*</span></label>
+          <input type="date" value="2026-04-08" />
+        </div>
+        <div class="form-group">
+          <label>Expected Delivery Date <span class="req">*</span></label>
+          <input type="date" value="2026-04-22" />
+        </div>
+        <div class="form-group">
+          <label>Delivery Window</label>
+          <select>
+            <option>Any time</option>
+            <option selected>Morning (8 AM – 12 PM)</option>
+            <option>Afternoon (12 PM – 5 PM)</option>
+            <option>End of day (after 5 PM)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Payment Terms <span class="req">*</span></label>
+          <select>
+            <option>Cash on Delivery (COD)</option>
+            <option selected>Net 30</option>
+            <option>Net 45</option>
+            <option>Net 60</option>
+            <option>50% upfront, 50% on delivery</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Currency</label>
+          <select>
+            <option>USD – US Dollar</option>
+            <option>SGD – Singapore Dollar</option>
+            <option>MYR – Malaysian Ringgit</option>
+            <option selected>PHP – Philippine Peso</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Shipping / Delivery Instructions</label>
+          <textarea>Deliver to loading bay B. Contact warehouse manager upon arrival.</textarea>
+        </div>
+        <div class="form-group full">
+          <label>Internal Notes / Remarks</label>
+          <textarea placeholder="Any internal notes about this PO (not visible to seller)…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: Facilities ── -->
+  <div class="section" id="section-4">
+    <div class="card">
+      <div class="card-title">Delivery Locations (Facilities)</div>
+      <div class="card-subtitle">Specify where the items should be delivered. Toggle on if you are delivering to multiple locations.</div>
+
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Multiple Delivery Locations</div>
+          <div class="toggle-desc">Enable this to split the order across several branches or warehouses.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="multiToggle" onchange="toggleFacilities()" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <!-- Multiple facilities -->
+      <div id="multiFacilities">
+        <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:12px;">Selected Delivery Locations</div>
+        <div class="facility-list" id="facilityList">
+          <div class="facility-tag selected" data-name="Orchard Branch">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Orchard Branch
+            <span class="remove" onclick="removeFacility(this)">×</span>
+          </div>
+          <div class="facility-tag selected" data-name="Tampines WH">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Tampines WH
+            <span class="remove" onclick="removeFacility(this)">×</span>
+          </div>
+          <div class="facility-tag selected" data-name="Jurong West Store">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            Jurong West Store
+            <span class="remove" onclick="removeFacility(this)">×</span>
+          </div>
+        </div>
+
+        <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:10px;">Add More Locations</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--gray-200);border-radius:7px;cursor:pointer;font-size:13px;font-weight:400;">
+            <input type="checkbox" id="cb-bishan" style="width:auto;accent-color:var(--red);" onchange="addFacilityFromCheckbox(this,'Bishan Hub')"> Bishan Hub
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--gray-200);border-radius:7px;cursor:pointer;font-size:13px;font-weight:400;">
+            <input type="checkbox" id="cb-woodlands" style="width:auto;accent-color:var(--red);" onchange="addFacilityFromCheckbox(this,'Woodlands DC')"> Woodlands DC
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--gray-200);border-radius:7px;cursor:pointer;font-size:13px;font-weight:400;">
+            <input type="checkbox" id="cb-suntec" style="width:auto;accent-color:var(--red);" onchange="addFacilityFromCheckbox(this,'Suntec City')"> Suntec City
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--gray-200);border-radius:7px;cursor:pointer;font-size:13px;font-weight:400;">
+            <input type="checkbox" id="cb-toayoh" style="width:auto;accent-color:var(--red);" onchange="addFacilityFromCheckbox(this,'Toa Payoh Store')"> Toa Payoh Store
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--gray-200);border-radius:7px;cursor:pointer;font-size:13px;font-weight:400;">
+            <input type="checkbox" id="cb-pasirris" style="width:auto;accent-color:var(--red);" onchange="addFacilityFromCheckbox(this,'Pasir Ris Hub')"> Pasir Ris Hub
+          </label>
+          <button class="add-facility-btn" onclick="addNewFacility()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add New Address
+          </button>
+        </div>
+      </div>
+
+      <!-- Single facility -->
+      <div id="singleFacility" style="display:none;">
+        <div class="form-group" style="max-width:420px;">
+          <label>Delivery Location <span class="req">*</span></label>
+          <select id="singleFacilitySelect">
+            <option>— Select a location —</option>
+            <option>Orchard Branch</option>
+            <option>Tampines WH</option>
+            <option>Jurong West Store</option>
+            <option>Bishan Hub</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 5: Items & Quantities ── -->
+  <div class="section" id="section-5">
+    <div class="card">
+      <div class="card-title">Select Items &amp; Set Quantities</div>
+      <div class="card-subtitle" id="step5Subtitle">Choose items from Metro Wholesale Ltd.'s catalog and set the required quantity per facility.</div>
+
+      <div class="alert alert-info" id="facilitiesInfoAlert" style="margin-bottom:20px;">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="facilitiesInfoText">Delivering to <strong>3 facilities:</strong> Orchard Branch, Tampines WH, Jurong West Store. Quantities are set per facility.</span>
+      </div>
+
+      <div class="items-table-wrap">
+        <table id="itemsTable">
+          <thead id="itemsTableHead"></thead>
+          <tbody id="itemsTableBody"></tbody>
+          <tfoot id="itemsTableFoot"></tfoot>
+        </table>
+      </div>
+
+      <div class="add-item-row" id="addItemRow">
+        <button class="add-facility-btn" style="font-size:13px;" onclick="showCatalogSearch()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Item from Catalog
+        </button>
+      </div>
+
+      <!-- Catalog autocomplete row -->
+      <div class="catalog-search-row" id="catalogSearchRow">
+        <div style="font-size:12.5px;font-weight:600;color:var(--gray-700);margin-bottom:8px;">Search Catalog</div>
+        <div class="catalog-input-wrap" id="catalogInputWrap">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="catalogSearchInput" placeholder="Search by item name or SKU…" oninput="onCatalogSearch(this.value)" autocomplete="off" />
+          <div class="catalog-dropdown" id="catalogDropdown"></div>
+        </div>
+        <button class="add-facility-btn" style="margin-top:8px;font-size:12px;" onclick="hideCatalogSearch()">Cancel</button>
+      </div>
+
+      <div class="alert alert-warn" id="moqWarningAlert" style="margin-top:16px;display:none;">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div id="moqWarningText"><strong>Some items have quantities below MOQ.</strong> Please adjust the highlighted quantities before proceeding.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 6: Review & Submit ── -->
+  <div class="section" id="section-6">
+    <div class="alert alert-info">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Review all details before submitting. Once submitted, the PO will be sent to an approver for review.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="card">
+        <div class="summary-section">
+          <div class="summary-title">Buyer Information</div>
+          <div class="summary-row"><span class="summary-key">Organization</span><span class="summary-val">Global Retail Inc.</span></div>
+          <div class="summary-row"><span class="summary-key">Buyer Contact</span><span class="summary-val">Sarah Mitchell</span></div>
+          <div class="summary-row"><span class="summary-key">Department</span><span class="summary-val">Procurement</span></div>
+          <div class="summary-row"><span class="summary-key">Cost Center</span><span class="summary-val">CC-2040</span></div>
+        </div>
+        <div class="summary-section">
+          <div class="summary-title">Seller Information</div>
+          <div class="summary-row"><span class="summary-key">Vendor</span><span class="summary-val">Metro Wholesale Ltd.</span></div>
+          <div class="summary-row"><span class="summary-key">Contact</span><span class="summary-val">Lisa Chen</span></div>
+          <div class="summary-row"><span class="summary-key">Email</span><span class="summary-val">lisa@metrowholesale.com</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="summary-section">
+          <div class="summary-title">PO Details</div>
+          <div class="summary-row"><span class="summary-key">PO Number</span><span class="summary-val" style="font-family:monospace;color:var(--red);">PO-2026-0049</span></div>
+          <div class="summary-row"><span class="summary-key">Order Date</span><span class="summary-val">Apr 8, 2026</span></div>
+          <div class="summary-row"><span class="summary-key">Delivery Date</span><span class="summary-val">Apr 22, 2026</span></div>
+          <div class="summary-row"><span class="summary-key">Delivery Window</span><span class="summary-val">Morning (8 AM – 12 PM)</span></div>
+          <div class="summary-row"><span class="summary-key">Payment Terms</span><span class="summary-val">Net 30</span></div>
+          <div class="summary-row"><span class="summary-key">Currency</span><span class="summary-val">PHP – Philippine Peso</span></div>
+        </div>
+        <div class="summary-section">
+          <div class="summary-title">Delivery Locations</div>
+          <div class="summary-row"><span class="summary-key">Locations</span><span class="summary-val" id="reviewLocationCount">3 facilities</span></div>
+          <div style="font-size:12.5px;color:var(--gray-500);margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;" id="reviewLocationChips"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items Summary (rendered from state) -->
+    <div class="card" style="margin-top:0;">
+      <div class="summary-title">Order Items</div>
+      <table id="reviewTable">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>SKU</th>
+            <th>Unit Price</th>
+            <th>Total Qty</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="reviewTableBody"></tbody>
+        <tfoot>
+          <tr style="background:var(--gray-50);">
+            <td colspan="4" style="text-align:right;font-weight:700;padding:14px 14px;">Total Order Value</td>
+            <td style="font-weight:800;font-size:15px;color:var(--red);padding:14px 14px;" id="reviewTotal"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Footer Actions ── -->
+  <div class="footer-actions">
+    <button class="btn btn-outline" id="prevBtn" onclick="prevStep()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous
+    </button>
+    <div class="step-indicator" id="stepIndicator">Step 1 of 6</div>
+    <div class="footer-right">
+      <button class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+        Next
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- MOQ Modal -->
+<div class="modal-overlay" id="moqModal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="24" height="24" fill="none" stroke="#D97706" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <div class="modal-title">Quantity Below MOQ</div>
+    <div class="modal-body" id="moqModalBody">
+      The quantity you entered is below the minimum order quantity. Please enter a quantity that meets or exceeds the MOQ, or remove this item for this location.
+    </div>
+    <div style="background:var(--amber-bg);border:1px solid #FDE68A;border-radius:8px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:13px;color:#92400E;">Minimum Order Quantity</span>
+      <span style="font-size:18px;font-weight:800;color:var(--amber);" id="moqModalValue">100 units</span>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="document.getElementById('moqModal').classList.remove('show')">Keep Editing</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  Role management (shared across pages)
+// ─────────────────────────────────────────────
+let currentRole = localStorage.getItem('erpRole') || 'buyer';
+
+function setRole(role) {
+  currentRole = role;
+  localStorage.setItem('erpRole', role);
+  applyRole();
+}
+
+function applyRole() {
+  const isBuyer = currentRole === 'buyer';
+  document.getElementById('roleBuyerBtn').classList.toggle('active', isBuyer);
+  document.getElementById('roleApproverBtn').classList.toggle('active', !isBuyer);
+  if (isBuyer) {
+    document.getElementById('navUserName').textContent = 'Sarah Mitchell';
+    document.getElementById('navUserRole').textContent = 'Buyer · Global Retail Inc.';
+    document.getElementById('navAvatar').textContent = 'SM';
+    document.getElementById('navAvatar').style.cssText = 'background:var(--red-light);color:var(--red);border-color:var(--red-mid);';
+  } else {
+    document.getElementById('navUserName').textContent = 'David Ng';
+    document.getElementById('navUserRole').textContent = 'Approver · Global Retail Inc.';
+    document.getElementById('navAvatar').textContent = 'DN';
+    document.getElementById('navAvatar').style.cssText = 'background:#FFFBEB;color:#D97706;border-color:#FDE68A;';
+  }
+}
+
+applyRole();
+
+// ─────────────────────────────────────────────
+//  State
+// ─────────────────────────────────────────────
+const CATALOG = [
+  { sku: 'SKU-00401', name: 'Jasmine Rice 5kg',          price: 950,  moq: 50,  unit: 'bags'  },
+  { sku: 'SKU-00402', name: 'Brown Rice 5kg',             price: 1050, moq: 50,  unit: 'bags'  },
+  { sku: 'SKU-00412', name: 'Cooking Oil 2L',             price: 380,  moq: 100, unit: 'btls'  },
+  { sku: 'SKU-00413', name: 'Coconut Oil 1L',             price: 290,  moq: 50,  unit: 'btls'  },
+  { sku: 'SKU-00418', name: 'Soy Sauce 500ml Case',       price: 1200, moq: 20,  unit: 'cases' },
+  { sku: 'SKU-00420', name: 'Fish Sauce 750ml Case',      price: 980,  moq: 20,  unit: 'cases' },
+  { sku: 'SKU-00425', name: 'Sugar 1kg Pack',             price: 140,  moq: 200, unit: 'packs' },
+  { sku: 'SKU-00426', name: 'Brown Sugar 1kg',            price: 160,  moq: 200, unit: 'packs' },
+  { sku: 'SKU-00430', name: 'Egg Noodles 400g Box',       price: 750,  moq: 30,  unit: 'boxes' },
+  { sku: 'SKU-00432', name: 'Rice Noodles 200g Box',      price: 480,  moq: 30,  unit: 'boxes' },
+  { sku: 'SKU-00445', name: 'Bottled Water 1.5L Case',    price: 625,  moq: 50,  unit: 'cases' },
+  { sku: 'SKU-00451', name: 'Salt 1kg Pack',              price: 90,   moq: 100, unit: 'packs' },
+  { sku: 'SKU-00460', name: 'Canned Sardines Case',       price: 1800, moq: 24,  unit: 'cases' },
+  { sku: 'SKU-00465', name: 'Canned Tuna Case',           price: 2400, moq: 24,  unit: 'cases' },
+  { sku: 'SKU-00470', name: 'Instant Noodles Box',        price: 850,  moq: 50,  unit: 'boxes' },
+];
+
+const state = {
+  multiLocation: true,
+  facilities: ['Orchard Branch', 'Tampines WH', 'Jurong West Store'],
+  singleFacility: 'Orchard Branch',
+  items: [
+    { sku: 'SKU-00401', name: 'Jasmine Rice 5kg',        price: 950,  moq: 50,  unit: 'bags',  qtys: { 'Orchard Branch': 60, 'Tampines WH': 80, 'Jurong West Store': 55 } },
+    { sku: 'SKU-00412', name: 'Cooking Oil 2L',           price: 380,  moq: 100, unit: 'btls',  qtys: { 'Orchard Branch': 30, 'Tampines WH': 120, 'Jurong West Store': 40 } },
+    { sku: 'SKU-00418', name: 'Soy Sauce 500ml Case',     price: 1200, moq: 20,  unit: 'cases', qtys: { 'Orchard Branch': 25, 'Tampines WH': 30,  'Jurong West Store': 22 } },
+  ],
+};
+
+function fmt(n) {
+  return '₱' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function getActiveFacilities() {
+  if (state.multiLocation) {
+    return state.facilities.slice();
+  } else {
+    return state.singleFacility ? [state.singleFacility] : ['Orchard Branch'];
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Step 5: render table based on state
+// ─────────────────────────────────────────────
+function renderStep5Table() {
+  const facilities = getActiveFacilities();
+
+  // Update info alert
+  if (facilities.length > 1) {
+    document.getElementById('facilitiesInfoText').innerHTML =
+      `Delivering to <strong>${facilities.length} facilities:</strong> ${facilities.join(', ')}. Quantities are set per facility.`;
+    document.getElementById('facilitiesInfoAlert').style.display = 'flex';
+  } else {
+    document.getElementById('facilitiesInfoText').innerHTML =
+      `Delivering to <strong>1 facility:</strong> ${facilities[0]}. Enter quantities below.`;
+    document.getElementById('facilitiesInfoAlert').style.display = 'flex';
+  }
+
+  // Ensure all items have qtys for all current facilities
+  state.items.forEach(item => {
+    facilities.forEach(f => {
+      if (item.qtys[f] === undefined) item.qtys[f] = 0;
+    });
+  });
+
+  // Head
+  const thead = document.getElementById('itemsTableHead');
+  let headHtml = '<tr><th style="width:36px;"><input type="checkbox" checked style="accent-color:var(--red);width:14px;height:14px;" /></th><th>Item</th><th>Unit Price</th><th>MOQ</th>';
+  facilities.forEach(f => { headHtml += `<th>${f}</th>`; });
+  headHtml += '<th>Total Qty</th><th>Subtotal</th></tr>';
+  thead.innerHTML = headHtml;
+
+  // Body
+  const tbody = document.getElementById('itemsTableBody');
+  let bodyHtml = '';
+  state.items.forEach((item, idx) => {
+    let totalQty = 0;
+    facilities.forEach(f => { totalQty += (parseInt(item.qtys[f]) || 0); });
+    const subtotal = totalQty * item.price;
+    let hasWarn = false;
+    facilities.forEach(f => {
+      const q = parseInt(item.qtys[f]) || 0;
+      if (q > 0 && q < item.moq) hasWarn = true;
+    });
+
+    bodyHtml += `<tr data-idx="${idx}"><td><input type="checkbox" checked style="accent-color:var(--red);width:14px;height:14px;" /></td>
+      <td><div class="item-name">${item.name}</div><div class="item-sku">${item.sku}</div></td>
+      <td>${fmt(item.price)}</td>
+      <td><span class="moq-badge">${item.moq} ${item.unit}</span></td>`;
+
+    facilities.forEach(f => {
+      const q = item.qtys[f] || 0;
+      const warnClass = (q > 0 && q < item.moq) ? 'warn' : '';
+      const warnHtml = (q > 0 && q < item.moq)
+        ? `<div class="moq-warn show"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Below MOQ (${item.moq})</div>`
+        : `<div class="moq-warn"></div>`;
+      bodyHtml += `<td><div><input type="number" class="qty-input ${warnClass}" value="${q}" min="0"
+        data-idx="${idx}" data-facility="${f}"
+        oninput="onQtyChange(this,${idx},'${f}',${item.moq})" />${warnHtml}</div></td>`;
+    });
+
+    const totalDisplay = hasWarn
+      ? `<span style="color:var(--red);font-weight:700;">${totalQty} ⚠</span>`
+      : `<span style="font-weight:700;">${totalQty}</span>`;
+    const subtotalDisplay = hasWarn
+      ? `<span style="color:var(--gray-400);">—</span>`
+      : `<span style="font-weight:700;color:var(--red);">${fmt(subtotal)}</span>`;
+
+    bodyHtml += `<td>${totalDisplay}</td><td>${subtotalDisplay}</td>`;
+    bodyHtml += `</tr>`;
+  });
+  tbody.innerHTML = bodyHtml;
+
+  // Foot
+  const tfoot = document.getElementById('itemsTableFoot');
+  let grandTotal = 0;
+  state.items.forEach(item => {
+    let totalQty = 0;
+    facilities.forEach(f => { totalQty += (parseInt(item.qtys[f]) || 0); });
+    const hasWarn = facilities.some(f => { const q = parseInt(item.qtys[f])||0; return q > 0 && q < item.moq; });
+    if (!hasWarn) grandTotal += totalQty * item.price;
+  });
+  tfoot.innerHTML = `<tr style="background:var(--gray-50);">
+    <td colspan="${4 + facilities.length}" style="text-align:right;font-weight:700;font-size:14px;padding:14px;">Order Total</td>
+    <td style="font-weight:800;font-size:15px;color:var(--red);padding:14px;">${fmt(grandTotal)}</td>
+  </tr>`;
+
+  updateMoqWarningBanner();
+}
+
+function onQtyChange(input, idx, facility, moq) {
+  const val = parseInt(input.value) || 0;
+  state.items[idx].qtys[facility] = val;
+  const warnEl = input.parentElement.querySelector('.moq-warn');
+  if (val > 0 && val < moq) {
+    input.classList.add('warn');
+    if (warnEl) { warnEl.classList.add('show'); warnEl.innerHTML = `<svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Below MOQ (${moq})`; }
+  } else {
+    input.classList.remove('warn');
+    if (warnEl) { warnEl.classList.remove('show'); warnEl.innerHTML = ''; }
+  }
+  // Recalculate row totals
+  const row = input.closest('tr');
+  const facilities = getActiveFacilities();
+  let totalQty = 0;
+  facilities.forEach(f => { totalQty += (parseInt(state.items[idx].qtys[f]) || 0); });
+  const hasWarn = facilities.some(f => { const q = parseInt(state.items[idx].qtys[f])||0; return q > 0 && q < state.items[idx].moq; });
+  const cells = row.querySelectorAll('td');
+  const totalCell = cells[cells.length - 2];
+  const subtotalCell = cells[cells.length - 1];
+  totalCell.innerHTML = hasWarn
+    ? `<span style="color:var(--red);font-weight:700;">${totalQty} ⚠</span>`
+    : `<span style="font-weight:700;">${totalQty}</span>`;
+  const sub = hasWarn ? 0 : totalQty * state.items[idx].price;
+  subtotalCell.innerHTML = hasWarn
+    ? `<span style="color:var(--gray-400);">—</span>`
+    : `<span style="font-weight:700;color:var(--red);">${fmt(sub)}</span>`;
+  // Recalc footer
+  let grandTotal = 0;
+  state.items.forEach((item, i) => {
+    let tq = 0;
+    facilities.forEach(f => { tq += (parseInt(item.qtys[f]) || 0); });
+    const hw = facilities.some(f => { const q=parseInt(item.qtys[f])||0; return q>0&&q<item.moq; });
+    if (!hw) grandTotal += tq * item.price;
+  });
+  const footTd = document.querySelector('#itemsTableFoot td:last-child');
+  if (footTd) footTd.textContent = fmt(grandTotal);
+  updateMoqWarningBanner();
+}
+
+function updateMoqWarningBanner() {
+  const facilities = getActiveFacilities();
+  let warnCount = 0;
+  state.items.forEach(item => {
+    facilities.forEach(f => {
+      const q = parseInt(item.qtys[f]) || 0;
+      if (q > 0 && q < item.moq) warnCount++;
+    });
+  });
+  const banner = document.getElementById('moqWarningAlert');
+  if (warnCount > 0) {
+    banner.style.display = 'flex';
+    document.getElementById('moqWarningText').innerHTML = `<strong>${warnCount} quantity ${warnCount === 1 ? 'entry' : 'entries'} below MOQ.</strong> Please adjust the highlighted quantities before proceeding.`;
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Catalog autocomplete
+// ─────────────────────────────────────────────
+function showCatalogSearch() {
+  document.getElementById('catalogSearchRow').classList.add('show');
+  document.getElementById('catalogSearchInput').focus();
+  document.getElementById('catalogSearchInput').value = '';
+  hideCatalogDropdown();
+}
+
+function hideCatalogSearch() {
+  document.getElementById('catalogSearchRow').classList.remove('show');
+  hideCatalogDropdown();
+}
+
+function hideCatalogDropdown() {
+  document.getElementById('catalogDropdown').classList.remove('show');
+  document.getElementById('catalogDropdown').innerHTML = '';
+}
+
+function onCatalogSearch(q) {
+  const dd = document.getElementById('catalogDropdown');
+  if (!q.trim()) { hideCatalogDropdown(); return; }
+  const term = q.toLowerCase();
+  const addedSkus = new Set(state.items.map(i => i.sku));
+  const matches = CATALOG.filter(c =>
+    !addedSkus.has(c.sku) &&
+    (c.name.toLowerCase().includes(term) || c.sku.toLowerCase().includes(term))
+  );
+  if (matches.length === 0) {
+    dd.innerHTML = '<div class="catalog-no-results">No matching items found.</div>';
+    dd.classList.add('show');
+    return;
+  }
+  dd.innerHTML = matches.map(c => `
+    <div class="catalog-item" onclick="addCatalogItem('${c.sku}')">
+      <div>
+        <div class="catalog-item-name">${c.name}</div>
+        <div class="catalog-item-sku">${c.sku} · MOQ: ${c.moq} ${c.unit}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="catalog-item-price">${fmt(c.price)}</div>
+        <div class="catalog-item-moq">per unit</div>
+      </div>
+    </div>`).join('');
+  dd.classList.add('show');
+}
+
+function addCatalogItem(sku) {
+  const catalog = CATALOG.find(c => c.sku === sku);
+  if (!catalog) return;
+  const facilities = getActiveFacilities();
+  const qtys = {};
+  facilities.forEach(f => { qtys[f] = 0; });
+  state.items.push({
+    sku: catalog.sku,
+    name: catalog.name,
+    price: catalog.price,
+    moq: catalog.moq,
+    unit: catalog.unit,
+    qtys,
+  });
+  hideCatalogSearch();
+  renderStep5Table();
+}
+
+// ─────────────────────────────────────────────
+//  Step 6 review render
+// ─────────────────────────────────────────────
+function renderReview() {
+  const facilities = getActiveFacilities();
+  document.getElementById('reviewLocationCount').textContent = facilities.length + (facilities.length === 1 ? ' facility' : ' facilities');
+  document.getElementById('reviewLocationChips').innerHTML = facilities.map(f => `<span class="chip">${f}</span>`).join('');
+
+  let bodyHtml = '';
+  let grandTotal = 0;
+  state.items.forEach(item => {
+    let totalQty = 0;
+    facilities.forEach(f => { totalQty += (parseInt(item.qtys[f]) || 0); });
+    if (totalQty === 0) return;
+    const sub = totalQty * item.price;
+    grandTotal += sub;
+    bodyHtml += `<tr>
+      <td><strong>${item.name}</strong></td>
+      <td style="font-family:monospace;font-size:12px;color:var(--gray-500);">${item.sku}</td>
+      <td>${fmt(item.price)}</td>
+      <td>${totalQty}</td>
+      <td style="font-weight:700;">${fmt(sub)}</td>
+    </tr>`;
+  });
+  document.getElementById('reviewTableBody').innerHTML = bodyHtml;
+  document.getElementById('reviewTotal').textContent = fmt(grandTotal);
+}
+
+// ─────────────────────────────────────────────
+//  Stepper & navigation
+// ─────────────────────────────────────────────
+const REVISE_MODE = new URLSearchParams(window.location.search).get('revise') === 'true';
+let currentStep = REVISE_MODE ? 5 : 1;
+const totalSteps = 6;
+// In revise mode, steps 1 and 2 are locked (can't go back past 3)
+const REVISE_MIN_STEP = 3;
+
+if (REVISE_MODE) {
+  document.getElementById('rejectionBanner').style.display = 'flex';
+  document.getElementById('pageTitle').textContent = 'Revise Purchase Order';
+}
+
+function updateStepper() {
+  for (let i = 1; i <= totalSteps; i++) {
+    const ind = document.getElementById('step-ind-' + i);
+    const sec = document.getElementById('section-' + i);
+    ind.classList.remove('active', 'done', 'locked');
+    sec.classList.remove('active');
+    if (REVISE_MODE && i <= 2) {
+      ind.classList.add('done');
+    } else if (i < currentStep) {
+      ind.classList.add('done');
+    } else if (i === currentStep) {
+      ind.classList.add('active');
+    }
+    if (i === currentStep) sec.classList.add('active');
+  }
+
+  // Update step numbers
+  for (let i = 1; i <= totalSteps; i++) {
+    const num = document.querySelector('#step-ind-' + i + ' .step-num');
+    const isDone = (REVISE_MODE && i <= 2) || i < currentStep;
+    num.textContent = isDone ? '✓' : i;
+  }
+
+  document.getElementById('stepIndicator').textContent = 'Step ' + currentStep + ' of ' + totalSteps;
+
+  const prevBtn = document.getElementById('prevBtn');
+  if (REVISE_MODE) {
+    prevBtn.style.visibility = currentStep <= REVISE_MIN_STEP ? 'hidden' : 'visible';
+  } else {
+    prevBtn.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+  }
+
+  const nextBtn = document.getElementById('nextBtn');
+  if (currentStep === totalSteps) {
+    nextBtn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Submit PO';
+    nextBtn.onclick = submitPO;
+  } else {
+    nextBtn.innerHTML = 'Next <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>';
+    nextBtn.onclick = nextStep;
+  }
+
+  // When entering step 5, re-render table
+  if (currentStep === 5) {
+    syncFacilitiesFromUI();
+    renderStep5Table();
+  }
+  // When entering step 6, render review
+  if (currentStep === 6) {
+    renderReview();
+  }
+}
+
+function nextStep() {
+  if (currentStep < totalSteps) {
+    currentStep++;
+    updateStepper();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function prevStep() {
+  const minStep = REVISE_MODE ? REVISE_MIN_STEP : 1;
+  if (currentStep > minStep) {
+    currentStep--;
+    updateStepper();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function submitPO() {
+  window.location.href = 'po-approver.html';
+}
+
+function saveDraft() {
+  const btn = document.getElementById('nextBtn').previousElementSibling;
+  if (btn) { const orig = btn.textContent; btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = orig, 1500); }
+}
+
+// ─────────────────────────────────────────────
+//  Vendor selection
+// ─────────────────────────────────────────────
+function selectVendor(el) {
+  document.querySelectorAll('.vendor-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ─────────────────────────────────────────────
+//  Facilities step logic
+// ─────────────────────────────────────────────
+function toggleFacilities() {
+  const multi = document.getElementById('multiToggle').checked;
+  state.multiLocation = multi;
+  document.getElementById('multiFacilities').style.display = multi ? 'block' : 'none';
+  document.getElementById('singleFacility').style.display = multi ? 'none' : 'block';
+}
+
+function removeFacility(el) {
+  const tag = el.closest('.facility-tag');
+  const name = tag.getAttribute('data-name');
+  tag.remove();
+  state.facilities = state.facilities.filter(f => f !== name);
+}
+
+function addFacilityFromCheckbox(cb, name) {
+  if (cb.checked) {
+    if (!state.facilities.includes(name)) {
+      state.facilities.push(name);
+      const tag = document.createElement('div');
+      tag.className = 'facility-tag selected';
+      tag.setAttribute('data-name', name);
+      tag.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${name}<span class="remove" onclick="removeFacility(this)">×</span>`;
+      document.getElementById('facilityList').appendChild(tag);
+    }
+  } else {
+    state.facilities = state.facilities.filter(f => f !== name);
+    document.querySelectorAll('#facilityList .facility-tag').forEach(tag => {
+      if (tag.getAttribute('data-name') === name) tag.remove();
+    });
+  }
+}
+
+function addNewFacility() {
+  const name = prompt('Enter facility name:');
+  if (name && name.trim()) {
+    const n = name.trim();
+    if (!state.facilities.includes(n)) {
+      state.facilities.push(n);
+      const tag = document.createElement('div');
+      tag.className = 'facility-tag selected';
+      tag.setAttribute('data-name', n);
+      tag.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${n}<span class="remove" onclick="removeFacility(this)">×</span>`;
+      document.getElementById('facilityList').appendChild(tag);
+    }
+  }
+}
+
+function syncFacilitiesFromUI() {
+  // Read facility tags from DOM to keep state in sync
+  if (state.multiLocation) {
+    const tags = document.querySelectorAll('#facilityList .facility-tag.selected');
+    state.facilities = Array.from(tags).map(t => t.getAttribute('data-name')).filter(Boolean);
+  } else {
+    const sel = document.getElementById('singleFacilitySelect');
+    if (sel && sel.value && sel.value !== '— Select a location —') {
+      state.singleFacility = sel.value;
+    }
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Close dropdown on outside click
+// ─────────────────────────────────────────────
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#catalogInputWrap') && !e.target.closest('#catalogSearchRow')) {
+    hideCatalogDropdown();
+  }
+});
+
+// ─────────────────────────────────────────────
+//  Init
+// ─────────────────────────────────────────────
+updateStepper();
+</script>
+</body>
+</html>

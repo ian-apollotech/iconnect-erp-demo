@@ -1,0 +1,208 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic "Tasks" [ref=e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e14] [cursor=pointer]: "3"
+      - generic [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: RC
+        - generic [ref=e21]:
+          - generic [ref=e22]: Rica Cruz
+          - generic [ref=e23]: Merchandise Admin
+  - navigation [ref=e24]:
+    - generic [ref=e1783]:
+      - heading "Overview" [level=4] [ref=e1784]
+      - generic [ref=e1785] [cursor=pointer]: Dashboard
+    - generic [ref=e1789]:
+      - heading "Master Data" [level=4] [ref=e1790]
+      - generic [ref=e1791] [cursor=pointer]:
+        - generic [ref=e1794]: Company Maintenance
+        - generic [ref=e1795]: "1"
+      - generic [ref=e1796]:
+        - heading "Store Branch Maintenance" [level=5] [ref=e1797]
+        - generic [ref=e1798] [cursor=pointer]:
+          - generic [ref=e1801]: Branch
+          - generic [ref=e1802]: "2"
+      - generic [ref=e1803]:
+        - heading "Store Grouping" [level=5] [ref=e1804]
+        - generic [ref=e1805] [cursor=pointer]: Price Zone
+        - generic [ref=e1809] [cursor=pointer]: Cost Zone
+        - generic [ref=e1813] [cursor=pointer]: Store Cluster
+        - generic [ref=e1817] [cursor=pointer]: Assortment Plan
+        - generic [ref=e1821] [cursor=pointer]: Replenishment Policy
+      - generic [ref=e1825]:
+        - heading "Vendor Maintenance" [level=5] [ref=e1826]
+        - generic [ref=e1827] [cursor=pointer]:
+          - generic [ref=e1830]: Vendor
+          - generic [ref=e1831]: "3"
+        - generic [ref=e1832] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=e1836] [cursor=pointer]: Vendor Catalog
+        - generic [ref=e1840] [cursor=pointer]:
+          - generic [ref=e1843]: Vendor Allowance
+          - generic [ref=e1844]: "4"
+      - generic [ref=e1845]:
+        - heading "Product Maintenance" [level=5] [ref=e1846]
+        - generic [ref=e1847] [cursor=pointer]:
+          - generic [ref=e1850]: Category Hierarchy
+          - generic [ref=e1851]: "5"
+        - generic [ref=e1852] [cursor=pointer]:
+          - generic [ref=e1855]: Product
+          - generic [ref=e1856]: "6"
+    - generic [ref=e1857]:
+      - heading "Inventory & Pricing" [level=4] [ref=e1858]
+      - generic [ref=e1859] [cursor=pointer]:
+        - generic [ref=e1862]: Product Inventory
+        - generic [ref=e1863]: "7"
+      - generic [ref=e1864] [cursor=pointer]:
+        - generic [ref=e1867]: Price Change Mgmt
+        - generic [ref=e1868]: "8"
+      - generic [ref=e1869] [cursor=pointer]:
+        - generic [ref=e1872]: Cost Change Mgmt
+        - generic [ref=e1873]: "9"
+    - generic [ref=e1874]:
+      - heading "Procurement" [level=4] [ref=e1875]
+      - generic [ref=e1876] [cursor=pointer]:
+        - generic [ref=e1879]: Purchase Order
+        - generic [ref=e1880]: "10"
+      - generic [ref=e1881] [cursor=pointer]:
+        - generic [ref=e1884]: Auto Replenishment
+        - generic [ref=e1885]: "11"
+      - generic [ref=e1886] [cursor=pointer]:
+        - generic [ref=e1889]: PO Receiving
+        - generic [ref=e1890]: "12"
+    - generic [ref=e1891]:
+      - heading "Store Operations" [level=4] [ref=e1892]
+      - generic [ref=e1893] [cursor=pointer]:
+        - generic [ref=e1896]: Store-to-Store Transfer
+        - generic [ref=e1897]: "13"
+      - generic [ref=e1898] [cursor=pointer]:
+        - generic [ref=e1901]: Return To Vendor
+        - generic [ref=e1902]: "14"
+      - generic [ref=e1903] [cursor=pointer]:
+        - generic [ref=e1906]: Inventory Adjustment
+        - generic [ref=e1907]: "15"
+      - generic [ref=e1908] [cursor=pointer]:
+        - generic [ref=e1911]: Make-up / Break-up
+        - generic [ref=e1912]: "16"
+    - generic [ref=e1913]:
+      - heading "Sales" [level=4] [ref=e1914]
+      - generic [ref=e1915] [cursor=pointer]:
+        - generic [ref=e1918]: POS Sales
+        - generic [ref=e1919]: "17"
+    - generic [ref=e1920]:
+      - heading "User Management" [level=4] [ref=e1921]
+      - generic [ref=e1922] [cursor=pointer]: Users
+      - generic [ref=e1926] [cursor=pointer]: Roles
+      - generic [ref=e1930] [cursor=pointer]: Branch Access
+      - generic [ref=e1934] [cursor=pointer]: Audit Log
+  - main [ref=e180]:
+    - generic [ref=e1938]: iConnect ERP › Assortment Plan
+    - generic [ref=e1939]:
+      - generic [ref=e1940]:
+        - heading "Assortment Plan" [level=1] [ref=e1941]
+        - paragraph [ref=e1942]: Assign the SKU list a Company, Store Cluster, or Store carries. A store uses its own plan; if none, its Store Cluster’s; otherwise the Company default.
+      - generic [ref=e1943]:
+        - button "Export" [ref=e1944] [cursor=pointer]
+        - button "New Assortment Plan" [ref=e1947] [cursor=pointer]
+    - generic [ref=e1950]: Single-level, full replacement. Each plan is a complete SKU list for one level. Resolution precedence is Store › Store Cluster › Company — the most specific plan wins; a plan never merges with another level. A newer plan for the same target supersedes the prior one on its effective date.
+    - generic [ref=e1955]:
+      - generic [ref=e1956]:
+        - generic [ref=e1957]:
+          - generic [ref=e1958]: Search
+          - textbox "Plan name or code…" [ref=e1959]
+        - generic [ref=e1960]:
+          - generic [ref=e1961]: Company
+          - combobox [ref=e1962]:
+            - option "All Companies" [selected]
+            - option "Puregold Price Club, Inc."
+            - option "Ayagold Retailers Inc. (Merkado)"
+        - generic [ref=e1963]:
+          - generic [ref=e1964]: Level
+          - combobox [ref=e1965]:
+            - option "All Levels" [selected]
+            - option "Company (all stores)"
+            - option "Store Cluster"
+            - option "Store"
+        - generic [ref=e1966]:
+          - generic [ref=e1967]: Status
+          - combobox [ref=e1968]:
+            - option "All" [selected]
+            - option "Active"
+            - option "Scheduled"
+            - option "Superseded"
+            - option "Inactive"
+        - button "Apply" [ref=e1969] [cursor=pointer]
+      - table [ref=e1972]:
+        - rowgroup [ref=e1973]:
+          - row [ref=e1974]:
+            - columnheader "Code" [ref=e1975]
+            - columnheader "Plan Name" [ref=e1976]
+            - columnheader "Level" [ref=e1977]
+            - columnheader "Target" [ref=e1978]
+            - columnheader "Company" [ref=e1979]
+            - columnheader "Ranged SKUs" [ref=e1980]
+            - columnheader "Effective From" [ref=e1981]
+            - columnheader "Type" [ref=e1982]
+            - columnheader "Status" [ref=e1983]
+            - columnheader [ref=e1984]
+        - rowgroup [ref=e1985]:
+          - row [ref=e1986]:
+            - cell "AP-0001" [ref=e1987]
+            - cell "Urban-Large Core Range" [ref=e1988]
+            - cell "Store Cluster" [ref=e1989]
+            - cell "CL-URB-L · Urban Large" [ref=e1991]
+            - cell "PGOLD" [ref=e1992]
+            - cell "42,500" [ref=e1993]
+            - cell "2026-06-01" [ref=e1994]
+            - cell "Regular" [ref=e1995]
+            - cell "Active" [ref=e1997]
+            - cell [ref=e1999]:
+              - button "Duplicate" [ref=e2000] [cursor=pointer]
+          - row [ref=e2001]:
+            - cell "AP-0002" [ref=e2002]
+            - cell "Convenience Minimart Range" [ref=e2003]
+            - cell "Store Cluster" [ref=e2004]
+            - cell "CL-CONV · Convenience" [ref=e2006]
+            - cell "PGOLD" [ref=e2007]
+            - cell "6,400" [ref=e2008]
+            - cell "2026-06-15" [ref=e2009]
+            - cell "Regular" [ref=e2010]
+            - cell "Active" [ref=e2012]
+            - cell [ref=e2014]:
+              - button "Duplicate" [ref=e2015] [cursor=pointer]
+          - row [ref=e2016]:
+            - cell "AP-0003" [ref=e2017]
+            - cell "Puregold National Default" [ref=e2018]
+            - cell "Company (all stores)" [ref=e2019]
+            - cell "All Stores" [ref=e2021]
+            - cell "PGOLD" [ref=e2022]
+            - cell "12,800" [ref=e2023]
+            - cell "2026-01-01" [ref=e2024]
+            - cell "Regular" [ref=e2025]
+            - cell "Active" [ref=e2027]
+            - cell [ref=e2029]:
+              - button "Duplicate" [ref=e2030] [cursor=pointer]
+          - row [ref=e2031]:
+            - cell "AP-0004" [ref=e2032]
+            - cell "Ortigas Local Add-ins" [ref=e2033]
+            - cell "Store" [ref=e2034]
+            - cell "0102 · Ortigas Ext." [ref=e2036]
+            - cell "PGOLD" [ref=e2037]
+            - cell "320" [ref=e2038]
+            - cell "2026-07-01" [ref=e2039]
+            - cell "Seasonal" [ref=e2040]
+            - cell "Scheduled" [ref=e2042]
+            - cell [ref=e2044]:
+              - button "Duplicate" [ref=e2045] [cursor=pointer]
+      - generic [ref=e2046]:
+        - generic [ref=e2047]: Showing 4 of 4 records
+        - generic [ref=e2048]:
+          - button "‹ Prev" [ref=e2049] [cursor=pointer]
+          - button "1" [ref=e2050] [cursor=pointer]
+          - button "2" [ref=e2051] [cursor=pointer]
+          - button "3" [ref=e2052] [cursor=pointer]
+          - button "Next ›" [ref=e2053] [cursor=pointer]

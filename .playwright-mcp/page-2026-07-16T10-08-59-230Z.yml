@@ -1,0 +1,167 @@
+- generic [ref=f2e2]:
+  - banner [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]: iC
+      - generic [ref=f2e6]:
+        - text: iConnect ERP
+        - generic [ref=f2e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=f2e8]:
+      - generic "Tasks" [ref=f2e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=f2e14] [cursor=pointer]: "3"
+      - generic [ref=f2e19] [cursor=pointer]:
+        - generic [ref=f2e20]: RC
+        - generic [ref=f2e21]:
+          - generic [ref=f2e22]: Rica Cruz
+          - generic [ref=f2e23]: Merchandise Admin
+  - navigation [ref=f2e24]:
+    - generic [ref=f2e1093]:
+      - heading "Overview" [level=4] [ref=f2e1094]
+      - generic [ref=f2e1095] [cursor=pointer]: Dashboard
+    - generic [ref=f2e1099]:
+      - heading "Master Data" [level=4] [ref=f2e1100]
+      - generic [ref=f2e1101] [cursor=pointer]:
+        - generic [ref=f2e1104]: Company Maintenance
+        - generic [ref=f2e1105]: "1"
+      - generic [ref=f2e1106]:
+        - heading "Store Branch Maintenance" [level=5] [ref=f2e1107]
+        - generic [ref=f2e1108] [cursor=pointer]: Chain
+        - generic [ref=f2e1112] [cursor=pointer]: Zone
+        - generic [ref=f2e1116] [cursor=pointer]:
+          - generic [ref=f2e1119]: Branch
+          - generic [ref=f2e1120]: "2"
+      - generic [ref=f2e1121]:
+        - heading "Vendor Maintenance" [level=5] [ref=f2e1122]
+        - generic [ref=f2e1123] [cursor=pointer]:
+          - generic [ref=f2e1126]: Vendor
+          - generic [ref=f2e1127]: "3"
+        - generic [ref=f2e1128] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=f2e1132] [cursor=pointer]: Vendor Catalog
+        - generic [ref=f2e1136] [cursor=pointer]:
+          - generic [ref=f2e1139]: Vendor Allowance
+          - generic [ref=f2e1140]: "4"
+      - generic [ref=f2e1141]:
+        - heading "Product Maintenance" [level=5] [ref=f2e1142]
+        - generic [ref=f2e1143] [cursor=pointer]:
+          - generic [ref=f2e1146]: Category Hierarchy
+          - generic [ref=f2e1147]: "5"
+        - generic [ref=f2e1148] [cursor=pointer]:
+          - generic [ref=f2e1151]: Product
+          - generic [ref=f2e1152]: "6"
+    - generic [ref=f2e1153]:
+      - heading "Inventory & Pricing" [level=4] [ref=f2e1154]
+      - generic [ref=f2e1155] [cursor=pointer]:
+        - generic [ref=f2e1158]: Product Inventory
+        - generic [ref=f2e1159]: "7"
+      - generic [ref=f2e1160] [cursor=pointer]:
+        - generic [ref=f2e1163]: Price Change Mgmt
+        - generic [ref=f2e1164]: "8"
+      - generic [ref=f2e1165] [cursor=pointer]:
+        - generic [ref=f2e1168]: Cost Change Mgmt
+        - generic [ref=f2e1169]: "9"
+    - generic [ref=f2e1170]:
+      - heading "Procurement" [level=4] [ref=f2e1171]
+      - generic [ref=f2e1172] [cursor=pointer]:
+        - generic [ref=f2e1175]: Purchase Order
+        - generic [ref=f2e1176]: "10"
+      - generic [ref=f2e1177] [cursor=pointer]:
+        - generic [ref=f2e1180]: Auto Replenishment
+        - generic [ref=f2e1181]: "11"
+      - generic [ref=f2e1182] [cursor=pointer]:
+        - generic [ref=f2e1185]: PO Receiving
+        - generic [ref=f2e1186]: "12"
+    - generic [ref=f2e1187]:
+      - heading "Store Operations" [level=4] [ref=f2e1188]
+      - generic [ref=f2e1189] [cursor=pointer]:
+        - generic [ref=f2e1192]: Store-to-Store Transfer
+        - generic [ref=f2e1193]: "13"
+      - generic [ref=f2e1194] [cursor=pointer]:
+        - generic [ref=f2e1197]: Return To Vendor
+        - generic [ref=f2e1198]: "14"
+      - generic [ref=f2e1199] [cursor=pointer]:
+        - generic [ref=f2e1202]: Inventory Adjustment
+        - generic [ref=f2e1203]: "15"
+      - generic [ref=f2e1204] [cursor=pointer]:
+        - generic [ref=f2e1207]: Make-up / Break-up
+        - generic [ref=f2e1208]: "16"
+    - generic [ref=f2e1209]:
+      - heading "Sales" [level=4] [ref=f2e1210]
+      - generic [ref=f2e1211] [cursor=pointer]:
+        - generic [ref=f2e1214]: POS Sales
+        - generic [ref=f2e1215]: "17"
+    - generic [ref=f2e1216]:
+      - heading "User Management" [level=4] [ref=f2e1217]
+      - generic [ref=f2e1218] [cursor=pointer]: Users
+      - generic [ref=f2e1222] [cursor=pointer]: Roles
+      - generic [ref=f2e1226] [cursor=pointer]: Branch Access
+      - generic [ref=f2e1230] [cursor=pointer]: Audit Log
+  - main [ref=f2e166]:
+    - generic [ref=f2e1234]: iConnect ERP › Module 3 › New Vendor
+    - generic [ref=f2e1235]:
+      - generic [ref=f2e1236]:
+        - heading "New Vendor" [level=1] [ref=f2e1237]
+        - paragraph [ref=f2e1238]: Onboard a supplier and its commercial terms.
+      - generic [ref=f2e1239]:
+        - button "‹ Back to list" [ref=f2e1240] [cursor=pointer]
+        - button "Save Draft" [ref=f2e1241] [cursor=pointer]
+        - button "Save Vendor" [ref=f2e1242] [cursor=pointer]
+    - generic [ref=f2e1243]:
+      - generic [ref=f2e1244]:
+        - heading "Details" [level=3] [ref=f2e1245]
+        - generic [ref=f2e1246]: New Vendor · Draft
+      - generic [ref=f2e1248]:
+        - generic [ref=f2e1249]: Identity
+        - generic [ref=f2e1250]:
+          - generic [ref=f2e1251]: Vendor Name *
+          - textbox [ref=f2e1252]
+        - generic [ref=f2e1253]:
+          - generic [ref=f2e1254]: TIN
+          - textbox [ref=f2e1255]
+        - generic [ref=f2e1256]:
+          - generic [ref=f2e1257]: Vendor Code
+          - textbox "Auto if left blank" [ref=f2e1258]
+        - generic [ref=f2e1259]: Commercial Terms
+        - generic [ref=f2e1260]:
+          - generic [ref=f2e1261]: Delivery Model
+          - combobox [ref=f2e1262]:
+            - option "Direct-to-Store (DTS)" [selected]
+            - option "Cross-dock"
+            - option "DSD"
+        - generic [ref=f2e1263]:
+          - generic [ref=f2e1264]: Payment Terms
+          - combobox [ref=f2e1265]:
+            - option "7 days" [selected]
+            - option "15 days"
+            - option "30 days"
+            - option "45 days"
+            - option "60 days"
+        - generic [ref=f2e1266]:
+          - generic [ref=f2e1267]: Lead Time
+          - textbox "e.g. 2 days" [ref=f2e1268]
+        - generic [ref=f2e1269]:
+          - generic [ref=f2e1270]: Min Order (₱)
+          - spinbutton [ref=f2e1271]
+        - generic [ref=f2e1272]:
+          - generic [ref=f2e1273]: RTV Allowed *
+          - combobox [ref=f2e1274]:
+            - option "Yes" [selected]
+            - option "No"
+          - generic [ref=f2e1275]: Controls whether damaged / unsold stock can be returned to this vendor.
+        - generic [ref=f2e1276]: Contact
+        - generic [ref=f2e1277]:
+          - generic [ref=f2e1278]: Registered Address
+          - textbox [ref=f2e1279]
+        - generic [ref=f2e1280]:
+          - generic [ref=f2e1281]: Contact Person
+          - textbox [ref=f2e1282]
+        - generic [ref=f2e1283]:
+          - generic [ref=f2e1284]: Phone
+          - textbox [ref=f2e1285]
+        - generic [ref=f2e1286]:
+          - generic [ref=f2e1287]: Email
+          - textbox [ref=f2e1288]
+    - generic [ref=f2e1290]:
+      - generic [ref=f2e1291]: Required fields (*) must be completed. This vendor’s Category Hierarchy and sellable SKUs (Vendor Catalog) are set up after onboarding, in their own functions under Vendor Maintenance.
+      - generic [ref=f2e1292]:
+        - button "Cancel" [ref=f2e1293] [cursor=pointer]
+        - button "Save Draft" [ref=f2e1294] [cursor=pointer]
+        - button "Save Vendor" [ref=f2e1295] [cursor=pointer]

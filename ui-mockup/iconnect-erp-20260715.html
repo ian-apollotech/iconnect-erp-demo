@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iConnect ERP — Merchandise & Supply Chain</title>
+<style>
+  :root{
+    --navy:#0f2540; --navy2:#16324f; --navy3:#1d3f63;
+    --blue:#2563eb; --blue-d:#1d4ed8; --blue-l:#eff4ff;
+    --bg:#f1f5f9; --panel:#ffffff; --line:#e2e8f0; --line2:#cbd5e1;
+    --txt:#1e293b; --muted:#64748b; --muted2:#94a3b8;
+    --green:#059669; --green-l:#dcfce7; --amber:#d97706; --amber-l:#fef3c7;
+    --red:#dc2626; --red-l:#fee2e2; --purple:#7c3aed; --purple-l:#ede9fe;
+    --cyan:#0891b2; --cyan-l:#cffafe;
+    --radius:6px; --sb:248px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--txt);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+  .app{display:grid;grid-template-columns:var(--sb) 1fr;grid-template-rows:52px 1fr;height:100vh}
+  .topbar{grid-column:1 / 3;display:flex;align-items:center;gap:16px;background:var(--panel);border-bottom:1px solid var(--line);padding:0 16px;z-index:30}
+  .sidebar{grid-row:2;background:var(--navy);overflow-y:auto;color:#cbd5e1}
+  .main{grid-row:2;overflow-y:auto;padding:20px 24px 60px}
+  .brand{display:flex;align-items:center;gap:10px;min-width:var(--sb);margin-left:-16px;padding-left:16px;font-weight:700;font-size:15px;color:var(--navy)}
+  .brand .logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,#2563eb,#0891b2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px}
+  .brand small{display:block;font-weight:500;font-size:10px;color:var(--muted);letter-spacing:.3px}
+  .ctx{display:flex;align-items:center;gap:8px}
+  .ctx select{font-size:12px;padding:5px 26px 5px 9px;border:1px solid var(--line2);border-radius:var(--radius);background:var(--panel);color:var(--txt);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 8px center}
+  .ctx label{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.5px;margin-right:2px}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .icon-btn{position:relative;color:var(--muted);cursor:pointer;display:flex}
+  .icon-btn .dot{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:9px;padding:0 4px;line-height:14px}
+  .user{display:flex;align-items:center;gap:8px;cursor:pointer;padding-left:12px;border-left:1px solid var(--line)}
+  .avatar{width:30px;height:30px;border-radius:50%;background:#334155;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px}
+  .user .u-name{font-weight:600;font-size:12px}
+  .user .u-role{font-size:10px;color:var(--muted)}
+  .nav-group{padding:6px 0}
+  .nav-group h4{font-size:10px;letter-spacing:.8px;text-transform:uppercase;color:#64748b;padding:12px 18px 6px;font-weight:700}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:8px 18px;cursor:pointer;font-size:12.5px;color:#cbd5e1;border-left:3px solid transparent;user-select:none}
+  .nav-item:hover{background:var(--navy2);color:#fff}
+  .nav-item.active{background:var(--navy3);color:#fff;border-left-color:var(--blue);font-weight:600}
+  .nav-item .ic{width:16px;height:16px;flex:none;opacity:.85}
+  .nav-item .num{margin-left:auto;font-size:10px;color:#64748b;background:rgba(255,255,255,.06);border-radius:4px;padding:1px 6px}
+  .nav-item.active .num{color:#bfdbfe;background:rgba(37,99,235,.25)}
+  .crumb{font-size:11px;color:var(--muted);margin-bottom:4px}
+  .crumb b{color:var(--txt)}
+  .page-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+  .page-head h1{font-size:20px;font-weight:700;color:var(--navy)}
+  .page-head p{color:var(--muted);font-size:12.5px;margin-top:2px;max-width:640px}
+  .page-head .ph-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 13px;border-radius:var(--radius);border:1px solid var(--line2);background:var(--panel);color:var(--txt);cursor:pointer;white-space:nowrap}
+  .btn:hover{background:#f8fafc}
+  .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+  .btn.primary:hover{background:var(--blue-d)}
+  .btn.sm{padding:4px 9px;font-size:11px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-bottom:18px}
+  .panel-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .panel-head h3{font-size:13.5px;font-weight:700}
+  .panel-head .sub{font-size:11px;color:var(--muted)}
+  .panel-head .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .panel-body{padding:16px}
+  .panel-body.flush{padding:0}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;border-left:3px solid var(--blue)}
+  .stat .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .stat .val{font-size:24px;font-weight:800;color:var(--navy);margin-top:6px;letter-spacing:-.5px}
+  .stat .delta{font-size:11px;margin-top:3px;font-weight:600}
+  .stat .delta.up{color:var(--green)} .stat .delta.down{color:var(--red)}
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:12px 16px;border-bottom:1px solid var(--line);background:#fbfcfe}
+  .field{display:flex;flex-direction:column;gap:4px}
+  .field label{font-size:10.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+  .field input,.field select{padding:6px 9px;border:1px solid var(--line2);border-radius:var(--radius);font-size:12px;background:var(--panel);min-width:150px}
+  .field.grow{flex:1}
+  .filters .spacer{margin-left:auto}
+  .tbl-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700;padding:9px 12px;background:#f8fafc;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0}
+  tbody td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody tr:hover{background:#f8fbff}
+  td .mono,.mono{font-family:"Consolas",monospace;font-size:11.5px}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .t-title{font-weight:600;color:var(--navy)}
+  .t-sub{font-size:11px;color:var(--muted)}
+  .chk{width:14px;height:14px;cursor:pointer}
+  .row-link{color:var(--blue);font-weight:600;cursor:pointer}
+  .row-link:hover{text-decoration:underline}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+  .badge:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+  .b-green{background:var(--green-l);color:#047857}
+  .b-amber{background:var(--amber-l);color:#b45309}
+  .b-red{background:var(--red-l);color:#b91c1c}
+  .b-blue{background:var(--blue-l);color:var(--blue-d)}
+  .b-gray{background:#f1f5f9;color:#475569}
+  .b-purple{background:var(--purple-l);color:#6d28d9}
+  .b-cyan{background:var(--cyan-l);color:#0e7490}
+  .tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tab{padding:9px 15px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tab:hover{color:var(--txt)}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+  .tab .cnt{font-size:10px;background:#e2e8f0;color:#475569;border-radius:9px;padding:0 6px;margin-left:5px}
+  .tab.active .cnt{background:var(--blue-l);color:var(--blue-d)}
+  .tabpane{display:none} .tabpane.active{display:block}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px 20px}
+  .form-grid.two{grid-template-columns:1fr 1fr}
+  .fg{display:flex;flex-direction:column;gap:5px}
+  .fg.full{grid-column:1 / -1}
+  .fg label{font-size:11px;font-weight:600;color:#475569}
+  .fg label .req{color:var(--red)}
+  .fg input,.fg select,.fg textarea{padding:7px 10px;border:1px solid var(--line2);border-radius:var(--radius);font-size:12.5px;background:var(--panel);font-family:inherit}
+  .fg input:focus,.fg select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-l)}
+  .fg input[readonly]{background:#f8fafc;color:var(--muted)}
+  .section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:6px 0 2px;padding-top:12px;border-top:1px dashed var(--line);grid-column:1/-1}
+  .section-label:first-child{border-top:none;padding-top:0}
+  .split{display:grid;grid-template-columns:1fr 380px;gap:18px;align-items:start}
+  @media(max-width:1200px){.split{grid-template-columns:1fr}}
+  .tree{font-size:12.5px}
+  .tree .node{padding:6px 10px;border-radius:5px;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .tree .node:hover{background:#f1f5f9}
+  .tree .node.active{background:var(--blue-l);color:var(--blue-d);font-weight:600}
+  .tree .lvl1{padding-left:12px;font-weight:700}
+  .tree .lvl2{padding-left:32px}
+  .tree .lvl3{padding-left:52px}
+  .tree .lvl4{padding-left:72px;color:var(--muted)}
+  .tree .caret{width:12px;color:var(--muted2)}
+  .tree .cnt{margin-left:auto;font-size:10px;color:var(--muted2)}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:12.5px}
+  .kv .k{color:var(--muted)} .kv .v{font-weight:600}
+  .steps{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+  .step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .step .n{width:22px;height:22px;border-radius:50%;background:#e2e8f0;color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
+  .step.done .n{background:var(--green);color:#fff}
+  .step.active{color:var(--navy);font-weight:700}
+  .step.active .n{background:var(--blue);color:#fff}
+  .step .line{width:36px;height:2px;background:var(--line2);margin:0 6px}
+  .empty{padding:40px;text-align:center;color:var(--muted2)}
+  .progress{height:7px;background:#eef2f7;border-radius:6px;overflow:hidden}
+  .progress > i{display:block;height:100%;border-radius:6px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+  .toolbar{display:flex;gap:8px;align-items:center;padding:10px 16px;background:var(--blue-l);border-bottom:1px solid #dbeafe;font-size:12px;color:var(--blue-d);font-weight:600}
+  .toolbar .btn{margin-left:auto}
+  .note{background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 12px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start}
+  .note svg{flex:none;margin-top:1px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:1000px){.grid2{grid-template-columns:1fr}}
+  .foot{display:flex;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line);background:#fbfcfe}
+  .foot .right{margin-left:auto;display:flex;gap:8px}
+  .mini-bar{display:flex;align-items:flex-end;gap:6px;height:120px}
+  .mini-bar i{flex:1;background:var(--blue);border-radius:2px 2px 0 0;opacity:.85}
+  .rbac{display:grid;grid-template-columns:260px 1fr;gap:18px;align-items:start}
+  @media(max-width:1000px){.rbac{grid-template-columns:1fr}}
+  .rolelist .role{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:12.5px;border:1px solid transparent}
+  .rolelist .role:hover{background:#f1f5f9}
+  .rolelist .role.active{background:var(--blue-l);border-color:#bfdbfe;color:var(--blue-d);font-weight:600}
+  .rolelist .role .cnt{margin-left:auto;font-size:10px;color:var(--muted2);background:rgba(100,116,139,.12);border-radius:10px;padding:1px 7px}
+  .rl-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .rl-actions{margin-left:auto;display:flex;gap:6px}
+  .rtag{font-size:9px;font-weight:700;color:#94a3b8;border:1px solid var(--line2);border-radius:4px;padding:1px 5px;text-transform:uppercase;letter-spacing:.3px}
+  .perm td:not(:first-child),.perm th:not(:first-child){text-align:center;width:74px}
+  .perm td:first-child{font-weight:600;color:var(--navy)}
+  .perm input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--blue)}
+  .scope{display:flex;flex-direction:column;gap:12px;font-size:12.5px}
+  .scope .opt{display:flex;align-items:center;gap:9px;font-weight:600;color:var(--txt)}
+  .scope .opt input{width:15px;height:15px;accent-color:var(--blue);cursor:pointer}
+  .zonechips{display:flex;gap:10px;flex-wrap:wrap;padding:4px 0 2px 26px}
+  .zonechips label{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;padding:7px 12px;border:1px solid var(--line2);border-radius:20px;cursor:pointer;background:var(--panel)}
+  .zonechips input{accent-color:var(--blue);cursor:pointer}
+  .storepick{display:flex;flex-direction:column;gap:2px;max-height:230px;overflow-y:auto;border:1px solid var(--line);border-radius:6px;padding:6px}
+  .storepick label{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:5px;font-size:12.5px;cursor:pointer}
+  .storepick label:hover{background:#f1f5f9}
+  .storepick input{accent-color:var(--blue);cursor:pointer}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">iC</div>
+      <div>iConnect ERP<small>Puregold · Merchandise &amp; Supply Chain</small></div>
+    </div>
+    <div class="ctx">
+      <label>Company</label>
+      <select><option>Puregold Price Club, Inc.</option><option>Ayagold Retailers Inc.</option></select>
+      <label>Zone</label>
+      <select><option>All Zones</option><option>NCR</option><option>North Luzon</option><option>South Luzon</option><option>VisMin</option></select>
+      <label>Branch</label>
+      <select><option>All Branches</option><option>0102 · Ortigas Ext.</option><option>0107 · Araneta Cubao</option><option>0233 · Cebu (Mandaue)</option></select>
+    </div>
+    <div class="top-actions">
+      <div class="icon-btn" title="Tasks"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="dot">7</span></div>
+      <div class="icon-btn" title="Notifications"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="dot">3</span></div>
+      <div class="user">
+        <div class="avatar">RC</div>
+        <div><div class="u-name">Rica Cruz</div><div class="u-role">Merchandise Admin</div></div>
+      </div>
+    </div>
+  </header>
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const NAV = [
+  {group:"Overview", items:[
+    {id:"home", n:"", label:"Dashboard", icon:"grid"},
+  ]},
+  {group:"Master Data", items:[
+    {id:"company",   n:"1", label:"Company Maintenance", icon:"building"},
+    {id:"branch",    n:"2", label:"Store Branch Maintenance", icon:"store"},
+    {id:"vendor",    n:"3", label:"Vendor Maintenance", icon:"truck"},
+    {id:"allowance", n:"4", label:"Vendor Allowance", icon:"percent"},
+    {id:"hierarchy", n:"5", label:"Item Hierarchy", icon:"tree"},
+    {id:"item",      n:"6", label:"Item Maintenance", icon:"box"},
+  ]},
+  {group:"Inventory & Pricing", items:[
+    {id:"inventory", n:"7", label:"Product Inventory", icon:"layers"},
+    {id:"price",     n:"8", label:"Price Change Mgmt", icon:"tag"},
+    {id:"cost",      n:"9", label:"Cost Change Mgmt", icon:"coins"},
+  ]},
+  {group:"Procurement", items:[
+    {id:"po",        n:"10", label:"Purchase Order", icon:"cart"},
+    {id:"replen",    n:"11", label:"Auto Replenishment", icon:"refresh"},
+    {id:"receiving", n:"12", label:"PO Receiving", icon:"inbox"},
+  ]},
+  {group:"Store Operations", items:[
+    {id:"transfer",  n:"13", label:"Store-to-Store Transfer", icon:"swap"},
+    {id:"rtv",       n:"14", label:"Return To Vendor", icon:"undo"},
+    {id:"adjust",    n:"15", label:"Inventory Adjustment", icon:"sliders"},
+    {id:"makeup",    n:"16", label:"Make-up / Break-up", icon:"scissors"},
+  ]},
+  {group:"Sales", items:[
+    {id:"salesaudit",n:"17", label:"POS Sales", icon:"receipt"},
+  ]},
+  {group:"User Management", items:[
+    {id:"users",       n:"", label:"Users", icon:"users"},
+    {id:"roles",       n:"", label:"Roles", icon:"shield"},
+    {id:"branchaccess",n:"", label:"Branch Access", icon:"mappin"},
+    {id:"audit",       n:"", label:"Audit Log", icon:"activity"},
+  ]},
+];
+const ICONS = {
+  grid:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>',
+  building:'<path d="M3 21h18M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 8h1M9 12h1M14 8h1M14 12h1"/>',
+  store:'<path d="M3 9l1-5h16l1 5M4 9v11h16V9M4 9h16M9 20v-6h6v6"/>',
+  truck:'<path d="M1 3h15v13H1zM16 8h4l3 3v5h-7M5.5 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18.5 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>',
+  percent:'<path d="M19 5L5 19M6.5 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM17.5 20a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>',
+  tree:'<path d="M3 3h6v6H3zM15 15h6v6h-6zM15 3h6v6h-6zM6 9v6h9M18 9v6"/>',
+  box:'<path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/>',
+  layers:'<path d="M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5"/>',
+  tag:'<path d="M20 12l-8 8-9-9V3h8l9 9zM7 7h.01"/>',
+  coins:'<path d="M9 8a6 3 0 1 0 0-6 6 3 0 0 0 0 6zM3 5v6c0 1.7 2.7 3 6 3s6-1.3 6-3M3 11v6c0 1.7 2.7 3 6 3s6-1.3 6-3"/>',
+  cart:'<path d="M9 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM20 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
+  refresh:'<path d="M23 4v6h-6M1 20v-6h6M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/>',
+  inbox:'<path d="M22 12h-6l-2 3h-4l-2-3H2M5.5 5h13l3.5 7v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>',
+  swap:'<path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/>',
+  undo:'<path d="M3 7v6h6M3 13a9 9 0 1 0 3-7.7L3 8"/>',
+  sliders:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
+  scissors:'<path d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4L8.1 15.9M14.5 12.5L20 20M8.1 8.1L12 12"/>',
+  receipt:'<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1zM8 7h8M8 11h8M8 15h5"/>',
+  users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  shield:'<path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/>',
+  mappin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0zM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>',
+  activity:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+};
+function renderSidebar(active){
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = NAV.map(g=>`
+    <div class="nav-group"><h4>${g.group}</h4>
+      ${g.items.map(it=>`
+        <div class="nav-item ${it.id===active?'active':''}" data-id="${it.id}">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[it.icon]||''}</svg>
+          <span>${it.label}</span>${it.n?`<span class="num">${it.n}</span>`:''}
+        </div>`).join('')}
+    </div>`).join('');
+  sb.querySelectorAll('.nav-item').forEach(el=>el.onclick=()=>route(el.dataset.id));
+}
+function head(no,title,desc,actions){
+  return `<div class="crumb">iConnect ERP <b>›</b> ${no?`Module ${no} <b>›</b> `:''}<b>${title}</b></div>
+  <div class="page-head"><div><h1>${title}</h1><p>${desc}</p></div><div class="ph-actions">${actions||''}</div></div>`;
+}
+function badge(type,text){return `<span class="badge b-${type}">${text}</span>`;}
+function stat(lbl,val,extra){return `<div class="stat"><div class="lbl">${lbl}</div><div class="val">${val}</div>${extra||''}</div>`;}
+function ph(title,sub,right){return `<div class="panel-head"><h3>${title}</h3>${sub?`<span class="sub">${sub}</span>`:''}${right?`<div class="right">${right}</div>`:''}</div>`;}
+function btn(label,cls,icon){return `<button class="btn ${cls||''}">${icon?icon+' ':''}${label}</button>`;}
+const iAdd='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+const iExport='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>';
+const iFilter='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>';
+function table(cols, rows){
+  return `<div class="tbl-wrap"><table><thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${c.t}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td class="${c.num?'num':''}">${r[c.k]??''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function filterbar(fields, actions){
+  return `<div class="filters">${fields.map(f=>`<div class="field ${f.grow?'grow':''}"><label>${f.label}</label>${f.html||`<input placeholder="${f.ph||''}">`}</div>`).join('')}
+    <div class="spacer"></div>${actions||btn('Filter','')}</div>`;
+}
+function tabs(id, items){
+  return `<div class="tabs" data-tabs="${id}">${items.map((t,i)=>`<div class="tab ${i===0?'active':''}" data-tab="${id}-${i}">${t.label}${t.cnt!=null?`<span class="cnt">${t.cnt}</span>`:''}</div>`).join('')}</div>
+    ${items.map((t,i)=>`<div class="tabpane ${i===0?'active':''}" id="${id}-${i}">${t.body}</div>`).join('')}`;
+}
+function pager(showing,total){
+  return `<div class="foot"><span class="t-sub">Showing <b>${showing}</b> of <b>${total}</b> records</span>
+    <div class="right"><button class="btn sm">‹ Prev</button><button class="btn sm">1</button><button class="btn sm primary">2</button><button class="btn sm">3</button><button class="btn sm">Next ›</button></div></div>`;
+}
+function noteBox(html,color){
+  const s = color==='cyan'?'background:#ecfeff;border-color:#a5f3fc;color:#0e7490'
+    :color==='indigo'?'background:#eef2ff;border-color:#c7d2fe;color:#4338ca'
+    :color==='green'?'background:#f0fdf4;border-color:#bbf7d0;color:#15803d':'';
+  return `<div class="note" style="${s}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><div>${html}</div></div>`;
+}
+
+const PAGES = {};
+
+PAGES.home = ()=>`
+${head('','Dashboard','Operational snapshot across Puregold Price Club — 437 stores nationwide, 4 zones.', btn('Export Summary','',iExport)+btn('New Purchase Order','primary',iAdd))}
+<div class="stats">
+  ${stat('Active SKUs','18,472','<div class="delta up">▲ 214 added this week</div>')}
+  ${stat('Open Purchase Orders','137','<div class="delta up">₱ 42.8M committed</div>')}
+  ${stat('Pending Receipts','58','<div class="delta down">▼ 12 vs. yesterday</div>')}
+  ${stat('Price Changes (Pending)','23','<div class="delta">8 awaiting approval</div>')}
+  ${stat('RTV / Adjustments','19','<div class="delta">₱ 1.2M value</div>')}
+</div>
+<div class="grid2">
+  <div class="panel">${ph('Purchase Orders by Status','Last 30 days')}
+    <div class="panel-body flush">${table(
+      [{t:'Status',k:'s'},{t:'Regular',k:'r',num:1},{t:'DSD',k:'d',num:1},{t:'OTB',k:'o',num:1},{t:'Value (₱)',k:'v',num:1}],
+      [{s:badge('gray','Draft'),r:12,d:2,o:3,v:'6,240,900'},{s:badge('blue','Approved'),r:41,d:0,o:6,v:'18,930,400'},
+       {s:badge('amber','In Transit'),r:28,d:14,o:2,v:'9,880,120'},{s:badge('green','Received'),r:96,d:212,o:11,v:'54,120,880'},
+       {s:badge('red','Cancelled'),r:4,d:1,o:0,v:'812,300'}])}</div></div>
+  <div class="panel">${ph('Replenishment Alerts','Below reorder point')}
+    <div class="panel-body flush">${table(
+      [{t:'Item',k:'i'},{t:'Branch',k:'b'},{t:'On Hand',k:'h',num:1},{t:'ROP',k:'p',num:1},{t:'Action',k:'a'}],
+      [{i:'<span class="t-title">Fresh Milk 1L</span>',b:'0102 Ortigas',h:'18',p:'120',a:badge('red','Order Now')},
+       {i:'<span class="t-title">White Bread 600g</span>',b:'0107 Cubao',h:'6',p:'80',a:badge('red','DSD Due')},
+       {i:'<span class="t-title">Eggs Tray (30s)</span>',b:'0233 Cebu',h:'42',p:'90',a:badge('amber','Low')},
+       {i:'<span class="t-title">Cooking Oil 1L</span>',b:'0102 Ortigas',h:'75',p:'150',a:badge('amber','Low')},
+       {i:'<span class="t-title">Instant Coffee 100g</span>',b:'0311 Davao',h:'12',p:'60',a:badge('red','Order Now')}])}</div></div>
+</div>
+<div class="grid2">
+  <div class="panel">${ph('Sales Audit — Yesterday','Batch upload & balancing')}
+    <div class="panel-body"><div class="kv">
+      <div class="k">Batches Uploaded</div><div class="v">42 / 42 branches ${badge('green','Complete')}</div>
+      <div class="k">Gross Sales</div><div class="v">₱ 38,412,905.50</div>
+      <div class="k">MOP Balancing</div><div class="v">40 balanced · 2 variance ${badge('amber','Review')}</div>
+      <div class="k">Cashier Balancing</div><div class="v">318 / 320 cashiers ${badge('amber','2 short')}</div>
+      <div class="k">Net Variance</div><div class="v" style="color:var(--red)">₱ (1,240.00)</div>
+    </div></div></div>
+  <div class="panel">${ph('Weekly Receiving Volume','Cases received')}
+    <div class="panel-body"><div class="mini-bar">${[60,72,55,88,94,120,78].map(h=>`<i style="height:${h}%"></i>`).join('')}</div>
+      <div class="legend" style="margin-top:10px;justify-content:space-between"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div></div>
+</div>`;
+
+PAGES.company = ()=>`
+${head('1','Company Maintenance','Corporate legal entities operating under the group. Configure fiscal calendar, tax, and default accounting.', btn('Export','',iExport)+btn('New Company','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Company code, legal name or TIN…'},{label:'Currency',html:'<select><option>All</option><option>PHP</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Inactive</option><option>All</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'',k:'c'},{t:'Code',k:'code'},{t:'Legal Name',k:'name'},{t:'TIN',k:'tin'},{t:'Zones',k:'z',num:1},{t:'Branches',k:'b',num:1},{t:'Currency',k:'cur'},{t:'Status',k:'st'}],
+    [{c:'<input type="checkbox" class="chk">',code:'<span class="mono">PGOLD</span>',name:'<span class="row-link">Puregold Price Club, Inc.</span>',tin:'<span class="mono">201-810-736-000</span>',z:'4',b:'437',cur:'PHP',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">AYAG</span>',name:'<span class="row-link">Ayagold Retailers Inc. (Merkado)</span>',tin:'<span class="mono">008-217-540-000</span>',z:'1',b:'3',cur:'PHP',st:badge('green','Active')}])}</div>
+  ${pager(2,2)}
+</div>`;
+
+PAGES.branch = ()=>`
+${head('2','Store Branch Maintenance','Physical selling locations. Assign to a zone, define format, warehouse, selling areas and operating profile.', btn('Import','',iExport)+btn('New Branch','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Branch code or name…'},{label:'Zone',html:'<select><option>All Zones</option><option>NCR</option><option>North Luzon</option><option>South Luzon</option><option>VisMin</option></select>'},{label:'Format',html:'<select><option>All Formats</option><option>Hypermarket</option><option>Supermarket</option><option>Extra</option><option>Minimart</option><option>Ayagold (Merkado)</option></select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Closed</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Code',k:'code'},{t:'Branch Name',k:'name'},{t:'Zone',k:'z'},{t:'Format',k:'fmt'},{t:'Selling Areas',k:'sa',num:1},{t:'Warehouse',k:'wh'},{t:'Opened',k:'op'},{t:'Status',k:'st'}],
+    [{code:'<span class="mono">0102</span>',name:'<span class="row-link">Puregold Ortigas Ext. (Rosario, Pasig)</span>',z:badge('blue','NCR'),fmt:badge('purple','Hypermarket'),sa:'6',wh:badge('green','Yes'),op:'2003-05-12',st:badge('green','Active')},
+     {code:'<span class="mono">0107</span>',name:'<span class="row-link">Puregold Araneta Cubao (QC)</span>',z:badge('blue','NCR'),fmt:badge('purple','Hypermarket'),sa:'5',wh:badge('green','Yes'),op:'2005-08-01',st:badge('green','Active')},
+     {code:'<span class="mono">0233</span>',name:'<span class="row-link">Puregold Mandaue (Cebu)</span>',z:badge('cyan','VisMin'),fmt:badge('purple','Hypermarket'),sa:'5',wh:badge('green','Yes'),op:'2014-11-20',st:badge('green','Active')},
+     {code:'<span class="mono">0311</span>',name:'<span class="row-link">Puregold Bajada (Davao)</span>',z:badge('cyan','VisMin'),fmt:badge('purple','Hypermarket'),sa:'7',wh:badge('green','Yes'),op:'2016-05-04',st:badge('green','Active')},
+     {code:'<span class="mono">0461</span>',name:'<span class="row-link">Puregold Clark (Pampanga)</span>',z:badge('amber','N.Luzon'),fmt:badge('purple','Hypermarket'),sa:'6',wh:badge('green','Yes'),op:'2019-09-30',st:badge('green','Active')},
+     {code:'<span class="mono">0119</span>',name:'<span class="row-link">Puregold Jr. Baclaran (Parañaque)</span>',z:badge('blue','NCR'),fmt:badge('blue','Supermarket'),sa:'3',wh:badge('gray','No'),op:'2010-03-20',st:badge('green','Active')},
+     {code:'<span class="mono">0450</span>',name:'<span class="row-link">Puregold Jr. Marcos Hwy (Baguio)</span>',z:badge('amber','N.Luzon'),fmt:badge('blue','Supermarket'),sa:'3',wh:badge('gray','No'),op:'2018-02-15',st:badge('green','Active')},
+     {code:'<span class="mono">0146</span>',name:'<span class="row-link">Puregold Extra Brookside Cainta</span>',z:badge('blue','NCR'),fmt:badge('cyan','Extra'),sa:'2',wh:badge('gray','No'),op:'2012-06-15',st:badge('green','Active')},
+     {code:'<span class="mono">0088</span>',name:'<span class="row-link">Puregold Extra Tandang Sora (QC)</span>',z:badge('blue','NCR'),fmt:badge('cyan','Extra'),sa:'2',wh:badge('gray','No'),op:'2011-06-01',st:badge('red','Closed')},
+     {code:'<span class="mono">0531</span>',name:'<span class="row-link">Puregold Mini Kamias (QC)</span>',z:badge('blue','NCR'),fmt:badge('gray','Minimart'),sa:'1',wh:badge('gray','No'),op:'2021-09-10',st:badge('green','Active')},
+     {code:'<span class="mono">0548</span>',name:'<span class="row-link">Puregold Mini Katipunan (QC)</span>',z:badge('blue','NCR'),fmt:badge('gray','Minimart'),sa:'1',wh:badge('gray','No'),op:'2022-04-22',st:badge('green','Active')},
+     {code:'<span class="mono">AYA-03</span>',name:'<span class="row-link">Merkado — UP Town Center (QC)</span>',z:badge('blue','NCR'),fmt:badge('amber','Ayagold'),sa:'4',wh:badge('gray','No'),op:'2015-05-08',st:badge('green','Active')},
+     {code:'<span class="mono">AYA-05</span>',name:'<span class="row-link">Merkado — Vertis North (QC)</span>',z:badge('blue','NCR'),fmt:badge('amber','Ayagold'),sa:'4',wh:badge('gray','No'),op:'2017-11-12',st:badge('green','Active')},
+     {code:'<span class="mono">AYA-07</span>',name:'<span class="row-link">Puregold Ayala Malls Marikina</span>',z:badge('blue','NCR'),fmt:badge('amber','Ayagold'),sa:'4',wh:badge('gray','No'),op:'2019-08-01',st:badge('green','Active')}])}</div>
+  ${pager(14,441)}
+</div>
+${noteBox('<b>Branch Warehouse & Top Load:</b> Branches flagged with a warehouse maintain a receiving dock and a <i>Top Load</i> holding area used for cross-dock and overflow stock, tracked separately in Product Inventory (Module 7).')}`;
+
+PAGES.vendor = ()=>`
+${head('3','Vendor Maintenance','Suppliers and their commercial terms, delivery model (DTS / Cross-dock / DSD), lead time and payment terms.', btn('Export','',iExport)+btn('New Vendor','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Vendor code, name or TIN…'},{label:'Delivery Model',html:'<select><option>All</option><option>Direct-to-Store (DTS)</option><option>Cross-dock</option><option>DSD</option></select>'},{label:'Category',html:'<select><option>All Categories</option><option>Dairy</option><option>Bakery</option><option>Beverages</option><option>Fresh</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Hold</option><option>All</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Code',k:'code'},{t:'Vendor Name',k:'name'},{t:'Delivery',k:'del'},{t:'Terms',k:'terms'},{t:'Lead Time',k:'lt'},{t:'Allowances',k:'al',num:1},{t:'Status',k:'st'}],
+    [{code:'<span class="mono">V-1004</span>',name:'<span class="row-link">Alaska Milk Corporation</span>',del:badge('blue','Cross-dock'),terms:'30 days',lt:'2 days',al:'4',st:badge('green','Active')},
+     {code:'<span class="mono">V-1027</span>',name:'<span class="row-link">Gardenia Bakeries PH</span>',del:badge('purple','DSD'),terms:'7 days',lt:'Daily',al:'2',st:badge('green','Active')},
+     {code:'<span class="mono">V-1033</span>',name:'<span class="row-link">Selecta Ice Cream (RFM)</span>',del:badge('purple','DSD'),terms:'15 days',lt:'Daily',al:'1',st:badge('green','Active')},
+     {code:'<span class="mono">V-1140</span>',name:'<span class="row-link">Nestlé Philippines</span>',del:badge('green','DTS'),terms:'45 days',lt:'3 days',al:'6',st:badge('green','Active')},
+     {code:'<span class="mono">V-1208</span>',name:'<span class="row-link">San Miguel Foods</span>',del:badge('green','DTS'),terms:'30 days',lt:'2 days',al:'5',st:badge('green','Active')},
+     {code:'<span class="mono">V-1315</span>',name:'<span class="row-link">Monde Nissin Corp.</span>',del:badge('blue','Cross-dock'),terms:'30 days',lt:'4 days',al:'3',st:badge('amber','On Hold')},
+     {code:'<span class="mono">V-1422</span>',name:'<span class="row-link">Universal Robina Corp.</span>',del:badge('green','DTS'),terms:'30 days',lt:'2 days',al:'7',st:badge('green','Active')}])}</div>
+  ${pager(7,318)}
+</div>`;
+
+PAGES.allowance = ()=>`
+${head('4','Vendor Allowance Maintenance','Trade agreements — listing fees, volume rebates, promo & display allowances. Drives cost netting and accruals.', btn('Export','',iExport)+btn('New Allowance','primary',iAdd))}
+<div class="stats">
+  ${stat('Active Agreements','142')}${stat('Accrued YTD','₱ 28.4M','<div class="delta up">▲ vs plan +6%</div>')}
+  ${stat('Expiring < 30 days','9','<div class="delta down">Renew soon</div>')}${stat('Pending Approval','5')}
+</div>
+<div class="panel">
+  ${filterbar([{label:'Vendor',grow:1,ph:'Vendor name…'},{label:'Allowance Type',html:'<select><option>All Types</option><option>Volume Rebate</option><option>Listing Fee</option><option>Promo Allowance</option><option>Display / Facing</option><option>Markdown Support</option></select>'},{label:'Basis',html:'<select><option>All</option><option>% of Purchase</option><option>Fixed Amount</option><option>Per Case</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Ref',k:'ref'},{t:'Vendor',k:'v'},{t:'Type',k:'ty'},{t:'Basis',k:'ba'},{t:'Rate / Amount',k:'rt',num:1},{t:'Valid From',k:'vf'},{t:'Valid To',k:'vt'},{t:'Status',k:'st'}],
+    [{ref:'<span class="mono">AL-3301</span>',v:'Nestlé Philippines',ty:badge('blue','Volume Rebate'),ba:'% of Purchase',rt:'3.50%',vf:'2026-01-01',vt:'2026-12-31',st:badge('green','Active')},
+     {ref:'<span class="mono">AL-3312</span>',v:'Alaska Milk Corp.',ty:badge('purple','Promo Allowance'),ba:'Per Case',rt:'₱ 12.00',vf:'2026-06-01',vt:'2026-08-31',st:badge('green','Active')},
+     {ref:'<span class="mono">AL-3320</span>',v:'Universal Robina',ty:badge('cyan','Display / Facing'),ba:'Fixed Amount',rt:'₱ 250,000',vf:'2026-04-01',vt:'2026-09-30',st:badge('green','Active')},
+     {ref:'<span class="mono">AL-3334</span>',v:'San Miguel Foods',ty:badge('gray','Listing Fee'),ba:'Fixed Amount',rt:'₱ 80,000',vf:'2026-07-01',vt:'2027-06-30',st:badge('amber','Pending')},
+     {ref:'<span class="mono">AL-3340</span>',v:'Monde Nissin Corp.',ty:badge('amber','Markdown Support'),ba:'% of Purchase',rt:'5.00%',vf:'2026-05-15',vt:'2026-07-31',st:badge('red','Expiring')}])}</div>
+  ${pager(5,142)}
+</div>`;
+
+PAGES.hierarchy = ()=>`
+${head('5','Item Hierarchy','Merchandise classification — Division → Department → Category → Sub-category. Governs reporting, replenishment and OTB planning.', btn('Expand All','')+btn('New Node','primary',iAdd))}
+<div class="split">
+  <div class="panel">${ph('Hierarchy Tree','4 levels · 1,204 nodes')}
+    <div class="panel-body"><div class="tree">
+      <div class="node lvl1 active"><span class="caret">▾</span> 01 · Grocery Food <span class="cnt">6,120 SKU</span></div>
+      <div class="node lvl2"><span class="caret">▾</span> 0110 · Dairy & Chilled <span class="cnt">842</span></div>
+      <div class="node lvl3"><span class="caret">▾</span> 0110-01 · Milk <span class="cnt">168</span></div>
+      <div class="node lvl4">Fresh Milk</div><div class="node lvl4">UHT Milk</div><div class="node lvl4">Powdered Milk</div>
+      <div class="node lvl3"><span class="caret">▸</span> 0110-02 · Cheese <span class="cnt">96</span></div>
+      <div class="node lvl3"><span class="caret">▸</span> 0110-03 · Yogurt <span class="cnt">74</span></div>
+      <div class="node lvl2"><span class="caret">▸</span> 0120 · Bakery <span class="cnt">318</span></div>
+      <div class="node lvl2"><span class="caret">▸</span> 0130 · Beverages <span class="cnt">1,104</span></div>
+      <div class="node lvl1"><span class="caret">▸</span> 02 · Fresh & Perishables <span class="cnt">3,980 SKU</span></div>
+      <div class="node lvl1"><span class="caret">▸</span> 03 · Non-Food & Household <span class="cnt">5,240 SKU</span></div>
+      <div class="node lvl1"><span class="caret">▸</span> 04 · Fashion & Apparel <span class="cnt">3,132 SKU</span></div>
+    </div></div></div>
+  <div class="panel">${ph('Node Detail','0110-01 · Milk')}
+    <div class="panel-body"><div class="form-grid">
+      <div class="fg"><label>Level</label><input value="Category (L3)" readonly></div>
+      <div class="fg"><label>Node Code</label><input value="0110-01" class="mono"></div>
+      <div class="fg full"><label>Node Name</label><input value="Milk"></div>
+      <div class="fg"><label>Parent Department</label><input value="0110 · Dairy & Chilled" readonly></div>
+      <div class="fg"><label>Merch Manager</label><select><option>L. Domingo</option><option>P. Salas</option></select></div>
+      <div class="fg"><label>Replen Strategy</label><select><option>Auto (Min/Max)</option><option>Manual</option></select></div>
+      <div class="fg"><label>OTB Planned</label><select><option>No</option><option>Yes (Fashion)</option></select></div>
+      <div class="fg"><label>Perishable</label><select><option>Yes</option><option>No</option></select></div>
+      <div class="fg"><label>Default Shelf Life</label><input value="7 days"></div>
+      <div class="fg"><label>Status</label><select><option>Active</option></select></div>
+    </div></div>
+    <div class="foot"><span class="t-sub">3 sub-categories · 168 SKUs</span><div class="right">${btn('Cancel','')}${btn('Save','primary')}</div></div></div>
+</div>`;
+
+PAGES.item = ()=>`
+${head('6','Item Maintenance','Master item catalog. Manage identity, hierarchy placement, pack config, supplier links, pricing and cost defaults.', btn('Import','',iExport)+btn('New Item','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Item code, barcode or description…'},{label:'Department',html:'<select><option>All Departments</option><option>Dairy & Chilled</option><option>Bakery</option><option>Beverages</option><option>Fresh</option></select>'},{label:'Vendor',html:'<select><option>All Vendors</option><option>Nestlé</option><option>Alaska</option><option>Gardenia</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Discontinued</option><option>All</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'',k:'c'},{t:'Item Code',k:'code'},{t:'Barcode',k:'bc'},{t:'Description',k:'desc'},{t:'Category',k:'cat'},{t:'Vendor',k:'v'},{t:'UOM',k:'u'},{t:'Cost',k:'cost',num:1},{t:'Retail',k:'ret',num:1},{t:'Status',k:'st'}],
+    [{c:'<input type="checkbox" class="chk">',code:'<span class="mono">100482</span>',bc:'<span class="mono">4800016641107</span>',desc:'<span class="row-link">Alaska Fresh Milk 1L</span>',cat:'Milk',v:'Alaska',u:'PC',cost:'58.20',ret:'72.00',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">100517</span>',bc:'<span class="mono">4800092770019</span>',desc:'<span class="row-link">Gardenia White Bread 600g</span>',cat:'Bakery',v:'Gardenia',u:'PC',cost:'46.50',ret:'59.75',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">100630</span>',bc:'<span class="mono">4800361001236</span>',desc:'<span class="row-link">Nescafé Classic 100g</span>',cat:'Coffee',v:'Nestlé',u:'PC',cost:'118.00',ret:'149.75',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">100744</span>',bc:'<span class="mono">4800016114009</span>',desc:'<span class="row-link">Selecta Cornetto Choco 110ml</span>',cat:'Ice Cream',v:'Selecta',u:'PC',cost:'22.80',ret:'32.00',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">100901</span>',bc:'<span class="mono">4806507050014</span>',desc:'<span class="row-link">Fresh Eggs Medium Tray 30s</span>',cat:'Eggs',v:'San Miguel',u:'TRY',cost:'196.00',ret:'238.00',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">101120</span>',bc:'<span class="mono">4800024570017</span>',desc:'<span class="row-link">Lucky Me Pancit Canton 60g</span>',cat:'Noodles',v:'Monde Nissin',u:'PC',cost:'9.20',ret:'13.50',st:badge('amber','On Promo')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">900014</span>',bc:'<span class="mono">4809014000148</span>',desc:'<span class="row-link">Pure Basics All-Purpose Flour 1kg</span>',cat:'Baking',v:'Pure Basics (Own)',u:'PC',cost:'44.00',ret:'55.00',st:badge('blue','House Brand')},
+     {c:'<input type="checkbox" class="chk">',code:'<span class="mono">900027</span>',bc:'<span class="mono">4809014000278</span>',desc:'<span class="row-link">Nature’s Peak Mixed Vegetables 400g</span>',cat:'Frozen',v:'Pure Basics (Own)',u:'PC',cost:'52.00',ret:'68.00',st:badge('blue','House Brand')}])}</div>
+  ${pager(8,'19,204')}
+</div>
+<div class="panel">
+  ${ph('Item Detail','100482 · Alaska Fresh Milk 1L', btn('Duplicate','sm')+btn('View Inventory','sm'))}
+  <div class="panel-body flush">
+    ${tabs('itemtab',[
+      {label:'General',body:`<div class="panel-body"><div class="form-grid">
+        <div class="section-label">Identity</div>
+        <div class="fg"><label>Item Code</label><input value="100482" readonly class="mono"></div>
+        <div class="fg"><label>Primary Barcode</label><input value="4800016641107" class="mono"></div>
+        <div class="fg full"><label>Description</label><input value="Alaska Fresh Milk 1L"></div>
+        <div class="fg"><label>Short Name (POS)</label><input value="ALASKA F.MILK 1L"></div>
+        <div class="fg"><label>Brand</label><input value="Alaska"></div>
+        <div class="section-label">Classification</div>
+        <div class="fg"><label>Division</label><select><option>01 · Grocery Food</option></select></div>
+        <div class="fg"><label>Department</label><select><option>0110 · Dairy & Chilled</option></select></div>
+        <div class="fg"><label>Category</label><select><option>0110-01 · Milk</option></select></div>
+        <div class="fg"><label>Sub-category</label><select><option>Fresh Milk</option></select></div>
+        <div class="section-label">Attributes</div>
+        <div class="fg"><label>Perishable</label><select><option>Yes</option></select></div>
+        <div class="fg"><label>Shelf Life</label><input value="7 days"></div>
+        <div class="fg"><label>VAT Class</label><select><option>12% VATable</option></select></div>
+        <div class="fg"><label>Status</label><select><option>Active</option></select></div>
+      </div></div>`},
+      {label:'Pack & UOM',body:`<div class="panel-body">${table(
+        [{t:'Level',k:'l'},{t:'UOM',k:'u'},{t:'Qty in Base',k:'q',num:1},{t:'Barcode',k:'b'},{t:'Orderable',k:'o'},{t:'Sellable',k:'s'}],
+        [{l:'Base',u:'PC',q:'1',b:'<span class="mono">4800016641107</span>',o:badge('gray','No'),s:badge('green','Yes')},
+         {l:'Inner',u:'PACK-6',q:'6',b:'<span class="mono">14800016641104</span>',o:badge('green','Yes'),s:badge('gray','No')},
+         {l:'Case',u:'CASE-12',q:'12',b:'<span class="mono">24800016641101</span>',o:badge('green','Yes'),s:badge('gray','No')}])}</div>`},
+      {label:'Suppliers',cnt:2,body:`<div class="panel-body">${table(
+        [{t:'Vendor',k:'v'},{t:'Vendor Item #',k:'vi'},{t:'Pack',k:'p'},{t:'Cost / Case',k:'c',num:1},{t:'Lead Time',k:'lt'},{t:'Primary',k:'pr'}],
+        [{v:'Alaska Milk Corp.',vi:'<span class="mono">AMC-FM1000</span>',p:'CASE-12',c:'₱ 698.40',lt:'2 days',pr:badge('green','Primary')},
+         {v:'Metro Dairy Dist.',vi:'<span class="mono">MDD-0771</span>',p:'CASE-12',c:'₱ 705.00',lt:'3 days',pr:badge('gray','Backup')}])}</div>`},
+      {label:'Price & Cost',body:`<div class="panel-body"><div class="form-grid">
+        <div class="fg"><label>Standard Cost (net)</label><input value="58.20"></div>
+        <div class="fg"><label>Base Retail (VAT-inc)</label><input value="72.00"></div>
+        <div class="fg"><label>Margin %</label><input value="19.2%" readonly></div>
+        <div class="fg"><label>Zone Price Override</label><select><option>None</option><option>Metro +₱2.00</option></select></div>
+        <div class="fg"><label>Current Promo</label><input value="—" readonly></div>
+        <div class="fg"><label>Last Cost Change</label><input value="2026-06-18" readonly></div>
+      </div></div>`},
+    ])}
+  </div>
+  <div class="foot"><span class="t-sub">Last modified 2026-07-08 by mtan</span><div class="right">${btn('Cancel','')}${btn('Save Item','primary')}</div></div>
+</div>`;
+
+PAGES.inventory = ()=>`
+${head('7','Product Inventory','Real-time stock positions. View per Branch Warehouse (including Top Load) and per Selling Area.', btn('Stock Snapshot','',iExport)+btn('Stock Count','primary'))}
+<div class="stats">
+  ${stat('Total Stock Value','₱ 312.4M')}${stat('Warehouse On Hand','₱ 128.9M','<div class="delta">incl. ₱9.2M Top Load</div>')}
+  ${stat('Selling Area On Hand','₱ 183.5M')}${stat('Negative / Variance','34 SKU','<div class="delta down">needs adjustment</div>')}
+</div>
+<div class="panel">
+  ${filterbar([{label:'Branch',html:'<select><option>0102 · Ortigas</option><option>0107 · Cubao</option><option>0233 · Cebu</option></select>'},{label:'Search',grow:1,ph:'Item code or description…'},{label:'Category',html:'<select><option>All Categories</option><option>Milk</option><option>Bakery</option></select>'}], btn('Apply','primary'))}
+  ${tabs('invtab',[
+    {label:'Per Branch Warehouse',body:`
+      <div class="toolbar">Branch 0102 · Ortigas — Warehouse view includes <b>Top Load</b> (cross-dock / overflow) column.<button class="btn sm">Transfer to Selling Area</button></div>
+      ${table([{t:'Item Code',k:'code'},{t:'Description',k:'d'},{t:'UOM',k:'u'},{t:'WH On Hand',k:'wh',num:1},{t:'Top Load',k:'tl',num:1},{t:'Reserved',k:'rv',num:1},{t:'Available',k:'av',num:1},{t:'In Transit',k:'it',num:1}],
+        [{code:'<span class="mono">100482</span>',d:'<span class="t-title">Alaska Fresh Milk 1L</span>',u:'PC',wh:'1,240',tl:'360',rv:'120',av:'1,480',it:'240'},
+         {code:'<span class="mono">100630</span>',d:'<span class="t-title">Nescafé Classic 100g</span>',u:'PC',wh:'820',tl:'0',rv:'40',av:'780',it:'0'},
+         {code:'<span class="mono">100901</span>',d:'<span class="t-title">Fresh Eggs Tray 30s</span>',u:'TRY',wh:'96',tl:'144',rv:'0',av:'240',it:'60'},
+         {code:'<span class="mono">101120</span>',d:'<span class="t-title">Lucky Me Pancit Canton 60g</span>',u:'PC',wh:'3,600',tl:'1,200',rv:'240',av:'4,560',it:'0'},
+         {code:'<span class="mono">100517</span>',d:'<span class="t-title">Gardenia White Bread 600g</span>',u:'PC',wh:'0',tl:'0',rv:'0',av:'0',it:'0'}])}
+      ${pager(5,'6,120')}`},
+    {label:'Per Selling Area',body:`
+      <div class="toolbar" style="background:var(--purple-l);color:#6d28d9;border-color:#ddd6fe">Branch 0102 · Ortigas — On-shelf stock across 6 selling areas.<button class="btn sm">Replenish Shelf</button></div>
+      ${table([{t:'Item Code',k:'code'},{t:'Description',k:'d'},{t:'Selling Area',k:'sa'},{t:'Shelf Qty',k:'sh',num:1},{t:'Capacity',k:'cap',num:1},{t:'Fill %',k:'fill'},{t:'Reorder',k:'ro'}],
+        [{code:'<span class="mono">100482</span>',d:'<span class="t-title">Alaska Fresh Milk 1L</span>',sa:badge('blue','Chiller 3'),sh:'84',cap:'120',fill:'<div class="progress"><i style="width:70%;background:var(--green)"></i></div>',ro:badge('gray','OK')},
+         {code:'<span class="mono">100517</span>',d:'<span class="t-title">Gardenia White Bread 600g</span>',sa:badge('purple','Bakery'),sh:'6',cap:'80',fill:'<div class="progress"><i style="width:8%;background:var(--red)"></i></div>',ro:badge('red','Replenish')},
+         {code:'<span class="mono">100630</span>',d:'<span class="t-title">Nescafé Classic 100g</span>',sa:badge('cyan','Grocery 7'),sh:'42',cap:'60',fill:'<div class="progress"><i style="width:70%;background:var(--green)"></i></div>',ro:badge('gray','OK')},
+         {code:'<span class="mono">100744</span>',d:'<span class="t-title">Selecta Cornetto Choco</span>',sa:badge('blue','Freezer 1'),sh:'22',cap:'90',fill:'<div class="progress"><i style="width:24%;background:var(--amber)"></i></div>',ro:badge('amber','Low')},
+         {code:'<span class="mono">100901</span>',d:'<span class="t-title">Fresh Eggs Tray 30s</span>',sa:badge('cyan','Grocery 2'),sh:'48',cap:'60',fill:'<div class="progress"><i style="width:80%;background:var(--green)"></i></div>',ro:badge('gray','OK')}])}
+      ${pager(5,'5,940')}`},
+  ])}
+</div>`;
+
+PAGES.price = ()=>`
+${head('8','Price Change Management','Create item price updates at Company, Zone or Branch level. Route for approval, schedule effective dates, publish to POS.', btn('Price History','')+btn('New Price Update','primary',iAdd))}
+<div class="panel">${ph('Price Update Batches','Recent')}
+  <div class="panel-body flush">${table(
+    [{t:'Batch',k:'b'},{t:'Description',k:'d'},{t:'Level',k:'lv'},{t:'Scope',k:'sc'},{t:'# Items',k:'ni',num:1},{t:'Effective',k:'ef'},{t:'Status',k:'st'}],
+    [{b:'<span class="mono">PC-24019</span>',d:'<span class="row-link">Q3 Dairy Repricing</span>',lv:badge('blue','Company'),sc:'All Branches',ni:'184',ef:'2026-07-15',st:badge('amber','For Approval')},
+     {b:'<span class="mono">PC-24018</span>',d:'<span class="row-link">NCR Beverage Adj.</span>',lv:badge('purple','Zone'),sc:'NCR',ni:'62',ef:'2026-07-14',st:badge('green','Approved')},
+     {b:'<span class="mono">PC-24016</span>',d:'<span class="row-link">Ortigas Competitive Match</span>',lv:badge('cyan','Branch'),sc:'0102 Ortigas',ni:'28',ef:'2026-07-12',st:badge('green','Published')},
+     {b:'<span class="mono">PC-24011</span>',d:'<span class="row-link">Bakery SRP Update</span>',lv:badge('blue','Company'),sc:'All Branches',ni:'96',ef:'2026-07-10',st:badge('green','Published')},
+     {b:'<span class="mono">PC-24009</span>',d:'<span class="row-link">South Luzon Rollback</span>',lv:badge('purple','Zone'),sc:'South Luzon',ni:'40',ef:'2026-07-08',st:badge('gray','Draft')}])}</div>
+  ${pager(5,60)}
+</div>
+<div class="panel">${ph('New Item Price Update','PC-24020 · Draft')}
+  <div class="panel-body"><div class="steps"><div class="step done"><span class="n">1</span> Header</div><div class="line"></div><div class="step active"><span class="n">2</span> Select Items</div><div class="line"></div><div class="step"><span class="n">3</span> Set Prices</div><div class="line"></div><div class="step"><span class="n">4</span> Review & Submit</div></div></div>
+  <div class="panel-body" style="border-top:1px solid var(--line)"><div class="form-grid">
+    <div class="fg"><label>Batch Description <span class="req">*</span></label><input value="Q3 Snacks Repricing"></div>
+    <div class="fg"><label>Price Level <span class="req">*</span></label><select><option>Company (all branches)</option><option>Zone</option><option>Branch</option></select></div>
+    <div class="fg"><label>Scope</label><select><option>Company — Puregold Price Club</option><option>NCR</option><option>North Luzon</option><option>0102 · Ortigas</option></select></div>
+    <div class="fg"><label>Effective Date <span class="req">*</span></label><input type="date" value="2026-07-20"></div>
+    <div class="fg"><label>Reason Code</label><select><option>Cost-driven</option><option>Competitive</option><option>Promo end</option><option>Rounding</option></select></div>
+    <div class="fg"><label>Rounding Rule</label><select><option>Nearest ₱0.25</option><option>Nearest ₱0.05</option><option>x.95 endings</option></select></div>
+  </div></div>
+  <div class="toolbar">3 items selected — new prices staged.<button class="btn sm">Add Items</button></div>
+  <div class="panel-body flush">${table(
+    [{t:'Item',k:'i'},{t:'Category',k:'c'},{t:'Current Retail',k:'cur',num:1},{t:'New Retail',k:'nw',num:1},{t:'Δ',k:'d',num:1},{t:'New Margin',k:'m',num:1}],
+    [{i:'<span class="t-title">Lucky Me Pancit Canton 60g</span>',c:'Noodles',cur:'₱ 13.50',nw:'<input value="14.25" style="width:80px;padding:4px 6px;border:1px solid var(--line2);border-radius:4px">',d:'<span style="color:var(--green)">+5.6%</span>',m:'35.4%'},
+     {i:'<span class="t-title">Nescafé Classic 100g</span>',c:'Coffee',cur:'₱ 149.75',nw:'<input value="154.75" style="width:80px;padding:4px 6px;border:1px solid var(--line2);border-radius:4px">',d:'<span style="color:var(--green)">+3.3%</span>',m:'23.8%'},
+     {i:'<span class="t-title">Alaska Fresh Milk 1L</span>',c:'Milk',cur:'₱ 72.00',nw:'<input value="70.00" style="width:80px;padding:4px 6px;border:1px solid var(--line2);border-radius:4px">',d:'<span style="color:var(--red)">−2.8%</span>',m:'16.9%'}])}</div>
+  <div class="foot"><span class="t-sub">Draft saved automatically</span><div class="right">${btn('Save Draft','')}${btn('Submit for Approval','primary')}</div></div>
+</div>`;
+
+PAGES.cost = ()=>`
+${head('9','Cost Change Management','Create cost updates per vendor at Company, Zone or Branch level. Feeds margin recalculation and open-PO revaluation.', btn('Cost History','')+btn('New Cost Update','primary',iAdd))}
+${noteBox('A cost increase recalculates margin on all affected items. Items falling below the <b>minimum margin threshold (15%)</b> are flagged for a matching price review before publish.')}
+<div class="panel" style="margin-top:18px">${ph('Cost Update Requests','Per Vendor')}
+  <div class="panel-body flush">${table(
+    [{t:'Ref',k:'r'},{t:'Vendor',k:'v'},{t:'Level',k:'lv'},{t:'Scope',k:'sc'},{t:'# Items',k:'ni',num:1},{t:'Avg Δ',k:'d',num:1},{t:'Effective',k:'ef'},{t:'Status',k:'st'}],
+    [{r:'<span class="mono">CC-8802</span>',v:'<span class="row-link">Nestlé Philippines</span>',lv:badge('blue','Company'),sc:'All Branches',ni:'42',d:'<span style="color:var(--red)">+4.2%</span>',ef:'2026-07-16',st:badge('amber','For Approval')},
+     {r:'<span class="mono">CC-8799</span>',v:'<span class="row-link">Alaska Milk Corp.</span>',lv:badge('blue','Company'),sc:'All Branches',ni:'18',d:'<span style="color:var(--red)">+2.8%</span>',ef:'2026-07-14',st:badge('green','Approved')},
+     {r:'<span class="mono">CC-8794</span>',v:'<span class="row-link">Universal Robina</span>',lv:badge('purple','Zone'),sc:'NCR',ni:'64',d:'<span style="color:var(--green)">−1.5%</span>',ef:'2026-07-12',st:badge('green','Published')},
+     {r:'<span class="mono">CC-8790</span>',v:'<span class="row-link">San Miguel Foods</span>',lv:badge('cyan','Branch'),sc:'0233 Cebu',ni:'9',d:'<span style="color:var(--red)">+6.0%</span>',ef:'2026-07-11',st:badge('red','Margin Alert')},
+     {r:'<span class="mono">CC-8785</span>',v:'<span class="row-link">Monde Nissin Corp.</span>',lv:badge('blue','Company'),sc:'All Branches',ni:'30',d:'<span style="color:var(--red)">+3.1%</span>',ef:'2026-07-09',st:badge('gray','Draft')}])}</div>
+  ${pager(5,88)}
+</div>
+<div class="panel">${ph('Cost Update Detail','CC-8802 · Nestlé Philippines')}
+  <div class="panel-body"><div class="form-grid two">
+    <div class="fg"><label>Vendor</label><input value="Nestlé Philippines (V-1140)" readonly></div>
+    <div class="fg"><label>Cost Level</label><select><option>Company (all branches)</option><option>Zone</option><option>Branch</option></select></div>
+    <div class="fg"><label>Effective Date</label><input type="date" value="2026-07-16"></div>
+    <div class="fg"><label>Source Document</label><input value="Vendor Advisory 2026-07-01"></div>
+  </div></div>
+  <div class="panel-body flush">${table(
+    [{t:'Item',k:'i'},{t:'Old Cost',k:'oc',num:1},{t:'New Cost',k:'nc',num:1},{t:'Δ',k:'d',num:1},{t:'Retail',k:'rt',num:1},{t:'Old Margin',k:'om',num:1},{t:'New Margin',k:'nm',num:1},{t:'Flag',k:'fl'}],
+    [{i:'<span class="t-title">Nescafé Classic 100g</span>',oc:'118.00',nc:'123.50',d:'<span style="color:var(--red)">+4.7%</span>',rt:'149.75',om:'23.8%',nm:'20.1%',fl:badge('green','OK')},
+     {i:'<span class="t-title">Bear Brand 300g</span>',oc:'86.00',nc:'90.20',d:'<span style="color:var(--red)">+4.9%</span>',rt:'104.00',om:'20.9%',nm:'15.9%',fl:badge('amber','Watch')},
+     {i:'<span class="t-title">Milo 24g x10</span>',oc:'92.00',nc:'97.50',d:'<span style="color:var(--red)">+6.0%</span>',rt:'108.00',om:'17.4%',nm:'11.9%',fl:badge('red','Below Min')}])}</div>
+  <div class="foot"><span class="t-sub">1 item below minimum margin — price review recommended</span><div class="right">${btn('Create Price Change','')}${btn('Approve','primary')}</div></div>
+</div>`;
+
+PAGES.po = ()=>`
+${head('10','Purchase Order','Create and manage purchase orders — Regular, DSD (no PO), and One-Time-Buy for Fashion.', btn('Export','',iExport)+btn('New Purchase Order','primary',iAdd))}
+<div class="stats">${stat('Open POs','137')}${stat('Committed Value','₱ 42.8M')}${stat('Due Today','24')}${stat('OTB Budget Left','₱ 8.4M','<div class="delta">Fashion Q3</div>')}</div>
+<div class="panel">
+${tabs('potab',[
+  {label:'Regular Order',cnt:112,body:`
+    ${filterbar([{label:'Search',grow:1,ph:'PO # or vendor…'},{label:'Delivery',html:'<select><option>All</option><option>DTS</option><option>Cross-dock</option></select>'},{label:'Status',html:'<select><option>All</option><option>Draft</option><option>Approved</option><option>In Transit</option></select>'}],btn('Apply','primary'))}
+    ${table([{t:'PO #',k:'po'},{t:'Vendor',k:'v'},{t:'Ship To',k:'st'},{t:'Delivery',k:'dl'},{t:'Order Date',k:'od'},{t:'Expected',k:'ex'},{t:'Lines',k:'ln',num:1},{t:'Value',k:'val',num:1},{t:'Status',k:'s'}],
+      [{po:'<span class="mono row-link">PO-100482</span>',v:'Nestlé Philippines',st:'0102 Ortigas',dl:badge('green','DTS'),od:'2026-07-11',ex:'2026-07-14',ln:'38',val:'₱ 1,240,900',s:badge('blue','Approved')},
+       {po:'<span class="mono row-link">PO-100481</span>',v:'Alaska Milk Corp.',st:'CD Meycauayan',dl:badge('blue','Cross-dock'),od:'2026-07-11',ex:'2026-07-15',ln:'22',val:'₱ 684,200',s:badge('amber','In Transit')},
+       {po:'<span class="mono row-link">PO-100478</span>',v:'Universal Robina',st:'0233 Cebu',dl:badge('green','DTS'),od:'2026-07-10',ex:'2026-07-13',ln:'54',val:'₱ 902,140',s:badge('green','Received')},
+       {po:'<span class="mono row-link">PO-100475</span>',v:'San Miguel Foods',st:'0311 Davao',dl:badge('green','DTS'),od:'2026-07-10',ex:'2026-07-12',ln:'41',val:'₱ 1,018,300',s:badge('gray','Draft')}])}
+    ${pager(4,112)}`},
+  {label:'DSD',cnt:212,body:`
+    <div style="padding:16px 16px 0">${noteBox('<b>Direct-to-Store Delivery — no PO required.</b> Vendors (bread, ice cream, etc.) deliver directly; store staff record receipts against a delivery invoice. Below are logged DSD deliveries for reconciliation.')}</div>
+    ${table([{t:'DSD #',k:'d'},{t:'Vendor',k:'v'},{t:'Branch',k:'b'},{t:'Delivery Date',k:'dd'},{t:'Invoice #',k:'inv'},{t:'Cases',k:'c',num:1},{t:'Value',k:'val',num:1},{t:'Status',k:'s'}],
+      [{d:'<span class="mono row-link">DSD-55901</span>',v:'Gardenia Bakeries',b:'0102 Ortigas',dd:'2026-07-13',inv:'<span class="mono">GB-771204</span>',c:'42',val:'₱ 38,400',s:badge('green','Received')},
+       {d:'<span class="mono row-link">DSD-55900</span>',v:'Selecta Ice Cream',b:'0107 Cubao',dd:'2026-07-13',inv:'<span class="mono">SEL-09821</span>',c:'18',val:'₱ 22,800',s:badge('green','Received')},
+       {d:'<span class="mono row-link">DSD-55898</span>',v:'Gardenia Bakeries',b:'0233 Cebu',dd:'2026-07-13',inv:'<span class="mono">GB-771198</span>',c:'36',val:'₱ 31,200',s:badge('amber','Qty Variance')},
+       {d:'<span class="mono row-link">DSD-55895</span>',v:'Selecta Ice Cream',b:'0311 Davao',dd:'2026-07-12',inv:'<span class="mono">SEL-09815</span>',c:'24',val:'₱ 30,600',s:badge('green','Received')}])}
+    ${pager(4,212)}`},
+  {label:'One-Time-Buy (OTB)',cnt:19,body:`
+    <div style="padding:16px 16px 0">${noteBox('<b>One-Time-Buy — Fashion Department.</b> Seasonal apparel buys against OTB budget. No auto-replenishment; markdown-managed to sell-through.','indigo')}</div>
+    ${table([{t:'OTB #',k:'o'},{t:'Vendor',k:'v'},{t:'Season',k:'se'},{t:'Dept',k:'de'},{t:'Units',k:'u',num:1},{t:'Cost',k:'c',num:1},{t:'Budget Used',k:'bu'},{t:'Status',k:'s'}],
+      [{o:'<span class="mono row-link">OTB-2201</span>',v:'Penshoppe Trading',se:'FW 2026',de:'Menswear',u:'4,800',c:'₱ 1,920,000',bu:'<div class="progress"><i style="width:62%;background:var(--purple)"></i></div>',s:badge('blue','Approved')},
+       {o:'<span class="mono row-link">OTB-2198</span>',v:'Bench / Suyen',se:'FW 2026',de:'Ladieswear',u:'6,200',c:'₱ 2,480,000',bu:'<div class="progress"><i style="width:80%;background:var(--amber)"></i></div>',s:badge('amber','In Transit')},
+       {o:'<span class="mono row-link">OTB-2190</span>',v:'Kids Fashion Intl.',se:'BTS 2026',de:'Kidswear',u:'3,100',c:'₱ 930,000',bu:'<div class="progress"><i style="width:40%;background:var(--green)"></i></div>',s:badge('green','Received')}])}
+    ${pager(3,19)}`},
+])}
+</div>`;
+
+PAGES.replen = ()=>`
+${head('11','Auto Replenishment','Demand-driven PO generation. Regular PO per vendor/store (DTS or Cross-dock) and consolidated Mother-PO for one vendor across many stores.', btn('Run Parameters','')+btn('Generate Proposals','primary',iAdd))}
+<div class="stats">${stat('Proposals Pending','86')}${stat('Auto-Approved','142','<div class="delta up">within tolerance</div>')}${stat('Below ROP (SKU/Branch)','1,204')}${stat('Next Run','18:00 today')}</div>
+<div class="panel">
+${tabs('reptab',[
+  {label:'Regular PO (per Vendor / Store)',body:`
+    ${filterbar([{label:'Vendor',html:'<select><option>All Vendors</option><option>Nestlé</option><option>Alaska</option></select>'},{label:'Branch',html:'<select><option>All Branches</option><option>0102</option><option>0107</option></select>'},{label:'Delivery',html:'<select><option>All</option><option>Direct-To-Store (DTS)</option><option>Cross-dock</option></select>'}],btn('Apply','primary'))}
+    <div class="toolbar">12 proposals selected.<button class="btn sm">Convert to PO</button></div>
+    ${table([{t:'',k:'c'},{t:'Proposal',k:'p'},{t:'Vendor',k:'v'},{t:'Branch',k:'b'},{t:'Delivery',k:'dl'},{t:'SKUs',k:'sk',num:1},{t:'Sugg. Qty (cs)',k:'q',num:1},{t:'Value',k:'val',num:1},{t:'Confidence',k:'cf'}],
+      [{c:'<input type="checkbox" class="chk">',p:'<span class="mono row-link">RP-70112</span>',v:'Nestlé PH',b:'0102 Ortigas',dl:badge('green','DTS'),sk:'38',q:'96',val:'₱ 420,900',cf:badge('green','High')},
+       {c:'<input type="checkbox" class="chk">',p:'<span class="mono row-link">RP-70113</span>',v:'Alaska Milk',b:'0102 Ortigas',dl:badge('blue','Cross-dock'),sk:'12',q:'44',val:'₱ 184,200',cf:badge('green','High')},
+       {c:'<input type="checkbox" class="chk">',p:'<span class="mono row-link">RP-70118</span>',v:'Universal Robina',b:'0233 Cebu',dl:badge('green','DTS'),sk:'54',q:'120',val:'₱ 302,140',cf:badge('amber','Review')},
+       {c:'<input type="checkbox" class="chk">',p:'<span class="mono row-link">RP-70121</span>',v:'San Miguel',b:'0311 Davao',dl:badge('green','DTS'),sk:'22',q:'60',val:'₱ 218,300',cf:badge('green','High')}])}
+    ${pager(4,86)}`},
+  {label:'Mother-PO (1 Vendor / Multi-Store)',body:`
+    <div style="padding:16px 16px 0">${noteBox('<b>Mother-PO</b> consolidates demand for a single vendor across multiple stores into one order, then splits into store allocations at receiving (cross-dock).')}</div>
+    ${table([{t:'Mother-PO',k:'m'},{t:'Vendor',k:'v'},{t:'Stores',k:'s',num:1},{t:'Total SKUs',k:'sk',num:1},{t:'Total Qty (cs)',k:'q',num:1},{t:'Value',k:'val',num:1},{t:'Cross-dock',k:'cd'},{t:'Status',k:'st'}],
+      [{m:'<span class="mono row-link">MPO-4401</span>',v:'Nestlé Philippines',s:'18',sk:'62',q:'1,240',val:'₱ 4,820,900',cd:'CD Meycauayan',st:badge('blue','Approved')},
+       {m:'<span class="mono row-link">MPO-4398</span>',v:'Universal Robina',s:'22',sk:'88',q:'1,680',val:'₱ 3,940,200',cd:'CD Meycauayan',st:badge('amber','For Approval')},
+       {m:'<span class="mono row-link">MPO-4390</span>',v:'Monde Nissin',s:'15',sk:'40',q:'900',val:'₱ 1,210,600',cd:'CD Cebu',st:badge('green','Split & Shipped')}])}
+    <div class="panel-body"><div class="panel" style="margin:0">${ph('MPO-4401 · Store Allocation Preview','18 stores')}
+      <div class="panel-body flush">${table([{t:'Branch',k:'b'},{t:'Zone',k:'z'},{t:'Allocated Qty (cs)',k:'q',num:1},{t:'Value',k:'v',num:1},{t:'Delivery',k:'d'}],
+        [{b:'0102 Ortigas',z:badge('blue','NCR'),q:'120',v:'₱ 468,200',d:badge('blue','Cross-dock')},
+         {b:'0107 Cubao',z:badge('blue','NCR'),q:'96',v:'₱ 374,500',d:badge('blue','Cross-dock')},
+         {b:'0233 Cebu',z:badge('cyan','VisMin'),q:'84',v:'₱ 328,100',d:badge('blue','Cross-dock')},
+         {b:'…15 more branches',z:'',q:'940',v:'₱ 3,650,100',d:''}])}</div></div></div>`},
+])}
+</div>`;
+
+PAGES.receiving = ()=>`
+${head('12','PO Receiving','Receipt of goods via Branch Warehouse, Selling Area, or Cross-Dock (3PL with WMS). Capture quantities, variances and quality holds.', btn('Scan Mode','')+btn('New Receipt','primary',iAdd))}
+<div class="panel">
+${tabs('rcvtab',[
+  {label:'Branch Warehouse',body:`
+    ${filterbar([{label:'Search',grow:1,ph:'GRN / PO / vendor…'},{label:'Branch',html:'<select><option>0102 Ortigas</option><option>0233 Cebu</option></select>'},{label:'Status',html:'<select><option>All</option><option>Open</option><option>Posted</option></select>'}],btn('Apply','primary'))}
+    ${table([{t:'GRN #',k:'g'},{t:'PO #',k:'po'},{t:'Vendor',k:'v'},{t:'Received',k:'rc'},{t:'Lines',k:'ln',num:1},{t:'Cases',k:'cs',num:1},{t:'Variance',k:'va'},{t:'Status',k:'s'}],
+      [{g:'<span class="mono row-link">GRN-88201</span>',po:'<span class="mono">PO-100482</span>',v:'Nestlé PH',rc:'2026-07-13 09:20',ln:'38',cs:'96',va:badge('green','None'),s:badge('green','Posted')},
+       {g:'<span class="mono row-link">GRN-88200</span>',po:'<span class="mono">PO-100478</span>',v:'Universal Robina',rc:'2026-07-13 08:05',ln:'54',cs:'118',va:badge('amber','2 short'),s:badge('amber','Open')},
+       {g:'<span class="mono row-link">GRN-88197</span>',po:'<span class="mono">PO-100470</span>',v:'San Miguel',rc:'2026-07-12 16:40',ln:'41',cs:'88',va:badge('green','None'),s:badge('green','Posted')}])}
+    ${pager(3,58)}`},
+  {label:'Selling Area',body:`
+    <div class="toolbar" style="background:var(--purple-l);color:#6d28d9;border-color:#ddd6fe">Direct-to-shelf receiving — goods booked straight into a selling area (bypasses warehouse).</div>
+    ${table([{t:'GRN #',k:'g'},{t:'Ref',k:'r'},{t:'Vendor',k:'v'},{t:'Selling Area',k:'sa'},{t:'Received',k:'rc'},{t:'Cases',k:'cs',num:1},{t:'Status',k:'s'}],
+      [{g:'<span class="mono row-link">GRN-88205</span>',r:'<span class="mono">DSD-55901</span>',v:'Gardenia',sa:badge('purple','Bakery'),rc:'2026-07-13 06:30',cs:'42',s:badge('green','Posted')},
+       {g:'<span class="mono row-link">GRN-88204</span>',r:'<span class="mono">DSD-55900</span>',v:'Selecta',sa:badge('blue','Freezer 1'),rc:'2026-07-13 07:10',cs:'18',s:badge('green','Posted')},
+       {g:'<span class="mono row-link">GRN-88202</span>',r:'<span class="mono">PO-100479</span>',v:'Coca-Cola',sa:badge('cyan','Beverages'),rc:'2026-07-13 05:55',cs:'64',s:badge('amber','Open')}])}
+    ${pager(3,96)}`},
+  {label:'Cross-Dock (3PL · WMS)',body:`
+    <div style="padding:16px 16px 0">${noteBox('<b>Cross-dock via 3PL Warehouse Management System.</b> Mother-PO stock is received at the 3PL hub, cross-docked, and split into store shipments. Statuses sync from the WMS.','cyan')}</div>
+    ${table([{t:'ASN / WMS Ref',k:'a'},{t:'Mother-PO',k:'m'},{t:'Vendor',k:'v'},{t:'3PL Hub',k:'h'},{t:'Stores',k:'s',num:1},{t:'Cases In',k:'ci',num:1},{t:'Cases Out',k:'co',num:1},{t:'WMS Status',k:'st'}],
+      [{a:'<span class="mono row-link">ASN-9920</span>',m:'<span class="mono">MPO-4401</span>',v:'Nestlé PH',h:'CD Meycauayan',s:'18',ci:'1,240',co:'1,240',st:badge('green','Dispatched')},
+       {a:'<span class="mono row-link">ASN-9918</span>',m:'<span class="mono">MPO-4398</span>',v:'Universal Robina',h:'CD Meycauayan',s:'22',ci:'1,680',co:'1,120',st:badge('amber','Cross-docking')},
+       {a:'<span class="mono row-link">ASN-9915</span>',m:'<span class="mono">MPO-4390</span>',v:'Monde Nissin',h:'CD Cebu',s:'15',ci:'900',co:'900',st:badge('blue','Received @ Hub')}])}
+    ${pager(3,31)}`},
+])}
+</div>`;
+
+PAGES.transfer = ()=>`
+${head('13','Store-to-Store Transfer','Move stock between branches — balancing overstock/understock, honoring in-transit and receiving confirmation.', btn('Export','',iExport)+btn('New Transfer','primary',iAdd))}
+<div class="stats">${stat('Open Transfers','28')}${stat('In Transit','14')}${stat('Value Moving','₱ 3.1M')}${stat('Pending Confirm','9','<div class="delta down">at destination</div>')}</div>
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Transfer # or item…'},{label:'From',html:'<select><option>All</option><option>0102 Ortigas</option></select>'},{label:'To',html:'<select><option>All</option><option>0107 Cubao</option></select>'},{label:'Status',html:'<select><option>All</option><option>Draft</option><option>In Transit</option><option>Received</option></select>'}],btn('Apply','primary'))}
+  <div class="panel-body flush">${table([{t:'Transfer #',k:'t'},{t:'From Branch',k:'f'},{t:'To Branch',k:'to'},{t:'Reason',k:'r'},{t:'Lines',k:'ln',num:1},{t:'Qty',k:'q',num:1},{t:'Value',k:'v',num:1},{t:'Status',k:'s'}],
+    [{t:'<span class="mono row-link">TR-6601</span>',f:'0102 Ortigas',to:'0107 Cubao',r:badge('blue','Rebalance'),ln:'12',q:'340',v:'₱ 184,200',s:badge('amber','In Transit')},
+     {t:'<span class="mono row-link">TR-6599</span>',f:'0233 Cebu',to:'0311 Davao',r:badge('purple','Promo Support'),ln:'8',q:'220',v:'₱ 96,400',s:badge('gray','Draft')},
+     {t:'<span class="mono row-link">TR-6596</span>',f:'0107 Cubao',to:'0088 Recto',r:badge('cyan','Near Expiry'),ln:'5',q:'80',v:'₱ 18,900',s:badge('green','Received')},
+     {t:'<span class="mono row-link">TR-6592</span>',f:'0102 Ortigas',to:'0450 Baguio',r:badge('blue','Rebalance'),ln:'18',q:'510',v:'₱ 268,700',s:badge('amber','Pending Confirm')}])}</div>
+  ${pager(4,28)}
+</div>`;
+
+PAGES.rtv = ()=>`
+${head('14','Return To Vendor','Return defective, expired, recalled or overstocked goods. Generates debit memo and reverses inventory & payables.', btn('Export','',iExport)+btn('New RTV','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'RTV # / vendor / item…'},{label:'Reason',html:'<select><option>All Reasons</option><option>Expired</option><option>Damaged</option><option>Recall</option><option>Overstock</option></select>'},{label:'Vendor',html:'<select><option>All Vendors</option></select>'},{label:'Status',html:'<select><option>All</option><option>Draft</option><option>Approved</option><option>Picked Up</option></select>'}],btn('Apply','primary'))}
+  <div class="panel-body flush">${table([{t:'RTV #',k:'r'},{t:'Vendor',k:'v'},{t:'Branch',k:'b'},{t:'Reason',k:'rs'},{t:'Debit Memo',k:'dm'},{t:'Qty',k:'q',num:1},{t:'Value',k:'val',num:1},{t:'Status',k:'s'}],
+    [{r:'<span class="mono row-link">RTV-3320</span>',v:'Alaska Milk Corp.',b:'0102 Ortigas',rs:badge('red','Expired'),dm:'<span class="mono">DM-9901</span>',q:'48',val:'₱ 27,900',s:badge('blue','Approved')},
+     {r:'<span class="mono row-link">RTV-3318</span>',v:'Monde Nissin',b:'0233 Cebu',rs:badge('amber','Damaged'),dm:'<span class="mono">DM-9898</span>',q:'120',val:'₱ 14,400',s:badge('amber','Pending Pickup')},
+     {r:'<span class="mono row-link">RTV-3314</span>',v:'Nestlé PH',b:'0311 Davao',rs:badge('purple','Recall'),dm:'<span class="mono">DM-9894</span>',q:'300',val:'₱ 88,200',s:badge('green','Picked Up')},
+     {r:'<span class="mono row-link">RTV-3310</span>',v:'Universal Robina',b:'0107 Cubao',rs:badge('gray','Overstock'),dm:'—',q:'200',val:'₱ 42,000',s:badge('gray','Draft')}])}</div>
+  ${pager(4,74)}
+</div>`;
+
+PAGES.adjust = ()=>`
+${head('15','Inventory Adjustment','Correct stock discrepancies from cycle counts, spoilage, theft/shrink and system errors. Full audit trail and approval.', btn('Export','',iExport)+btn('New Adjustment','primary',iAdd))}
+<div class="stats">${stat('Adjustments (MTD)','214')}${stat('Shrink Value (MTD)','₱ 892,400','<div class="delta down">0.42% of sales</div>')}${stat('Spoilage (MTD)','₱ 410,200')}${stat('Awaiting Approval','7')}</div>
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Adj # / item…'},{label:'Reason',html:'<select><option>All</option><option>Cycle Count</option><option>Spoilage</option><option>Shrink</option><option>System Correction</option></select>'},{label:'Branch',html:'<select><option>All Branches</option></select>'},{label:'Direction',html:'<select><option>All</option><option>Increase</option><option>Decrease</option></select>'}],btn('Apply','primary'))}
+  <div class="panel-body flush">${table([{t:'Adj #',k:'a'},{t:'Branch',k:'b'},{t:'Reason',k:'r'},{t:'Item',k:'i'},{t:'System Qty',k:'sq',num:1},{t:'Counted',k:'cq',num:1},{t:'Δ Qty',k:'dq',num:1},{t:'Value Impact',k:'v',num:1},{t:'Status',k:'s'}],
+    [{a:'<span class="mono row-link">ADJ-7712</span>',b:'0102 Ortigas',r:badge('blue','Cycle Count'),i:'Alaska Fresh Milk 1L',sq:'1,480',cq:'1,462',dq:'<span style="color:var(--red)">−18</span>',v:'<span style="color:var(--red)">−₱ 1,047</span>',s:badge('amber','For Approval')},
+     {a:'<span class="mono row-link">ADJ-7710</span>',b:'0233 Cebu',r:badge('red','Spoilage'),i:'Fresh Eggs Tray 30s',sq:'240',cq:'228',dq:'<span style="color:var(--red)">−12</span>',v:'<span style="color:var(--red)">−₱ 2,352</span>',s:badge('green','Posted')},
+     {a:'<span class="mono row-link">ADJ-7707</span>',b:'0107 Cubao',r:badge('amber','Shrink'),i:'Nescafé Classic 100g',sq:'780',cq:'772',dq:'<span style="color:var(--red)">−8</span>',v:'<span style="color:var(--red)">−₱ 944</span>',s:badge('green','Posted')},
+     {a:'<span class="mono row-link">ADJ-7704</span>',b:'0311 Davao',r:badge('gray','System Correction'),i:'Lucky Me Pancit Canton',sq:'4,560',cq:'4,584',dq:'<span style="color:var(--green)">+24</span>',v:'<span style="color:var(--green)">+₱ 221</span>',s:badge('green','Posted')}])}</div>
+  ${pager(4,214)}
+</div>`;
+
+PAGES.makeup = ()=>`
+${head('16','Make-up / Break-up Module','Assemble promo bundles (make-up) or split bulk into sellable units (break-up). Covers promoted items and fresh cut-ups with yield.', btn('Yield Report','')+btn('New Conversion','primary',iAdd))}
+<div class="panel">
+${tabs('mutab',[
+  {label:'Promoted Items (Make-up / Break-up)',body:`
+    ${filterbar([{label:'Search',grow:1,ph:'Conversion # / item…'},{label:'Type',html:'<select><option>All</option><option>Make-up (Bundle)</option><option>Break-up (Split)</option></select>'},{label:'Branch',html:'<select><option>All Branches</option></select>'}],btn('Apply','primary'))}
+    ${table([{t:'Conv #',k:'c'},{t:'Type',k:'ty'},{t:'Component / Source',k:'src'},{t:'Finished / Output',k:'out'},{t:'Ratio',k:'r'},{t:'Qty',k:'q',num:1},{t:'Branch',k:'b'},{t:'Status',k:'s'}],
+      [{c:'<span class="mono row-link">MK-4401</span>',ty:badge('blue','Make-up'),src:'Nescafé 100g × 3 + Mug',out:'Coffee Bundle Promo',r:'3+1 → 1',q:'240 sets',b:'0102 Ortigas',s:badge('green','Posted')},
+       {c:'<span class="mono row-link">MK-4399</span>',ty:badge('purple','Break-up'),src:'Rice Sack 25kg',out:'Rice Repack 5kg',r:'1 → 5',q:'40 sacks',b:'0233 Cebu',s:badge('amber','In Progress')},
+       {c:'<span class="mono row-link">MK-4396</span>',ty:badge('blue','Make-up'),src:'Assorted Snacks',out:'Merienda Value Pack',r:'6 → 1',q:'180 packs',b:'0311 Davao',s:badge('green','Posted')}])}
+    ${pager(3,60)}`},
+  {label:'Fresh Cut-ups',body:`
+    <div style="padding:16px 16px 0">${noteBox('<b>Fresh Cut-ups</b> — a whole primal is broken into retail cuts (e.g. whole chicken → parts). Yield %, trim loss and re-costed outputs are captured per batch.','green')}</div>
+    ${table([{t:'Batch #',k:'b'},{t:'Source (Primal)',k:'src'},{t:'Input Kg',k:'ik',num:1},{t:'Outputs',k:'o'},{t:'Output Kg',k:'ok',num:1},{t:'Yield %',k:'y'},{t:'Trim Loss',k:'tl',num:1},{t:'Status',k:'s'}],
+      [{b:'<span class="mono row-link">FC-9012</span>',src:'Whole Chicken',ik:'120.0',o:'Breast, Legs, Wings, Backs',ok:'104.4',y:'<div class="progress"><i style="width:87%;background:var(--green)"></i></div>',tl:'15.6',s:badge('green','Posted')},
+       {b:'<span class="mono row-link">FC-9010</span>',src:'Pork Belly Slab',ik:'80.0',o:'Liempo, Lechon Kawali cuts',ok:'72.8',y:'<div class="progress"><i style="width:91%;background:var(--green)"></i></div>',tl:'7.2',s:badge('green','Posted')},
+       {b:'<span class="mono row-link">FC-9007</span>',src:'Whole Bangus',ik:'60.0',o:'Boneless, Belly, Head',ok:'46.2',y:'<div class="progress"><i style="width:77%;background:var(--amber)"></i></div>',tl:'13.8',s:badge('amber','In Progress')}])}
+    ${pager(3,42)}`},
+])}
+</div>`;
+
+PAGES.salesaudit = ()=>`
+${head('17','POS Sales','Ingest POS sales batches and balance them — mode of payment, cashier, and total sales — before releasing to finance & inventory.', btn('Reprocess','')+btn('Upload Batch','primary',iAdd))}
+<div class="stats">${stat('Batches Today','42 / 42','<div class="delta up">All branches in</div>')}${stat('Gross Sales','₱ 38.4M')}${stat('Unbalanced','2','<div class="delta down">MOP variance</div>')}${stat('Cashier Shortage','₱ 1,240')}</div>
+<div class="panel">
+${tabs('satab',[
+  {label:'POS Sales Batch Upload',body:`
+    ${filterbar([{label:'Business Date',html:'<input type="date" value="2026-07-12">'},{label:'Branch',html:'<select><option>All Branches</option></select>'},{label:'Status',html:'<select><option>All</option><option>Loaded</option><option>Error</option></select>'}],btn('Apply','primary'))}
+    ${table([{t:'Batch',k:'b'},{t:'Branch',k:'br'},{t:'Business Date',k:'d'},{t:'Terminals',k:'t',num:1},{t:'Transactions',k:'tx',num:1},{t:'Gross Sales',k:'gs',num:1},{t:'Loaded',k:'ld'},{t:'Status',k:'s'}],
+      [{b:'<span class="mono row-link">SB-2210201</span>',br:'0102 Ortigas',d:'2026-07-12',t:'18',tx:'6,204',gs:'₱ 2,418,905',ld:'01:12',s:badge('green','Balanced')},
+       {b:'<span class="mono row-link">SB-2210202</span>',br:'0107 Cubao',d:'2026-07-12',t:'12',tx:'4,120',gs:'₱ 1,684,220',ld:'01:14',s:badge('amber','MOP Variance')},
+       {b:'<span class="mono row-link">SB-2210203</span>',br:'0233 Cebu',d:'2026-07-12',t:'14',tx:'5,018',gs:'₱ 1,902,140',ld:'01:15',s:badge('green','Balanced')},
+       {b:'<span class="mono row-link">SB-2210204</span>',br:'0311 Davao',d:'2026-07-12',t:'16',tx:'5,880',gs:'₱ 2,118,300',ld:'—',s:badge('red','Load Error')}])}
+    ${pager(4,42)}`},
+  {label:'Mode of Payment Balancing',body:`
+    <div class="toolbar">Branch 0107 · Cubao — POS declared vs. banked/settled per tender.</div>
+    ${table([{t:'Tender',k:'t'},{t:'POS Declared',k:'pd',num:1},{t:'Settled / Banked',k:'sb',num:1},{t:'Variance',k:'v',num:1},{t:'Status',k:'s'}],
+      [{t:'Cash',pd:'₱ 842,100.00',sb:'₱ 841,900.00',v:'<span style="color:var(--red)">−₱ 200.00</span>',s:badge('amber','Short')},
+       {t:'Credit / Debit Card',pd:'₱ 512,400.00',sb:'₱ 512,400.00',v:'₱ 0.00',s:badge('green','Balanced')},
+       {t:'GCash / e-Wallet',pd:'₱ 268,900.00',sb:'₱ 268,900.00',v:'₱ 0.00',s:badge('green','Balanced')},
+       {t:'Gift Card / Voucher',pd:'₱ 42,320.00',sb:'₱ 42,020.00',v:'<span style="color:var(--red)">−₱ 300.00</span>',s:badge('amber','Short')},
+       {t:'SC / PWD Discount',pd:'₱ 18,500.00',sb:'₱ 18,500.00',v:'₱ 0.00',s:badge('green','Balanced')}])}`},
+  {label:'Cashier Balancing',body:`
+    <div class="toolbar">Branch 0107 · Cubao — per-cashier remittance vs. system.</div>
+    ${table([{t:'Cashier',k:'c'},{t:'Terminal',k:'t'},{t:'Shift',k:'sh'},{t:'System Sales',k:'ss',num:1},{t:'Remitted',k:'rm',num:1},{t:'Over/Short',k:'os',num:1},{t:'Status',k:'s'}],
+      [{c:'M. Santos',t:'POS-04',sh:'AM',ss:'₱ 118,420',rm:'₱ 118,420',os:'₱ 0',s:badge('green','Balanced')},
+       {c:'J. Dela Cruz',t:'POS-07',sh:'AM',ss:'₱ 96,200',rm:'₱ 96,000',os:'<span style="color:var(--red)">−₱ 200</span>',s:badge('red','Short')},
+       {c:'A. Reyes',t:'POS-02',sh:'PM',ss:'₱ 132,900',rm:'₱ 132,900',os:'₱ 0',s:badge('green','Balanced')},
+       {c:'K. Lim',t:'POS-11',sh:'PM',ss:'₱ 88,140',rm:'₱ 88,240',os:'<span style="color:var(--green)">+₱ 100</span>',s:badge('amber','Over')}])}`},
+  {label:'Sales Balancing',body:`
+    <div class="toolbar">Branch 0107 · Cubao — end-to-end reconciliation.</div>
+    <div class="panel-body"><div class="grid2">
+      <div class="kv">
+        <div class="k">POS Gross Sales</div><div class="v">₱ 1,684,220.00</div>
+        <div class="k">Less: Discounts</div><div class="v">₱ (48,300.00)</div>
+        <div class="k">Less: Returns/Voids</div><div class="v">₱ (12,140.00)</div>
+        <div class="k">Net Sales</div><div class="v">₱ 1,623,780.00</div>
+        <div class="k">VAT (12%)</div><div class="v">₱ 173,976.00</div>
+      </div>
+      <div class="kv">
+        <div class="k">Total Tenders (MOP)</div><div class="v">₱ 1,684,220.00</div>
+        <div class="k">MOP Variance</div><div class="v" style="color:var(--red)">₱ (500.00)</div>
+        <div class="k">Cashier Net O/S</div><div class="v" style="color:var(--red)">₱ (100.00)</div>
+        <div class="k">Inventory Movement</div><div class="v">${badge('green','Posted')}</div>
+        <div class="k">Overall</div><div class="v">${badge('amber','For Review')}</div>
+      </div>
+    </div></div>
+    <div class="foot"><span class="t-sub">Variances routed to branch accountant for sign-off</span><div class="right">${btn('Flag to Finance','')}${btn('Release Batch','primary')}</div></div>`},
+])}
+</div>`;
+
+/* ============ CREATE / NEW-RECORD FORMS ============ */
+const BR = ['0102 · Ortigas Ext.','0107 · Araneta Cubao','0233 · Mandaue (Cebu)','0311 · Bajada (Davao)','0461 · Clark','0119 · Jr. Baclaran','0450 · Jr. Baguio','0146 · Extra Cainta','0531 · Mini Kamias','AYA-03 · Merkado UP Town'];
+const VEN = ['Nestlé Philippines','Alaska Milk Corp.','Universal Robina Corp.','San Miguel Foods','Monde Nissin Corp.','Gardenia Bakeries PH','Selecta Ice Cream (RFM)'];
+const ci = (v,w)=>`<input value="${v}" style="width:${w||84}px;padding:4px 6px;border:1px solid var(--line2);border-radius:4px;font-size:12px">`;
+function ff(f){
+  const req=f.req?' <span class="req">*</span>':'';
+  const cls='fg'+(f.span==='full'?' full':'');
+  let c;
+  if(f.type==='select') c=`<select>${(f.opt||[]).map(o=>`<option>${o}</option>`).join('')}</select>`;
+  else if(f.type==='area') c=`<textarea rows="2">${f.v||''}</textarea>`;
+  else c=`<input type="${f.type||'text'}" ${f.v!=null?`value="${f.v}"`:''} ${f.ph?`placeholder="${f.ph}"`:''} ${f.ro?'readonly':''}>`;
+  return `<div class="${cls}"><label>${f.l}${req}</label>${c}${f.hint?`<div class="hint">${f.hint}</div>`:''}</div>`;
+}
+function lineTable(l){
+  return `<div class="panel">
+    <div class="panel-head"><h3>${l.title||'Line Items'}</h3>${l.sub?`<span class="sub">${l.sub}</span>`:''}<div class="right"><button class="btn sm">${iAdd} Add Line</button></div></div>
+    <div class="tbl-wrap"><table><thead><tr>${l.cols.map(c=>`<th class="${c.num?'num':''}">${c.t}</th>`).join('')}<th></th></tr></thead>
+    <tbody>${l.rows.map(r=>`<tr>${r.map((cell,i)=>`<td class="${l.cols[i].num?'num':''}">${cell}</td>`).join('')}<td style="text-align:center"><button class="btn ghost sm" title="Remove line">✕</button></td></tr>`).join('')}</tbody></table></div>
+    ${l.total?`<div class="foot"><span class="t-sub">${l.rows.length} line(s)</span><div class="right"><span style="font-weight:800;color:var(--navy)">Order Total: ${l.total}</span></div></div>`:''}
+  </div>`;
+}
+function createForm(cfg){
+  const actions=`<button class="btn" data-back="1">‹ Back to list</button><button class="btn" data-save="1">Save Draft</button><button class="btn primary" data-save="1">${cfg.cta||'Save'}</button>`;
+  const grid=`<div class="panel"><div class="panel-head"><h3>${cfg.formTitle||'Details'}</h3><span class="sub">${cfg.ref||'New · Draft'}</span></div>
+    <div class="panel-body"><div class="form-grid">${cfg.sections.map(s=>`<div class="section-label">${s.l}</div>${s.f.map(ff).join('')}`).join('')}</div></div></div>`;
+  const lines=cfg.lines?lineTable(cfg.lines):'';
+  const foot=`<div class="panel"><div class="foot"><span class="t-sub">${cfg.footNote||'Required fields (*) must be completed before submission.'}</span><div class="right"><button class="btn" data-back="1">Cancel</button><button class="btn" data-save="1">Save Draft</button><button class="btn primary" data-save="1">${cfg.cta||'Save'}</button></div></div></div>`;
+  return head(cfg.no,cfg.title,cfg.desc,actions)+grid+lines+foot;
+}
+const CREATE = {
+  user:{no:'',list:'users',title:'New User',desc:'Create a user account, assign a role and set the branch access scope.',ref:'New User · Draft',cta:'Create User',
+    sections:[{l:'Identity',f:[{l:'Employee ID',req:1,ph:'e.g. EMP-00742'},{l:'Full Name',req:1,span:'full',ph:'e.g. Juan Dela Cruz'},{l:'Username',req:1,ph:'e.g. jdelacruz'},{l:'Email',type:'email',ph:'name@puregold.com.ph'}]},
+      {l:'Assignment',f:[{l:'Role',type:'select',req:1,opt:['System Administrator','Category Manager','Buyer','Pricing Analyst','Store Manager','Receiving Clerk','Sales Auditor','Inventory Controller','Vendor Coordinator','Viewer']},{l:'Department',type:'select',opt:['Merchandising — Grocery','Merchandising — Fresh','Merchandising — Non-Food','Store Operations','Supply Chain / Warehouse','Sales Audit / Finance','IT / Administration']},{l:'Reports To',type:'select',opt:['Rica Cruz (System Administrator)','Marco Reyes (Category Manager)','— None —']}]},
+      {l:'Branch Access',f:[{l:'Access Scope',type:'select',req:1,opt:['Chain-wide (all 437 stores)','By Zone','By Store']},{l:'Zone',type:'select',opt:['— Not applicable —','NCR','North Luzon','South Luzon','VisMin'],hint:'Used when scope is “By Zone”. Add more zones after creation on the Branch Access tab.'},{l:'Home Branch',type:'select',opt:['— Not applicable —',...BR],hint:'Used when scope is “By Store”.'}]},
+      {l:'Security',f:[{l:'Status',type:'select',opt:['Active','Inactive']},{l:'Multi-Factor Auth',type:'select',opt:['Enabled','Disabled']},{l:'Temporary Password',ph:'Leave blank to auto-generate'},{l:'Force Password Reset on First Login',type:'select',opt:['Yes','No']}]}]},
+  po:{no:10,list:'po',title:'New Purchase Order',desc:'Create a purchase order, add line items, then route for approval.',ref:'PO-100483 · Draft',cta:'Submit for Approval',
+    sections:[{l:'Order Header',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Order Type',type:'select',opt:['Regular','DSD (no PO)','One-Time-Buy (OTB)']},{l:'Delivery Model',type:'select',opt:['Direct-to-Store (DTS)','Cross-dock']},{l:'Ship To Branch',type:'select',opt:BR,req:1},{l:'Order Date',type:'date',v:'2026-07-15'},{l:'Expected Delivery',type:'date',v:'2026-07-18'},{l:'Buyer',type:'select',opt:['R. Cruz','L. Domingo','P. Salas']},{l:'Payment Terms',v:'45 days',ro:1}]},{l:'Notes',f:[{l:'Remarks',type:'area',span:'full',ph:'Optional instructions to vendor / receiving…'}]}],
+    lines:{title:'Line Items',sub:'Quantities in cases',cols:[{t:'Item'},{t:'UOM'},{t:'Order Qty',num:1},{t:'Cost / Case',num:1},{t:'Amount',num:1}],rows:[['<span class="t-title">Nescafé Classic 100g</span>','CASE-24',ci('40'),ci('2,832'),'₱ 113,280'],['<span class="t-title">Bear Brand Powdered 300g</span>','CASE-48',ci('30'),ci('4,128'),'₱ 123,840']],total:'₱ 237,120'}},
+  item:{no:6,list:'item',title:'New Item',desc:'Register a new SKU in the master catalog.',ref:'New Item · Draft',cta:'Save Item',
+    sections:[{l:'Identity',f:[{l:'Description',req:1,span:'full',ph:'e.g. Alaska Fresh Milk 1L'},{l:'Primary Barcode',ph:'13-digit EAN'},{l:'Short Name (POS)'},{l:'Brand'}]},{l:'Classification',f:[{l:'Division',type:'select',opt:['01 · Grocery Food','02 · Fresh & Perishables','03 · Non-Food & Household','04 · Fashion & Apparel']},{l:'Department',type:'select',opt:['Dairy & Chilled','Bakery','Beverages','Fresh']},{l:'Category',type:'select',opt:['Milk','Coffee','Noodles','Eggs']},{l:'Sub-category',type:'select',opt:['Fresh Milk','UHT Milk','Powdered Milk']}]},{l:'Attributes & Pricing',f:[{l:'Perishable',type:'select',opt:['No','Yes']},{l:'Shelf Life',ph:'e.g. 7 days'},{l:'VAT Class',type:'select',opt:['12% VATable','VAT Exempt','Zero-rated']},{l:'Primary Vendor',type:'select',opt:VEN},{l:'Standard Cost',type:'number',ph:'0.00'},{l:'Base Retail (VAT-inc)',type:'number',ph:'0.00'}]}]},
+  vendor:{no:3,list:'vendor',title:'New Vendor',desc:'Onboard a supplier and its commercial terms.',ref:'New Vendor · Draft',cta:'Save Vendor',
+    sections:[{l:'Identity',f:[{l:'Vendor Name',req:1,span:'full'},{l:'TIN'},{l:'Vendor Category',type:'select',opt:['Dairy','Bakery','Beverages','Fresh','Grocery','Non-Food']}]},{l:'Commercial Terms',f:[{l:'Delivery Model',type:'select',opt:['Direct-to-Store (DTS)','Cross-dock','DSD']},{l:'Payment Terms',type:'select',opt:['7 days','15 days','30 days','45 days','60 days']},{l:'Lead Time',ph:'e.g. 2 days'},{l:'Min Order (₱)',type:'number'}]},{l:'Contact',f:[{l:'Registered Address',span:'full'},{l:'Contact Person'},{l:'Phone'},{l:'Email',type:'email'}]}]},
+  company:{no:1,list:'company',title:'New Company',desc:'Register a corporate / operating entity.',ref:'New Company · Draft',cta:'Save Company',
+    sections:[{l:'Identity',f:[{l:'Company Code',req:1},{l:'Legal Name',req:1,span:'full'},{l:'Trade Name'},{l:'TIN'}]},{l:'Fiscal & Tax',f:[{l:'Fiscal Year Start',type:'select',opt:['January','April']},{l:'Base Currency',type:'select',opt:['PHP — Philippine Peso']},{l:'Default VAT',type:'select',opt:['12% VATable','VAT Exempt']},{l:'Price Includes VAT',type:'select',opt:['Yes (VAT-inclusive)','No']}]},{l:'Contact',f:[{l:'Registered Address',span:'full'},{l:'Contact Person'}]}]},
+  branch:{no:2,list:'branch',title:'New Branch',desc:'Open a new store location.',ref:'New Branch · Draft',cta:'Save Branch',
+    sections:[{l:'Identity',f:[{l:'Branch Code',req:1},{l:'Branch Name',req:1,span:'full'},{l:'Zone',type:'select',opt:['NCR','North Luzon','South Luzon','VisMin']},{l:'Store Format',type:'select',opt:['Hypermarket','Supermarket','Extra','Minimart','Ayagold (Merkado)']}]},{l:'Setup',f:[{l:'No. of Selling Areas',type:'number',v:'4'},{l:'Has Branch Warehouse',type:'select',opt:['Yes','No']},{l:'Opening Date',type:'date',v:'2026-08-01'}]},{l:'Address',f:[{l:'Street / Building',span:'full'},{l:'City / Municipality'},{l:'Province'}]}]},
+  allowance:{no:4,list:'allowance',title:'New Vendor Allowance',desc:'Record a trade agreement / allowance.',ref:'New Allowance · Draft',cta:'Save Allowance',
+    sections:[{l:'Agreement',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Allowance Type',type:'select',opt:['Volume Rebate','Listing Fee','Promo Allowance','Display / Facing','Markdown Support']},{l:'Basis',type:'select',opt:['% of Purchase','Fixed Amount','Per Case']},{l:'Rate / Amount',ph:'e.g. 3.50% or ₱ 12.00'},{l:'Valid From',type:'date',v:'2026-08-01'},{l:'Valid To',type:'date',v:'2026-12-31'}]}]},
+  price:{no:8,list:'price',title:'New Item Price Update',desc:'Create a price update batch at Company / Zone / Branch level.',ref:'PC-24021 · Draft',cta:'Submit for Approval',
+    sections:[{l:'Batch Header',f:[{l:'Batch Description',req:1,span:'full'},{l:'Price Level',type:'select',opt:['Company (all branches)','Zone','Branch']},{l:'Scope',type:'select',opt:['Company — Puregold Price Club','NCR','North Luzon','0102 · Ortigas Ext.']},{l:'Effective Date',type:'date',v:'2026-07-20'},{l:'Reason Code',type:'select',opt:['Cost-driven','Competitive','Promo end','Rounding']},{l:'Rounding Rule',type:'select',opt:['Nearest ₱0.25','Nearest ₱0.05','x.95 endings']}]}],
+    lines:{title:'Items & New Prices',cols:[{t:'Item'},{t:'Current Retail',num:1},{t:'New Retail',num:1}],rows:[['<span class="t-title">Lucky Me Pancit Canton 60g</span>','₱ 13.50',ci('14.25')],['<span class="t-title">Nescafé Classic 100g</span>','₱ 149.75',ci('154.75')]]}},
+  cost:{no:9,list:'cost',title:'New Cost Update',desc:'Create a per-vendor cost update.',ref:'CC-8803 · Draft',cta:'Submit for Approval',
+    sections:[{l:'Header',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Cost Level',type:'select',opt:['Company (all branches)','Zone','Branch']},{l:'Effective Date',type:'date',v:'2026-07-20'},{l:'Source Document',ph:'Vendor advisory ref…'}]}],
+    lines:{title:'Items & New Costs',cols:[{t:'Item'},{t:'Old Cost',num:1},{t:'New Cost',num:1}],rows:[['<span class="t-title">Nescafé Classic 100g</span>','118.00',ci('123.50')],['<span class="t-title">Bear Brand Powdered 300g</span>','86.00',ci('90.20')]]}},
+  transfer:{no:13,list:'transfer',title:'New Store-to-Store Transfer',desc:'Move stock between branches.',ref:'TR-6602 · Draft',cta:'Submit Transfer',
+    sections:[{l:'Header',f:[{l:'From Branch',type:'select',opt:BR,req:1},{l:'To Branch',type:'select',opt:BR,req:1},{l:'Reason',type:'select',opt:['Rebalance','Promo Support','Near Expiry']},{l:'Transfer Date',type:'date',v:'2026-07-15'}]}],
+    lines:{title:'Items to Transfer',cols:[{t:'Item'},{t:'UOM'},{t:'Qty',num:1}],rows:[['<span class="t-title">Alaska Fresh Milk 1L</span>','PC',ci('120')],['<span class="t-title">Gardenia White Bread 600g</span>','PC',ci('40')]]}},
+  rtv:{no:14,list:'rtv',title:'New Return To Vendor',desc:'Return goods to a supplier; generates a debit memo.',ref:'RTV-3321 · Draft',cta:'Submit RTV',
+    sections:[{l:'Header',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Branch',type:'select',opt:BR},{l:'Reason',type:'select',opt:['Expired','Damaged','Recall','Overstock']},{l:'RTV Date',type:'date',v:'2026-07-15'}]}],
+    lines:{title:'Items to Return',cols:[{t:'Item'},{t:'UOM'},{t:'Qty',num:1},{t:'Unit Cost',num:1}],rows:[['<span class="t-title">Alaska Fresh Milk 1L</span>','PC',ci('48'),ci('58.20')]]}},
+  adjust:{no:15,list:'adjust',title:'New Inventory Adjustment',desc:'Correct stock from count, spoilage or shrink.',ref:'ADJ-7713 · Draft',cta:'Submit for Approval',
+    sections:[{l:'Header',f:[{l:'Branch',type:'select',opt:BR,req:1},{l:'Reason',type:'select',opt:['Cycle Count','Spoilage','Shrink','System Correction']},{l:'Adjustment Date',type:'date',v:'2026-07-15'}]}],
+    lines:{title:'Items',cols:[{t:'Item'},{t:'System Qty',num:1},{t:'Counted',num:1}],rows:[['<span class="t-title">Alaska Fresh Milk 1L</span>','1,480',ci('1,462')]]}},
+  makeup:{no:16,list:'makeup',title:'New Conversion',desc:'Make-up / break-up bundle or fresh cut-up batch.',ref:'New Conversion · Draft',cta:'Post Conversion',
+    sections:[{l:'Header',f:[{l:'Conversion Type',type:'select',opt:['Make-up (Bundle)','Break-up (Split)','Fresh Cut-up']},{l:'Branch',type:'select',opt:BR},{l:'Date',type:'date',v:'2026-07-15'}]},{l:'Source & Output',f:[{l:'Source Item',type:'select',opt:['Whole Chicken','Rice Sack 25kg','Nescafé 100g × 3 + Mug']},{l:'Output Item',ph:'e.g. Chicken Parts / Rice Repack 5kg'},{l:'Ratio',ph:'e.g. 1 → 5'},{l:'Quantity',type:'number'}]}]},
+  node:{no:5,list:'hierarchy',title:'New Hierarchy Node',desc:'Add a classification node.',ref:'New Node · Draft',cta:'Save Node',
+    sections:[{l:'Node',f:[{l:'Level',type:'select',opt:['Division (L1)','Department (L2)','Category (L3)','Sub-category (L4)']},{l:'Parent Node',type:'select',opt:['01 · Grocery Food','0110 · Dairy & Chilled','0110-01 · Milk']},{l:'Node Code',req:1},{l:'Node Name',req:1,span:'full'},{l:'Merch Manager',type:'select',opt:['L. Domingo','P. Salas']},{l:'Replen Strategy',type:'select',opt:['Auto (Min/Max)','Manual']}]}]},
+  receipt:{no:12,list:'receiving',title:'New Goods Receipt',desc:'Receive goods against a PO or delivery.',ref:'GRN-88206 · Draft',cta:'Post Receipt',
+    sections:[{l:'Header',f:[{l:'Receiving Point',type:'select',opt:['Branch Warehouse','Selling Area','Cross-Dock (3PL · WMS)']},{l:'PO / Reference',type:'select',opt:['PO-100482','PO-100481','DSD-55901']},{l:'Vendor',type:'select',opt:VEN,ro:1},{l:'Branch',type:'select',opt:BR},{l:'Receive Date',type:'date',v:'2026-07-15'}]}],
+    lines:{title:'Received Items',cols:[{t:'Item'},{t:'Ordered',num:1},{t:'Received',num:1}],rows:[['<span class="t-title">Nescafé Classic 100g</span>','96',ci('96')],['<span class="t-title">Bear Brand Powdered 300g</span>','48',ci('46')]]}},
+  salesbatch:{no:17,list:'salesaudit',title:'Upload POS Sales Batch',desc:'Ingest a daily POS sales batch for balancing.',ref:'New Batch · Draft',cta:'Upload & Validate',
+    sections:[{l:'Batch',f:[{l:'Business Date',type:'date',v:'2026-07-14'},{l:'Branch',type:'select',opt:BR},{l:'Source File',ph:'POS_20260714.dat',hint:'Select the POS export file to upload.'},{l:'Terminals Expected',type:'number',v:'18'}]}]},
+  replenrun:{no:11,list:'replen',title:'Generate Replenishment Proposals',desc:'Run demand-driven proposal generation.',ref:'Run · Ad-hoc',cta:'Run Now',
+    sections:[{l:'Run Scope',f:[{l:'Proposal Type',type:'select',opt:['Regular PO (per Vendor / Store)','Mother-PO (1 Vendor / Multi-Store)']},{l:'Vendor',type:'select',opt:['All Vendors',...VEN]},{l:'Branch',type:'select',opt:['All Branches',...BR]},{l:'Delivery',type:'select',opt:['All','Direct-To-Store (DTS)','Cross-dock']},{l:'Coverage (days)',type:'number',v:'7'},{l:'Include Below ROP Only',type:'select',opt:['Yes','No']}]}]},
+};
+const CREATE_BTN = {'New User':'user','New Purchase Order':'po','New Item':'item','New Vendor':'vendor','New Company':'company','New Branch':'branch','New Price Update':'price','New Cost Update':'cost','New Allowance':'allowance','New Transfer':'transfer','New RTV':'rtv','New Adjustment':'adjust','New Conversion':'makeup','New Node':'node','New Receipt':'receipt','Upload Batch':'salesbatch','Generate Proposals':'replenrun'};
+function openCreate(key){
+  const cfg=CREATE[key]; if(!cfg) return;
+  window.__ret=cfg.list;
+  const m=document.getElementById('main');
+  m.innerHTML=createForm(cfg); m.scrollTop=0;
+  renderSidebar(cfg.list);
+  m.querySelectorAll('[data-back],[data-save]').forEach(b=>b.onclick=()=>route(window.__ret||'home'));
+}
+function bindCreate(){
+  document.querySelectorAll('#main .btn').forEach(b=>{const k=b.textContent.trim();if(CREATE_BTN[k])b.onclick=()=>openCreate(CREATE_BTN[k]);});
+}
+
+/* ============ POS SALES BATCH — DETAIL VIEW ============ */
+const BATCH = {
+  'SB-2210201':{br:'0102 · Ortigas Ext.',d:'2026-07-12',term:18,tx:'6,204',gross:'2,418,905.00',net:'2,358,469.00',disc:'48,300.00',voids:'12,136.00',status:['green','Balanced']},
+  'SB-2210202':{br:'0107 · Araneta Cubao',d:'2026-07-12',term:12,tx:'4,120',gross:'1,684,220.00',net:'1,623,780.00',disc:'48,300.00',voids:'12,140.00',status:['amber','MOP Variance']},
+  'SB-2210203':{br:'0233 · Mandaue (Cebu)',d:'2026-07-12',term:14,tx:'5,018',gross:'1,902,140.00',net:'1,848,220.00',disc:'41,900.00',voids:'12,020.00',status:['green','Balanced']},
+  'SB-2210204':{br:'0311 · Bajada (Davao)',d:'2026-07-12',term:16,tx:'5,880',gross:'2,118,300.00',net:'2,060,110.00',disc:'46,050.00',voids:'12,140.00',status:['red','Load Error']},
+};
+function posBatchView(id,b){
+  const txRows=[
+    ['<span class="mono row-link">…-004821</span>','POS-04','M. Santos','08:12','14','₱ 1,248.00','₱ 0.00','₱ 1,248.00',badge('gray','Cash'),''],
+    ['<span class="mono row-link">…-004822</span>','POS-07','J. Dela Cruz','08:13','3','₱ 289.00','₱ 57.80','₱ 231.20',badge('blue','GCash'),badge('amber','SC/PWD')],
+    ['<span class="mono row-link">…-004823</span>','POS-02','A. Reyes','08:15','22','₱ 2,914.50','₱ 0.00','₱ 2,914.50',badge('purple','Card'),''],
+    ['<span class="mono row-link">…-004824</span>','POS-11','K. Lim','08:16','1','₱ 129.00','₱ 129.00','₱ 0.00',badge('gray','Cash'),badge('red','Void')],
+    ['<span class="mono row-link">…-004825</span>','POS-04','M. Santos','08:18','9','₱ 842.75','₱ 0.00','₱ 842.75',badge('cyan','Maya'),''],
+    ['<span class="mono row-link">…-004826</span>','POS-07','J. Dela Cruz','08:19','16','₱ 1,675.00','₱ 25.00','₱ 1,650.00',badge('gray','Cash'),badge('amber','Mgr Disc')],
+  ];
+  return `
+  ${head('17','POS Sales Batch — '+id,'Uploaded batch detail for '+b.br+' · business date '+b.d+'. Review transactions, terminals, tenders and exceptions before release.', '<button class="btn" data-back="1">‹ Back to POS Sales</button>'+btn('Re-validate','')+btn('Release Batch','primary'))}
+  <div class="stats">
+    ${stat('Transactions',b.tx)}
+    ${stat('Gross Sales','₱ '+b.gross)}
+    ${stat('Net Sales','₱ '+b.net)}
+    ${stat('Terminals',b.term+' / '+b.term)}
+    ${stat('Status',badge(b.status[0],b.status[1]))}
+  </div>
+  <div class="panel">
+    <div class="panel-head"><h3>Batch Header</h3><span class="sub">${id}</span></div>
+    <div class="panel-body"><div class="kv" style="grid-template-columns:150px 1fr 150px 1fr">
+      <div class="k">Branch</div><div class="v">${b.br}</div>
+      <div class="k">Business Date</div><div class="v">${b.d}</div>
+      <div class="k">Source File</div><div class="v mono">POS_${b.d.replace(/-/g,'')}_${id}.dat</div>
+      <div class="k">Uploaded</div><div class="v">${b.d} 01:14 · auto-ingest</div>
+      <div class="k">Discounts</div><div class="v">₱ ${b.disc}</div>
+      <div class="k">Voids / Refunds</div><div class="v">₱ ${b.voids}</div>
+    </div></div>
+  </div>
+  <div class="panel">
+  ${tabs('batchtab',[
+    {label:'Transactions',cnt:b.tx,body:`
+      ${filterbar([{label:'Search',grow:1,ph:'OR / txn #…'},{label:'Terminal',html:'<select><option>All Terminals</option><option>POS-04</option><option>POS-07</option></select>'},{label:'Tender',html:'<select><option>All</option><option>Cash</option><option>Card</option><option>GCash</option><option>Maya</option></select>'}],btn('Apply','primary'))}
+      ${table([{t:'OR / Txn #',k:'a'},{t:'Terminal',k:'b'},{t:'Cashier',k:'c'},{t:'Time',k:'d'},{t:'Items',k:'e',num:1},{t:'Gross',k:'f',num:1},{t:'Disc',k:'g',num:1},{t:'Net',k:'h',num:1},{t:'Tender',k:'i'},{t:'Flag',k:'j'}],
+        txRows.map(r=>({a:r[0],b:r[1],c:r[2],d:r[3],e:r[4],f:r[5],g:r[6],h:r[7],i:r[8],j:r[9]})))}
+      ${pager(6,b.tx)}`},
+    {label:'By Terminal',body:`
+      ${table([{t:'Terminal',k:'t'},{t:'Cashier(s)',k:'c'},{t:'Txns',k:'x',num:1},{t:'Gross',k:'g',num:1},{t:'Voids',k:'v',num:1},{t:'Net',k:'n',num:1},{t:'Status',k:'s'}],
+        [{t:'POS-02',c:'A. Reyes',x:'1,204',g:'₱ 512,400.00',v:'₱ 2,100.00',n:'₱ 510,300.00',s:badge('green','Balanced')},
+         {t:'POS-04',c:'M. Santos',x:'1,388',g:'₱ 618,905.00',v:'₱ 3,240.00',n:'₱ 615,665.00',s:badge('green','Balanced')},
+         {t:'POS-07',c:'J. Dela Cruz',x:'1,102',g:'₱ 486,200.00',v:'₱ 4,796.00',n:'₱ 481,404.00',s:badge('amber','Short ₱200')},
+         {t:'POS-11',c:'K. Lim',x:'1,320',g:'₱ 588,140.00',v:'₱ 2,000.00',n:'₱ 586,140.00',s:badge('green','Balanced')},
+         {t:'…14 more terminals',c:'',x:'1,190',g:'₱ 213,260.00',v:'₱ 0.00',n:'₱ 213,260.00',s:''}])}`},
+    {label:'By Tender (MOP)',body:`
+      ${table([{t:'Tender',k:'t'},{t:'Txns',k:'x',num:1},{t:'Amount',k:'a',num:1},{t:'% Mix',k:'m',num:1},{t:'Settled',k:'s'}],
+        [{t:'Cash',x:'3,980',a:'₱ 842,100.00',m:'34.8%',s:badge('green','Balanced')},
+         {t:'Credit / Debit Card',x:'1,120',a:'₱ 512,400.00',m:'21.2%',s:badge('green','Balanced')},
+         {t:'GCash / e-Wallet',x:'640',a:'₱ 268,900.00',m:'11.1%',s:badge('green','Balanced')},
+         {t:'Maya',x:'312',a:'₱ 142,085.00',m:'5.9%',s:badge('green','Balanced')},
+         {t:'Gift Card / Voucher',x:'152',a:'₱ 42,320.00',m:'1.7%',s:badge('amber','Short ₱300')}])}`},
+    {label:'Exceptions',cnt:5,body:`
+      ${table([{t:'Txn #',k:'x'},{t:'Type',k:'t'},{t:'Terminal',k:'e'},{t:'Cashier',k:'c'},{t:'Amount',k:'a',num:1},{t:'Note',k:'n'}],
+        [{x:'<span class="mono">…-004824</span>',t:badge('red','Void'),e:'POS-11',c:'K. Lim',a:'₱ 129.00',n:'Customer cancelled after scan'},
+         {x:'<span class="mono">…-004822</span>',t:badge('amber','SC/PWD Disc'),e:'POS-07',c:'J. Dela Cruz',a:'₱ 57.80',n:'20% senior discount applied'},
+         {x:'<span class="mono">…-004900</span>',t:badge('purple','Price Override'),e:'POS-02',c:'A. Reyes',a:'₱ 18.00',n:'Supervisor override — tag mismatch'},
+         {x:'<span class="mono">…-004918</span>',t:badge('blue','Refund'),e:'POS-04',c:'M. Santos',a:'₱ 240.00',n:'Damaged item returned'},
+         {x:'<span class="mono">…-004826</span>',t:badge('amber','Mgr Discount'),e:'POS-07',c:'J. Dela Cruz',a:'₱ 25.00',n:'Goodwill discount'}])}`},
+  ])}
+  </div>`;
+}
+function viewBatch(id){
+  const b=BATCH[id]||{br:'—',d:'2026-07-12',term:0,tx:'0',gross:'0.00',net:'0.00',disc:'0.00',voids:'0.00',status:['gray','—']};
+  const m=document.getElementById('main');
+  m.innerHTML=posBatchView(id,b); m.scrollTop=0;
+  renderSidebar('salesaudit'); bindTabs();
+  m.querySelectorAll('[data-back]').forEach(x=>x.onclick=()=>route('salesaudit'));
+}
+function bindBatch(){
+  document.querySelectorAll('#main .row-link').forEach(el=>{const t=el.textContent.trim();if(/^SB-\d+$/.test(t))el.style.cursor='pointer',el.onclick=()=>viewBatch(t);});
+}
+const rBadge={admin:'purple',mgr:'blue',buyer:'cyan',pricing:'cyan',store:'amber',clerk:'gray',audit:'green',inv:'blue',vendor:'gray',viewer:'gray'};
+function scopeCell(kind,txt){return kind==='chain'?badge('purple','Chain')+' <span class="t-sub">all 437</span>':kind==='zone'?badge('blue','Zone')+` <span class="t-sub">${txt}</span>`:badge('gray','Store')+` <span class="t-sub">${txt}</span>`;}
+function ck(on){return `<input type="checkbox" ${on?'checked':''}>`;}
+
+PAGES.users = ()=>`
+${head('','Users','User accounts across iConnect ERP — identity, assigned role and branch access scope.', btn('Export','',iExport)+btn('New User','primary',iAdd))}
+<div class="panel">
+  ${filterbar([
+    {label:'Search',grow:1,ph:'Name, username or employee ID…'},
+    {label:'Role',html:'<select><option>All Roles</option><option>System Administrator</option><option>Category Manager</option><option>Buyer</option><option>Pricing Analyst</option><option>Store Manager</option><option>Receiving Clerk</option><option>Sales Auditor</option><option>Inventory Controller</option><option>Vendor Coordinator</option><option>Viewer</option></select>'},
+    {label:'Zone',html:'<select><option>All Zones</option><option>NCR</option><option>North Luzon</option><option>South Luzon</option><option>VisMin</option></select>'},
+    {label:'Status',html:'<select><option>All</option><option>Active</option><option>Inactive</option><option>Locked</option></select>'}
+  ], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'',k:'c'},{t:'Emp. ID',k:'id'},{t:'Name',k:'nm'},{t:'Username',k:'un'},{t:'Role',k:'rl'},{t:'Access Scope',k:'sc'},{t:'Last Login',k:'ll'},{t:'Status',k:'st'}],
+    [
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00142</span>',nm:'<span class="row-link">Rica Cruz</span>',un:'<span class="mono">rcruz</span>',rl:badge('purple','System Administrator'),sc:scopeCell('chain'),ll:'2026-07-15 08:14',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00219</span>',nm:'<span class="row-link">Marco Reyes</span>',un:'<span class="mono">mreyes</span>',rl:badge('blue','Category Manager'),sc:scopeCell('zone','NCR, North Luzon'),ll:'2026-07-15 07:52',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00305</span>',nm:'<span class="row-link">Jenny Lim</span>',un:'<span class="mono">jlim</span>',rl:badge('cyan','Buyer'),sc:scopeCell('chain'),ll:'2026-07-14 17:03',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00318</span>',nm:'<span class="row-link">Paolo Santos</span>',un:'<span class="mono">psantos</span>',rl:badge('cyan','Pricing Analyst'),sc:scopeCell('chain'),ll:'2026-07-15 09:01',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00427</span>',nm:'<span class="row-link">Grace Tan</span>',un:'<span class="mono">gtan</span>',rl:badge('amber','Store Manager'),sc:scopeCell('store','0102 Ortigas'),ll:'2026-07-15 06:40',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00512</span>',nm:'<span class="row-link">Rico Dela Cruz</span>',un:'<span class="mono">rdelacruz</span>',rl:badge('gray','Receiving Clerk'),sc:scopeCell('store','0107 Cubao'),ll:'2026-07-14 15:22',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00588</span>',nm:'<span class="row-link">Aileen Gomez</span>',un:'<span class="mono">agomez</span>',rl:badge('green','Sales Auditor'),sc:scopeCell('zone','VisMin'),ll:'2026-07-15 08:47',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00601</span>',nm:'<span class="row-link">Ben Uy</span>',un:'<span class="mono">buy</span>',rl:badge('blue','Inventory Controller'),sc:scopeCell('zone','North Luzon'),ll:'2026-06-28 11:10',st:badge('red','Locked')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00644</span>',nm:'<span class="row-link">Carla Mendoza</span>',un:'<span class="mono">cmendoza</span>',rl:badge('gray','Vendor Coordinator'),sc:scopeCell('chain'),ll:'2026-07-14 13:55',st:badge('green','Active')},
+     {c:'<input type="checkbox" class="chk">',id:'<span class="mono">EMP-00710</span>',nm:'<span class="row-link">Noel Ramos</span>',un:'<span class="mono">nramos</span>',rl:badge('gray','Viewer'),sc:scopeCell('zone','NCR'),ll:'2026-05-19 10:02',st:badge('gray','Inactive')}
+    ])}</div>
+  ${pager(10,63)}
+</div>`;
+
+/* ---- Roles ---- */
+const ROLES = [
+  {n:'System Administrator',t:'system',u:'1',mods:'10 of 10',d:'Full system access',s:['green','Active']},
+  {n:'Category Manager',t:'custom',u:'6',mods:'7 of 10',d:'Merchandising & assortment',s:['green','Active']},
+  {n:'Buyer',t:'custom',u:'14',mods:'6 of 10',d:'Purchasing & vendor costs',s:['green','Active']},
+  {n:'Pricing Analyst',t:'custom',u:'4',mods:'4 of 10',d:'Price & cost changes',s:['green','Active']},
+  {n:'Store Manager',t:'custom',u:'437',mods:'5 of 10',d:'Branch operations',s:['green','Active']},
+  {n:'Receiving Clerk',t:'custom',u:'512',mods:'3 of 10',d:'Goods receipt & putaway',s:['green','Active']},
+  {n:'Sales Auditor',t:'custom',u:'18',mods:'3 of 10',d:'POS sales balancing',s:['green','Active']},
+  {n:'Inventory Controller',t:'custom',u:'22',mods:'5 of 10',d:'Stock adjustments & transfers',s:['green','Active']},
+  {n:'Vendor Coordinator',t:'custom',u:'9',mods:'4 of 10',d:'Vendor master & allowances',s:['green','Active']},
+  {n:'Viewer',t:'custom',u:'31',mods:'10 of 10',d:'Read-only across all modules',s:['gray','Inactive']}
+];
+PAGES.roles = ()=>`
+${head('','Roles','Role-based access control — each role grants View / Create / Edit / Approve rights per module. Users inherit their role; System roles are protected from deletion.', btn('Export','',iExport)+btn('New Role','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Role name…'},{label:'Type',html:'<select><option>All Types</option><option>System</option><option>Custom</option></select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Role',k:'r'},{t:'Type',k:'t'},{t:'Users',k:'u',num:1},{t:'Modules',k:'m'},{t:'Description',k:'d'},{t:'Status',k:'s'}],
+    ROLES.map(r=>({r:`<span class="row-link">${r.n}</span>`+(r.t==='system'?' <span class="rtag">System 🔒</span>':''),t:r.t==='system'?badge('purple','System'):badge('gray','Custom'),u:r.u,m:`<span class="t-sub">${r.mods}</span>`,d:`<span class="t-sub">${r.d}</span>`,s:badge(r.s[0],r.s[1])})))}</div>
+  ${pager(10,10)}
+</div>`;
+
+const PERM_MODULES = ['Master Data','Inventory & Pricing','Price Change','Cost Change','Purchase Order','Auto Replenishment','PO Receiving','Store Operations','Sales Audit','Administration'];
+const ROLE_PERMS = {'Buyer':[[1,1,1,0],[1,0,0,0],[1,0,0,0],[1,1,1,0],[1,1,1,1],[1,0,1,0],[1,0,0,0],[1,0,0,0],[1,0,0,0],[0,0,0,0]]};
+function openRoleEditor(name){
+  const isNew=!name;
+  const perms=ROLE_PERMS[name]||PERM_MODULES.map(()=>[0,0,0,0]);
+  const rows=PERM_MODULES.map((m,i)=>`<tr><td>${m}</td>${perms[i].map(v=>`<td>${ck(v)}</td>`).join('')}</tr>`).join('');
+  const actions=`<button class="btn" data-back="1">‹ Back to roles</button><button class="btn primary" data-save="1">${isNew?'Create Role':'Save Role'}</button>`;
+  window.__ret='roles';
+  const el=document.getElementById('main');
+  el.innerHTML = head('',isNew?'New Role':`Edit Role — ${name}`,'Set the role identity and its access on the permission matrix. Every user with this role inherits these rights.',actions)
+    + `<div class="panel"><div class="panel-head"><h3>Role Details</h3><span class="sub">${isNew?'New · Draft':name}</span></div>
+        <div class="panel-body"><div class="form-grid">
+          <div class="fg full"><label>Role Name <span class="req">*</span></label><input value="${isNew?'':name}" placeholder="e.g. Regional Merchandiser"></div>
+          <div class="fg full"><label>Description</label><input placeholder="What is this role for?"></div>
+          <div class="fg"><label>Role Type</label><select><option>Custom</option><option>System</option></select></div>
+          <div class="fg"><label>Status</label><select><option>Active</option><option>Inactive</option></select></div>
+          <div class="fg"><label>Copy Permissions From</label><select><option>— Start blank —</option>${ROLES.map(r=>`<option>${r.n}</option>`).join('')}</select></div>
+        </div></div></div>`
+    + `<div class="panel"><div class="panel-head"><h3>Permission Matrix</h3><span class="sub">✓ = granted · applies to every user with this role</span></div>
+        <div class="panel-body flush"><div class="tbl-wrap"><table class="perm">
+          <thead><tr><th>Module</th><th>View</th><th>Create</th><th>Edit</th><th>Approve</th></tr></thead>
+          <tbody>${rows}</tbody></table></div></div>
+        <div class="foot"><span class="t-sub">${isNew?'Required fields (*) must be completed.':'Last modified 2026-07-09 by rcruz'}</span><div class="right"><button class="btn" data-back="1">Cancel</button><button class="btn primary" data-save="1">${isNew?'Create Role':'Save Role'}</button></div></div></div>`;
+  el.scrollTop=0;
+  renderSidebar('roles');
+  el.querySelectorAll('[data-back],[data-save]').forEach(b=>b.onclick=()=>route('roles'));
+}
+
+/* ---- Branch Access ---- */
+function accCell(kind,detail){return kind==='direct'?badge('blue','Direct')+` <span class="t-sub">${detail}</span>`:badge('gray','Inherited')+` <span class="t-sub">${detail}</span>`;}
+// Scope Level → dependent value list. Chain lists chains, Zone lists zones, Branch lists branches.
+const BA_SCOPES = {
+  Chain:{label:'Chain', items:[
+    {v:'Puregold Price Club, Inc.', sum:'437 branches across 4 zones'},
+    {v:'Ayagold Retailers Inc. (Merkado)', sum:'3 branches'}
+  ]},
+  Zone:{label:'Zone', items:[
+    {v:'NCR', sum:'137 branches'},
+    {v:'North Luzon', sum:'77 branches'},
+    {v:'South Luzon', sum:'118 branches'},
+    {v:'VisMin', sum:'105 branches'}
+  ]},
+  Branch:{label:'Branch', items:BR.map(b=>({v:b, sum:'single branch'}))}
+};
+function bindBranchAccess(){
+  const scope=document.getElementById('ba-scope');
+  if(!scope) return;
+  const value=document.getElementById('ba-value');
+  const valLabel=value.closest('.field').querySelector('label');
+  const summary=document.getElementById('ba-summary');
+  const setSummary=()=>{
+    const cfg=BA_SCOPES[scope.value];
+    const it=cfg.items.find(x=>x.v===value.value)||cfg.items[0];
+    summary.innerHTML=`Showing users with access to <b>${scope.value} · ${value.value}</b> <span class="t-sub">— ${it?it.sum:''}</span>`;
+  };
+  scope.onchange=()=>{
+    const cfg=BA_SCOPES[scope.value];
+    valLabel.textContent=cfg.label;
+    value.innerHTML=cfg.items.map(it=>`<option>${it.v}</option>`).join('');
+    setSummary();
+  };
+  value.onchange=setSummary;
+}
+PAGES.branchaccess = ()=>`
+${head('','Branch Access','Who can access a given Chain, Zone or Branch. Select a scope to see the users and roles with access there.', btn('Export','',iExport)+btn('Assign User','primary',iAdd))}
+<div class="panel">
+  ${filterbar([
+    {label:'Scope Level',html:'<select id="ba-scope"><option>Chain</option><option>Zone</option><option>Branch</option></select>'},
+    {label:'Chain',html:'<select id="ba-value"><option>Puregold Price Club, Inc.</option><option>Ayagold Retailers Inc. (Merkado)</option></select>'},
+    {label:'Search',grow:1,ph:'User, username or role…'},
+    {label:'Access',html:'<select><option>All</option><option>Direct</option><option>Inherited</option></select>'}
+  ], btn('Apply','primary'))}
+  <div class="toolbar" id="ba-summary">Showing users with access to <b>Chain · Puregold Price Club, Inc.</b> <span class="t-sub">— 437 branches across 4 zones</span></div>
+  <div class="panel-body flush">${table(
+    [{t:'',k:'c'},{t:'User',k:'nm'},{t:'Emp. ID',k:'id'},{t:'Username',k:'un'},{t:'Role',k:'rl'},{t:'Access',k:'ac'},{t:'Last Login',k:'ll'},{t:'Status',k:'st'},{t:'',k:'x'}],
+    [
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Marco Reyes</span>',id:'<span class="mono">EMP-00219</span>',un:'<span class="mono">mreyes</span>',rl:badge('blue','Category Manager'),ac:accCell('direct','Zone'),ll:'2026-07-15 07:52',st:badge('green','Active'),x:btn('Revoke','sm')},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Grace Tan</span>',id:'<span class="mono">EMP-00427</span>',un:'<span class="mono">gtan</span>',rl:badge('amber','Store Manager'),ac:accCell('direct','0102 Ortigas'),ll:'2026-07-15 06:40',st:badge('green','Active'),x:btn('Revoke','sm')},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Rico Dela Cruz</span>',id:'<span class="mono">EMP-00512</span>',un:'<span class="mono">rdelacruz</span>',rl:badge('gray','Receiving Clerk'),ac:accCell('direct','0107 Cubao'),ll:'2026-07-14 15:22',st:badge('green','Active'),x:btn('Revoke','sm')},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Noel Ramos</span>',id:'<span class="mono">EMP-00710</span>',un:'<span class="mono">nramos</span>',rl:badge('gray','Viewer'),ac:accCell('direct','Zone'),ll:'2026-05-19 10:02',st:badge('gray','Inactive'),x:btn('Revoke','sm')},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Rica Cruz</span>',id:'<span class="mono">EMP-00142</span>',un:'<span class="mono">rcruz</span>',rl:badge('purple','System Administrator'),ac:accCell('inherit','Chain-wide'),ll:'2026-07-15 08:14',st:badge('green','Active'),x:'<span class="t-sub">via Chain</span>'},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Jenny Lim</span>',id:'<span class="mono">EMP-00305</span>',un:'<span class="mono">jlim</span>',rl:badge('cyan','Buyer'),ac:accCell('inherit','Chain-wide'),ll:'2026-07-14 17:03',st:badge('green','Active'),x:'<span class="t-sub">via Chain</span>'},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Paolo Santos</span>',id:'<span class="mono">EMP-00318</span>',un:'<span class="mono">psantos</span>',rl:badge('cyan','Pricing Analyst'),ac:accCell('inherit','Chain-wide'),ll:'2026-07-15 09:01',st:badge('green','Active'),x:'<span class="t-sub">via Chain</span>'},
+     {c:'<input type="checkbox" class="chk">',nm:'<span class="row-link">Carla Mendoza</span>',id:'<span class="mono">EMP-00644</span>',un:'<span class="mono">cmendoza</span>',rl:badge('gray','Vendor Coordinator'),ac:accCell('inherit','Chain-wide'),ll:'2026-07-14 13:55',st:badge('green','Active'),x:'<span class="t-sub">via Chain</span>'}
+    ])}</div>
+  ${pager(8,123)}
+</div>`;
+
+/* ---- Audit Log ---- */
+const aBadge={Login:'gray',Create:'blue',Edit:'amber',Approve:'green',Delete:'red'};
+const aRow=(ts,u,a,mod,tg,ip)=>({ts:`<span class="mono">${ts}</span>`,u,a:badge(aBadge[a],a),mod,tg,ip:`<span class="mono">${ip}</span>`});
+PAGES.audit = ()=>`
+${head('','Audit Log','Chronological record of user activity across iConnect ERP — logins, record changes and approvals.', btn('Export','',iExport))}
+<div class="panel">
+  ${filterbar([
+    {label:'Search',grow:1,ph:'User, target or keyword…'},
+    {label:'User',html:'<select><option>All Users</option><option>rcruz</option><option>mreyes</option><option>jlim</option><option>psantos</option><option>gtan</option></select>'},
+    {label:'Action',html:'<select><option>All Actions</option><option>Login</option><option>Create</option><option>Edit</option><option>Approve</option><option>Delete</option></select>'},
+    {label:'Date Range',html:'<input type="date" value="2026-07-15">'}
+  ], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Timestamp',k:'ts'},{t:'User',k:'u'},{t:'Action',k:'a'},{t:'Module',k:'mod'},{t:'Target',k:'tg'},{t:'IP Address',k:'ip'}],
+    [
+     aRow('2026-07-15 09:41:12','psantos','Approve','Price Change','Zone Price Update ZC-88 (NCR)','172.20.11.4'),
+     aRow('2026-07-15 09:22:07','jlim','Create','Purchase Order','PO-2026-0417 · Nestlé Phils.','172.20.14.31'),
+     aRow('2026-07-15 08:58:44','mreyes','Approve','Purchase Order','PO-2026-0417 · ₱2.14M','172.20.14.8'),
+     aRow('2026-07-15 08:47:19','agomez','Edit','Sales Audit','Batch SB-2026-0714 · Cashier Balancing','10.44.2.19'),
+     aRow('2026-07-15 08:14:02','rcruz','Login','Administration','Session start','172.20.10.2'),
+     aRow('2026-07-15 07:52:33','mreyes','Login','Administration','Session start','172.20.14.8'),
+     aRow('2026-07-15 07:31:50','gtan','Create','Store Operations','Store-to-Store Transfer TR-0912','10.51.3.7'),
+     aRow('2026-07-14 17:40:11','rdelacruz','Edit','PO Receiving','GRN-2026-3388 · 0107 Cubao','10.52.4.12'),
+     aRow('2026-07-14 16:05:28','rcruz','Edit','Administration','Role “Buyer” permissions updated','172.20.10.2'),
+     aRow('2026-07-14 15:22:09','buy','Login','Administration','Failed login (account locked)','172.20.31.9'),
+     aRow('2026-07-14 14:11:47','cmendoza','Create','Master Data','Vendor “San Miguel Foods” (V-1042)','172.20.14.55'),
+     aRow('2026-07-14 13:03:16','rcruz','Delete','Master Data','Item duplicate SKU 480021-A','172.20.10.2')
+    ])}</div>
+  ${pager(12,4812)}
+</div>`;
+
+function bindUM(){
+  document.querySelectorAll('#main .btn').forEach(b=>{if(b.textContent.trim()==='New Role')b.onclick=()=>openRoleEditor(null);});
+  document.querySelectorAll('#main .row-link').forEach(el=>{const t=el.textContent.trim();if(ROLES.some(r=>r.n===t)){el.style.cursor='pointer';el.onclick=()=>openRoleEditor(t);}});
+}
+
+function route(id){
+  const page = PAGES[id] || (()=>`<div class="empty">Module not found.</div>`);
+  document.getElementById('main').innerHTML = page();
+  document.getElementById('main').scrollTop = 0;
+  renderSidebar(id);
+  bindTabs();
+  bindCreate();
+  bindBatch();
+  bindUM();
+  bindBranchAccess();
+}
+function bindTabs(){
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.onclick=()=>{
+      const target = t.dataset.tab;
+      const group = t.parentElement;
+      group.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const prefix = target.split('-').slice(0,-1).join('-');
+      document.querySelectorAll('.tabpane').forEach(p=>{
+        if(p.id.startsWith(prefix+'-')) p.classList.toggle('active', p.id===target);
+      });
+    };
+  });
+}
+route('home');
+</script>
+</body>
+</html>

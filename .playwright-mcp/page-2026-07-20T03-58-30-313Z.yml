@@ -1,0 +1,253 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - generic [ref=f3e5]: iC
+      - generic [ref=f3e6]:
+        - text: iConnect ERP
+        - generic [ref=f3e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=f3e8]:
+      - generic "Tasks" [ref=f3e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=f3e14] [cursor=pointer]: "3"
+      - generic [ref=f3e19] [cursor=pointer]:
+        - generic [ref=f3e20]: RC
+        - generic [ref=f3e21]:
+          - generic [ref=f3e22]: Rica Cruz
+          - generic [ref=f3e23]: Merchandise Admin
+  - navigation [ref=f3e24]:
+    - generic [ref=f3e25]:
+      - heading "Overview" [level=4] [ref=f3e26]
+      - generic [ref=f3e27] [cursor=pointer]: Dashboard
+    - generic [ref=f3e31]:
+      - heading "Master Data" [level=4] [ref=f3e32]
+      - generic [ref=f3e33] [cursor=pointer]:
+        - generic [ref=f3e36]: Company Maintenance
+        - generic [ref=f3e37]: "1"
+      - generic [ref=f3e38]:
+        - heading "Store Branch Maintenance" [level=5] [ref=f3e39]
+        - generic [ref=f3e40] [cursor=pointer]:
+          - generic [ref=f3e43]: Branch
+          - generic [ref=f3e44]: "2"
+      - generic [ref=f3e45]:
+        - heading "Store Grouping" [level=5] [ref=f3e46]
+        - generic [ref=f3e47] [cursor=pointer]: Price Zone
+        - generic [ref=f3e51] [cursor=pointer]: Cost Zone
+        - generic [ref=f3e55] [cursor=pointer]: Store Cluster
+        - generic [ref=f3e59] [cursor=pointer]: Replenishment Policy
+      - generic [ref=f3e63]:
+        - heading "Vendor Maintenance" [level=5] [ref=f3e64]
+        - generic [ref=f3e65] [cursor=pointer]:
+          - generic [ref=f3e68]: Vendor
+          - generic [ref=f3e69]: "3"
+        - generic [ref=f3e70] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=f3e74] [cursor=pointer]: Vendor Catalog
+        - generic [ref=f3e78] [cursor=pointer]:
+          - generic [ref=f3e81]: Vendor Allowance
+          - generic [ref=f3e82]: "4"
+      - generic [ref=f3e83]:
+        - heading "Product Maintenance" [level=5] [ref=f3e84]
+        - generic [ref=f3e85] [cursor=pointer]:
+          - generic [ref=f3e88]: Category Hierarchy
+          - generic [ref=f3e89]: "5"
+        - generic [ref=f3e90] [cursor=pointer]:
+          - generic [ref=f3e93]: Product
+          - generic [ref=f3e94]: "6"
+    - generic [ref=f3e95]:
+      - heading "Inventory & Pricing" [level=4] [ref=f3e96]
+      - generic [ref=f3e97] [cursor=pointer]:
+        - generic [ref=f3e100]: Product Inventory
+        - generic [ref=f3e101]: "7"
+      - generic [ref=f3e102] [cursor=pointer]:
+        - generic [ref=f3e105]: Price Change Mgmt
+        - generic [ref=f3e106]: "8"
+      - generic [ref=f3e107] [cursor=pointer]:
+        - generic [ref=f3e110]: Cost Change Mgmt
+        - generic [ref=f3e111]: "9"
+    - generic [ref=f3e112]:
+      - heading "Procurement" [level=4] [ref=f3e113]
+      - generic [ref=f3e114] [cursor=pointer]:
+        - generic [ref=f3e117]: Purchase Order
+        - generic [ref=f3e118]: "10"
+      - generic [ref=f3e119] [cursor=pointer]:
+        - generic [ref=f3e122]: Auto Replenishment
+        - generic [ref=f3e123]: "11"
+      - generic [ref=f3e124] [cursor=pointer]:
+        - generic [ref=f3e127]: PO Receiving
+        - generic [ref=f3e128]: "12"
+    - generic [ref=f3e129]:
+      - heading "Store Operations" [level=4] [ref=f3e130]
+      - generic [ref=f3e131] [cursor=pointer]:
+        - generic [ref=f3e134]: Store-to-Store Transfer
+        - generic [ref=f3e135]: "13"
+      - generic [ref=f3e136] [cursor=pointer]:
+        - generic [ref=f3e139]: Return To Vendor
+        - generic [ref=f3e140]: "14"
+      - generic [ref=f3e141] [cursor=pointer]:
+        - generic [ref=f3e144]: Inventory Adjustment
+        - generic [ref=f3e145]: "15"
+      - generic [ref=f3e146] [cursor=pointer]:
+        - generic [ref=f3e149]: Make-up / Break-up
+        - generic [ref=f3e150]: "16"
+    - generic [ref=f3e151]:
+      - heading "Sales" [level=4] [ref=f3e152]
+      - generic [ref=f3e153] [cursor=pointer]:
+        - generic [ref=f3e156]: POS Sales
+        - generic [ref=f3e157]: "17"
+    - generic [ref=f3e158]:
+      - heading "User Management" [level=4] [ref=f3e159]
+      - generic [ref=f3e160] [cursor=pointer]: Users
+      - generic [ref=f3e164] [cursor=pointer]: Roles
+      - generic [ref=f3e168] [cursor=pointer]: Branch Access
+      - generic [ref=f3e172] [cursor=pointer]: Audit Log
+  - main [ref=f3e176]:
+    - generic [ref=f3e177]: iConnect ERP › Dashboard
+    - generic [ref=f3e178]:
+      - generic [ref=f3e179]:
+        - heading "Dashboard" [level=1] [ref=f3e180]
+        - paragraph [ref=f3e181]: Operational snapshot across Puregold Price Club — 437 stores nationwide across 3 store formats (Price Club · Extra · Minimart).
+      - generic [ref=f3e182]:
+        - button "Export Summary" [ref=f3e183] [cursor=pointer]
+        - button "New Purchase Order" [ref=f3e186] [cursor=pointer]
+    - generic [ref=f3e189]:
+      - generic [ref=f3e190]:
+        - generic [ref=f3e191]: Company
+        - combobox [ref=f3e192]:
+          - option "All Companies" [selected]
+          - option "Puregold Price Club, Inc."
+          - option "Ayagold Retailers Inc."
+      - generic [ref=f3e193]:
+        - generic [ref=f3e194]: Branch
+        - combobox [ref=f3e195]:
+          - option "All Branches" [selected]
+          - option "0102 · Ortigas Ext."
+          - option "0107 · Araneta Cubao"
+          - option "0233 · Cebu (Mandaue)"
+      - button "Apply" [ref=f3e196] [cursor=pointer]
+    - generic [ref=f3e197]:
+      - generic [ref=f3e198]:
+        - generic [ref=f3e199]: Active SKUs
+        - generic [ref=f3e200]: 18,472
+        - generic [ref=f3e201]: ▲ 214 added this week
+      - generic [ref=f3e202]:
+        - generic [ref=f3e203]: Open Purchase Orders
+        - generic [ref=f3e204]: "137"
+        - generic [ref=f3e205]: ₱ 42.8M committed
+      - generic [ref=f3e206]:
+        - generic [ref=f3e207]: Pending Receipts
+        - generic [ref=f3e208]: "58"
+        - generic [ref=f3e209]: ▼ 12 vs. yesterday
+      - generic [ref=f3e210]:
+        - generic [ref=f3e211]: Price Changes (Pending)
+        - generic [ref=f3e212]: "23"
+        - generic [ref=f3e213]: 8 awaiting approval
+      - generic [ref=f3e214]:
+        - generic [ref=f3e215]: RTV / Adjustments
+        - generic [ref=f3e216]: "19"
+        - generic [ref=f3e217]: ₱ 1.2M value
+    - generic [ref=f3e218]:
+      - generic [ref=f3e219]:
+        - generic [ref=f3e220]:
+          - heading "Purchase Orders by Status" [level=3] [ref=f3e221]
+          - generic [ref=f3e222]: Last 30 days
+        - table [ref=f3e225]:
+          - rowgroup [ref=f3e226]:
+            - row [ref=f3e227]:
+              - columnheader "Status" [ref=f3e228]
+              - columnheader "Regular" [ref=f3e229]
+              - columnheader "DSD" [ref=f3e230]
+              - columnheader "OTB" [ref=f3e231]
+              - columnheader "Value (₱)" [ref=f3e232]
+          - rowgroup [ref=f3e233]:
+            - row [ref=f3e234]:
+              - cell "Draft" [ref=f3e235]
+              - cell "12" [ref=f3e237]
+              - cell "2" [ref=f3e238]
+              - cell "3" [ref=f3e239]
+              - cell "6,240,900" [ref=f3e240]
+            - row [ref=f3e241]:
+              - cell "Approved" [ref=f3e242]
+              - cell "41" [ref=f3e244]
+              - cell "0" [ref=f3e245]
+              - cell "6" [ref=f3e246]
+              - cell "18,930,400" [ref=f3e247]
+            - row [ref=f3e248]:
+              - cell "In Transit" [ref=f3e249]
+              - cell "28" [ref=f3e251]
+              - cell "14" [ref=f3e252]
+              - cell "2" [ref=f3e253]
+              - cell "9,880,120" [ref=f3e254]
+            - row [ref=f3e255]:
+              - cell "Received" [ref=f3e256]
+              - cell "96" [ref=f3e258]
+              - cell "212" [ref=f3e259]
+              - cell "11" [ref=f3e260]
+              - cell "54,120,880" [ref=f3e261]
+            - row [ref=f3e262]:
+              - cell "Cancelled" [ref=f3e263]
+              - cell "4" [ref=f3e265]
+              - cell "1" [ref=f3e266]
+              - cell "0" [ref=f3e267]
+              - cell "812,300" [ref=f3e268]
+      - generic [ref=f3e269]:
+        - generic [ref=f3e270]:
+          - heading "Replenishment Alerts" [level=3] [ref=f3e271]
+          - generic [ref=f3e272]: Below reorder point
+        - table [ref=f3e275]:
+          - rowgroup [ref=f3e276]:
+            - row [ref=f3e277]:
+              - columnheader "Item" [ref=f3e278]
+              - columnheader "Branch" [ref=f3e279]
+              - columnheader "On Hand" [ref=f3e280]
+              - columnheader "ROP" [ref=f3e281]
+              - columnheader "Action" [ref=f3e282]
+          - rowgroup [ref=f3e283]:
+            - row [ref=f3e284]:
+              - cell "Fresh Milk 1L" [ref=f3e285]
+              - cell "0102 Ortigas" [ref=f3e286]
+              - cell "18" [ref=f3e287]
+              - cell "120" [ref=f3e288]
+              - cell "Order Now" [ref=f3e289]
+            - row [ref=f3e291]:
+              - cell "White Bread 600g" [ref=f3e292]
+              - cell "0107 Cubao" [ref=f3e293]
+              - cell "6" [ref=f3e294]
+              - cell "80" [ref=f3e295]
+              - cell "DSD Due" [ref=f3e296]
+            - row [ref=f3e298]:
+              - cell "Eggs Tray (30s)" [ref=f3e299]
+              - cell "0233 Cebu" [ref=f3e300]
+              - cell "42" [ref=f3e301]
+              - cell "90" [ref=f3e302]
+              - cell "Low" [ref=f3e303]
+            - row [ref=f3e305]:
+              - cell "Cooking Oil 1L" [ref=f3e306]
+              - cell "0102 Ortigas" [ref=f3e307]
+              - cell "75" [ref=f3e308]
+              - cell "150" [ref=f3e309]
+              - cell "Low" [ref=f3e310]
+            - row [ref=f3e312]:
+              - cell "Instant Coffee 100g" [ref=f3e313]
+              - cell "0311 Davao" [ref=f3e314]
+              - cell "12" [ref=f3e315]
+              - cell "60" [ref=f3e316]
+              - cell "Order Now" [ref=f3e317]
+    - generic [ref=f3e319]:
+      - generic [ref=f3e320]:
+        - heading "Sales Audit — Yesterday" [level=3] [ref=f3e321]
+        - generic [ref=f3e322]: Batch upload & balancing
+      - generic [ref=f3e324]:
+        - generic [ref=f3e325]: Batches Uploaded
+        - generic [ref=f3e326]:
+          - text: 42 / 42 branches
+          - generic [ref=f3e327]: Complete
+        - generic [ref=f3e328]: Gross Sales
+        - generic [ref=f3e329]: ₱ 38,412,905.50
+        - generic [ref=f3e330]: MOP Balancing
+        - generic [ref=f3e331]:
+          - text: 40 balanced · 2 variance
+          - generic [ref=f3e332]: Review
+        - generic [ref=f3e333]: Cashier Balancing
+        - generic [ref=f3e334]:
+          - text: 318 / 320 cashiers
+          - generic [ref=f3e335]: 2 short
+        - generic [ref=f3e336]: Net Variance
+        - generic [ref=f3e337]: ₱ (1,240.00)

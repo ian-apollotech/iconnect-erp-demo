@@ -1,0 +1,129 @@
+- generic [ref=f16e2]:
+  - banner [ref=f16e3]:
+    - generic [ref=f16e4]:
+      - generic [ref=f16e5]: iC
+      - generic [ref=f16e6]:
+        - text: iConnect ERP
+        - generic [ref=f16e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=f16e8]:
+      - generic "Tasks" [ref=f16e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=f16e14] [cursor=pointer]: "3"
+      - generic [ref=f16e19] [cursor=pointer]:
+        - generic [ref=f16e20]: RC
+        - generic [ref=f16e21]:
+          - generic [ref=f16e22]: Rica Cruz
+          - generic [ref=f16e23]: Merchandise Admin
+  - navigation [ref=f16e24]:
+    - generic [ref=f16e812]:
+      - heading "Overview" [level=4] [ref=f16e813]
+      - generic [ref=f16e814] [cursor=pointer]: Dashboard
+    - generic [ref=f16e818]:
+      - heading "Master Data" [level=4] [ref=f16e819]
+      - generic [ref=f16e820] [cursor=pointer]:
+        - generic [ref=f16e823]: Company Maintenance
+        - generic [ref=f16e824]: "1"
+      - generic [ref=f16e825]:
+        - heading "Store Branch Maintenance" [level=5] [ref=f16e826]
+        - generic [ref=f16e827] [cursor=pointer]:
+          - generic [ref=f16e830]: Branch
+          - generic [ref=f16e831]: "2"
+      - generic [ref=f16e832]:
+        - heading "Store Grouping" [level=5] [ref=f16e833]
+        - generic [ref=f16e834] [cursor=pointer]: Price Zone
+        - generic [ref=f16e838] [cursor=pointer]: Cost Zone
+        - generic [ref=f16e842] [cursor=pointer]: Store Cluster
+        - generic [ref=f16e846] [cursor=pointer]: Assortment Plan
+        - generic [ref=f16e850] [cursor=pointer]: Replenishment Policy
+      - generic [ref=f16e854]:
+        - heading "Vendor Maintenance" [level=5] [ref=f16e855]
+        - generic [ref=f16e856] [cursor=pointer]:
+          - generic [ref=f16e859]: Vendor
+          - generic [ref=f16e860]: "3"
+        - generic [ref=f16e861] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=f16e865] [cursor=pointer]: Vendor Catalog
+        - generic [ref=f16e869] [cursor=pointer]:
+          - generic [ref=f16e872]: Vendor Allowance
+          - generic [ref=f16e873]: "4"
+      - generic [ref=f16e874]:
+        - heading "Product Maintenance" [level=5] [ref=f16e875]
+        - generic [ref=f16e876] [cursor=pointer]:
+          - generic [ref=f16e879]: Category Hierarchy
+          - generic [ref=f16e880]: "5"
+        - generic [ref=f16e881] [cursor=pointer]:
+          - generic [ref=f16e884]: Product
+          - generic [ref=f16e885]: "6"
+    - generic [ref=f16e886]:
+      - heading "Inventory & Pricing" [level=4] [ref=f16e887]
+      - generic [ref=f16e888] [cursor=pointer]:
+        - generic [ref=f16e891]: Product Inventory
+        - generic [ref=f16e892]: "7"
+      - generic [ref=f16e893] [cursor=pointer]:
+        - generic [ref=f16e896]: Price Change Mgmt
+        - generic [ref=f16e897]: "8"
+      - generic [ref=f16e898] [cursor=pointer]:
+        - generic [ref=f16e901]: Cost Change Mgmt
+        - generic [ref=f16e902]: "9"
+    - generic [ref=f16e903]:
+      - heading "Procurement" [level=4] [ref=f16e904]
+      - generic [ref=f16e905] [cursor=pointer]:
+        - generic [ref=f16e908]: Purchase Order
+        - generic [ref=f16e909]: "10"
+      - generic [ref=f16e910] [cursor=pointer]:
+        - generic [ref=f16e913]: Auto Replenishment
+        - generic [ref=f16e914]: "11"
+      - generic [ref=f16e915] [cursor=pointer]:
+        - generic [ref=f16e918]: PO Receiving
+        - generic [ref=f16e919]: "12"
+    - generic [ref=f16e920]:
+      - heading "Store Operations" [level=4] [ref=f16e921]
+      - generic [ref=f16e922] [cursor=pointer]:
+        - generic [ref=f16e925]: Store-to-Store Transfer
+        - generic [ref=f16e926]: "13"
+      - generic [ref=f16e927] [cursor=pointer]:
+        - generic [ref=f16e930]: Return To Vendor
+        - generic [ref=f16e931]: "14"
+      - generic [ref=f16e932] [cursor=pointer]:
+        - generic [ref=f16e935]: Inventory Adjustment
+        - generic [ref=f16e936]: "15"
+      - generic [ref=f16e937] [cursor=pointer]:
+        - generic [ref=f16e940]: Make-up / Break-up
+        - generic [ref=f16e941]: "16"
+    - generic [ref=f16e942]:
+      - heading "Sales" [level=4] [ref=f16e943]
+      - generic [ref=f16e944] [cursor=pointer]:
+        - generic [ref=f16e947]: POS Sales
+        - generic [ref=f16e948]: "17"
+    - generic [ref=f16e949]:
+      - heading "User Management" [level=4] [ref=f16e950]
+      - generic [ref=f16e951] [cursor=pointer]: Users
+      - generic [ref=f16e955] [cursor=pointer]: Roles
+      - generic [ref=f16e959] [cursor=pointer]: Branch Access
+      - generic [ref=f16e963] [cursor=pointer]: Audit Log
+  - main [ref=f16e180]:
+    - generic [ref=f16e967]: iConnect ERP › New Assortment Plan
+    - generic [ref=f16e969]:
+      - heading "New Assortment Plan" [level=1] [ref=f16e970]
+      - paragraph [ref=f16e971]: Set identity & scope, effectivity, choose the SKU range, then review and save.
+    - generic [ref=f16e972]:
+      - generic [ref=f16e973]:
+        - heading "New Assortment Plan" [level=3] [ref=f16e974]
+        - generic [ref=f16e975]: AP-0005 · Draft
+      - generic [ref=f16e977]:
+        - generic [ref=f16e978]:
+          - generic [ref=f16e979]: "1"
+          - text: Identity & Scope
+        - generic [ref=f16e980]:
+          - generic [ref=f16e981]: "2"
+          - text: Effectivity
+        - generic [ref=f16e982]:
+          - generic [ref=f16e983]: "3"
+          - text: SKU List
+        - generic [ref=f16e984]:
+          - generic [ref=f16e985]: "4"
+          - text: Review
+      - generic [ref=f16e986]: Effectivity — added in Task 3.
+      - generic [ref=f16e988]:
+        - generic [ref=f16e989]:
+          - button "‹ Back" [ref=f16e990] [cursor=pointer]
+          - button "Cancel" [ref=f16e991] [cursor=pointer]
+        - button "Next ›" [ref=f16e993] [cursor=pointer]

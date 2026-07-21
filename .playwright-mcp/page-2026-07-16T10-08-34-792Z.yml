@@ -1,0 +1,167 @@
+- generic [ref=f2e2]:
+  - banner [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]: iC
+      - generic [ref=f2e6]:
+        - text: iConnect ERP
+        - generic [ref=f2e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=f2e8]:
+      - generic "Tasks" [ref=f2e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=f2e14] [cursor=pointer]: "3"
+      - generic [ref=f2e19] [cursor=pointer]:
+        - generic [ref=f2e20]: RC
+        - generic [ref=f2e21]:
+          - generic [ref=f2e22]: Rica Cruz
+          - generic [ref=f2e23]: Merchandise Admin
+  - navigation [ref=f2e24]:
+    - generic [ref=f2e600]:
+      - heading "Overview" [level=4] [ref=f2e601]
+      - generic [ref=f2e602] [cursor=pointer]: Dashboard
+    - generic [ref=f2e606]:
+      - heading "Master Data" [level=4] [ref=f2e607]
+      - generic [ref=f2e608] [cursor=pointer]:
+        - generic [ref=f2e611]: Company Maintenance
+        - generic [ref=f2e612]: "1"
+      - generic [ref=f2e613]:
+        - heading "Store Branch Maintenance" [level=5] [ref=f2e614]
+        - generic [ref=f2e615] [cursor=pointer]: Chain
+        - generic [ref=f2e619] [cursor=pointer]: Zone
+        - generic [ref=f2e623] [cursor=pointer]:
+          - generic [ref=f2e626]: Branch
+          - generic [ref=f2e627]: "2"
+      - generic [ref=f2e628]:
+        - heading "Vendor Maintenance" [level=5] [ref=f2e629]
+        - generic [ref=f2e630] [cursor=pointer]:
+          - generic [ref=f2e633]: Vendor
+          - generic [ref=f2e634]: "3"
+        - generic [ref=f2e635] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=f2e639] [cursor=pointer]: Vendor Catalog
+        - generic [ref=f2e643] [cursor=pointer]:
+          - generic [ref=f2e646]: Vendor Allowance
+          - generic [ref=f2e647]: "4"
+      - generic [ref=f2e648]:
+        - heading "Product Maintenance" [level=5] [ref=f2e649]
+        - generic [ref=f2e650] [cursor=pointer]:
+          - generic [ref=f2e653]: Category Hierarchy
+          - generic [ref=f2e654]: "5"
+        - generic [ref=f2e655] [cursor=pointer]:
+          - generic [ref=f2e658]: Product
+          - generic [ref=f2e659]: "6"
+    - generic [ref=f2e660]:
+      - heading "Inventory & Pricing" [level=4] [ref=f2e661]
+      - generic [ref=f2e662] [cursor=pointer]:
+        - generic [ref=f2e665]: Product Inventory
+        - generic [ref=f2e666]: "7"
+      - generic [ref=f2e667] [cursor=pointer]:
+        - generic [ref=f2e670]: Price Change Mgmt
+        - generic [ref=f2e671]: "8"
+      - generic [ref=f2e672] [cursor=pointer]:
+        - generic [ref=f2e675]: Cost Change Mgmt
+        - generic [ref=f2e676]: "9"
+    - generic [ref=f2e677]:
+      - heading "Procurement" [level=4] [ref=f2e678]
+      - generic [ref=f2e679] [cursor=pointer]:
+        - generic [ref=f2e682]: Purchase Order
+        - generic [ref=f2e683]: "10"
+      - generic [ref=f2e684] [cursor=pointer]:
+        - generic [ref=f2e687]: Auto Replenishment
+        - generic [ref=f2e688]: "11"
+      - generic [ref=f2e689] [cursor=pointer]:
+        - generic [ref=f2e692]: PO Receiving
+        - generic [ref=f2e693]: "12"
+    - generic [ref=f2e694]:
+      - heading "Store Operations" [level=4] [ref=f2e695]
+      - generic [ref=f2e696] [cursor=pointer]:
+        - generic [ref=f2e699]: Store-to-Store Transfer
+        - generic [ref=f2e700]: "13"
+      - generic [ref=f2e701] [cursor=pointer]:
+        - generic [ref=f2e704]: Return To Vendor
+        - generic [ref=f2e705]: "14"
+      - generic [ref=f2e706] [cursor=pointer]:
+        - generic [ref=f2e709]: Inventory Adjustment
+        - generic [ref=f2e710]: "15"
+      - generic [ref=f2e711] [cursor=pointer]:
+        - generic [ref=f2e714]: Make-up / Break-up
+        - generic [ref=f2e715]: "16"
+    - generic [ref=f2e716]:
+      - heading "Sales" [level=4] [ref=f2e717]
+      - generic [ref=f2e718] [cursor=pointer]:
+        - generic [ref=f2e721]: POS Sales
+        - generic [ref=f2e722]: "17"
+    - generic [ref=f2e723]:
+      - heading "User Management" [level=4] [ref=f2e724]
+      - generic [ref=f2e725] [cursor=pointer]: Users
+      - generic [ref=f2e729] [cursor=pointer]: Roles
+      - generic [ref=f2e733] [cursor=pointer]: Branch Access
+      - generic [ref=f2e737] [cursor=pointer]: Audit Log
+  - main [ref=f2e166]:
+    - generic [ref=f2e741]: iConnect ERP › Vendor Category Hierarchy
+    - generic [ref=f2e742]:
+      - generic [ref=f2e743]:
+        - heading "Vendor Category Hierarchy" [level=1] [ref=f2e744]
+        - paragraph [ref=f2e745]: Each vendor maintains its own 2-level classification — Category → Sub-Category — used to tag catalog SKUs and drive allowance / promo eligibility.
+      - generic [ref=f2e746]:
+        - button "New Category" [ref=f2e747] [cursor=pointer]
+        - button "New Sub-Category" [ref=f2e748] [cursor=pointer]
+    - generic [ref=f2e751]: This hierarchy belongs to the selected vendor only and is independent of the merchandise Category Hierarchy under Product Maintenance. Catalog SKUs are tagged to a node here; a node may make items eligible for specific vendor allowances / promos.
+    - generic [ref=f2e756]:
+      - generic [ref=f2e757]:
+        - generic [ref=f2e758]:
+          - generic [ref=f2e759]: Vendor
+          - combobox [ref=f2e760]:
+            - option "Nestlé Philippines" [selected]
+            - option "Alaska Milk Corp."
+            - option "Universal Robina Corp."
+            - option "San Miguel Foods"
+            - option "Monde Nissin Corp."
+            - option "Gardenia Bakeries PH"
+            - option "Selecta Ice Cream (RFM)"
+        - generic [ref=f2e761]:
+          - generic [ref=f2e762]: Status
+          - combobox [ref=f2e763]:
+            - option "Active" [selected]
+            - option "All"
+        - button "Load" [ref=f2e764] [cursor=pointer]
+      - generic [ref=f2e765]:
+        - generic [ref=f2e766]:
+          - generic [ref=f2e767]:
+            - generic [ref=f2e768]: ▾
+            - text: Beverages
+            - generic [ref=f2e769]: Category · 3 sub-categories · 42 SKUs
+          - generic [ref=f2e770]:
+            - generic [ref=f2e771]: •
+            - text: Coffee
+            - generic [ref=f2e772]: 18 SKUs tagged
+          - generic [ref=f2e773]:
+            - generic [ref=f2e774]: •
+            - text: Creamer
+            - generic [ref=f2e775]: 12 SKUs tagged
+          - generic [ref=f2e776]:
+            - generic [ref=f2e777]: •
+            - text: Cereal Drinks
+            - generic [ref=f2e778]: 12 SKUs tagged
+          - generic [ref=f2e779]:
+            - generic [ref=f2e780]: ▾
+            - text: Dairy
+            - generic [ref=f2e781]: Category · 2 sub-categories · 31 SKUs
+          - generic [ref=f2e782]:
+            - generic [ref=f2e783]: •
+            - text: Powdered Milk
+            - generic [ref=f2e784]: 19 SKUs tagged
+          - generic [ref=f2e785]:
+            - generic [ref=f2e786]: •
+            - text: Condensed & Evaporated
+            - generic [ref=f2e787]: 12 SKUs tagged
+          - generic [ref=f2e788]:
+            - generic [ref=f2e789]: ▾
+            - text: Culinary
+            - generic [ref=f2e790]: Category · 2 sub-categories · 18 SKUs
+          - generic [ref=f2e791]:
+            - generic [ref=f2e792]: •
+            - text: Sauces & Mixes
+            - generic [ref=f2e793]: 10 SKUs tagged
+          - generic [ref=f2e794]:
+            - generic [ref=f2e795]: •
+            - text: Seasoning
+            - generic [ref=f2e796]: 8 SKUs tagged
+        - generic [ref=f2e797]: Showing category tree for Nestlé Philippines · 3 categories · 7 sub-categories.

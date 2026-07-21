@@ -1,0 +1,240 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic [ref=e9]: Company
+      - combobox [ref=e10] [cursor=pointer]:
+        - option "Puregold Price Club, Inc." [selected]
+        - option "Ayagold Retailers Inc."
+      - generic [ref=e11]: Branch
+      - combobox [ref=e12] [cursor=pointer]:
+        - option "All Branches" [selected]
+        - option "0102 · Ortigas Ext."
+        - option "0107 · Araneta Cubao"
+        - option "0233 · Cebu (Mandaue)"
+    - generic [ref=e13]:
+      - generic "Tasks" [ref=e14] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e19] [cursor=pointer]: "3"
+      - generic [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: RC
+        - generic [ref=e26]:
+          - generic [ref=e27]: Rica Cruz
+          - generic [ref=e28]: Merchandise Admin
+  - navigation [ref=e29]:
+    - generic [ref=e577]:
+      - heading "Overview" [level=4] [ref=e578]
+      - generic [ref=e579] [cursor=pointer]: Dashboard
+    - generic [ref=e583]:
+      - heading "Master Data" [level=4] [ref=e584]
+      - generic [ref=e585] [cursor=pointer]:
+        - generic [ref=e588]: Company Maintenance
+        - generic [ref=e589]: "1"
+      - generic [ref=e590] [cursor=pointer]:
+        - generic [ref=e593]: Store Branch Maintenance
+        - generic [ref=e594]: "2"
+      - generic [ref=e595] [cursor=pointer]:
+        - generic [ref=e598]: Vendor Maintenance
+        - generic [ref=e599]: "3"
+      - generic [ref=e600] [cursor=pointer]:
+        - generic [ref=e603]: Vendor Allowance
+        - generic [ref=e604]: "4"
+      - generic [ref=e605] [cursor=pointer]:
+        - generic [ref=e608]: Item Hierarchy
+        - generic [ref=e609]: "5"
+      - generic [ref=e610] [cursor=pointer]:
+        - generic [ref=e613]: Item Maintenance
+        - generic [ref=e614]: "6"
+    - generic [ref=e615]:
+      - heading "Inventory & Pricing" [level=4] [ref=e616]
+      - generic [ref=e617] [cursor=pointer]:
+        - generic [ref=e620]: Product Inventory
+        - generic [ref=e621]: "7"
+      - generic [ref=e622] [cursor=pointer]:
+        - generic [ref=e625]: Price Change Mgmt
+        - generic [ref=e626]: "8"
+      - generic [ref=e627] [cursor=pointer]:
+        - generic [ref=e630]: Cost Change Mgmt
+        - generic [ref=e631]: "9"
+    - generic [ref=e632]:
+      - heading "Procurement" [level=4] [ref=e633]
+      - generic [ref=e634] [cursor=pointer]:
+        - generic [ref=e637]: Purchase Order
+        - generic [ref=e638]: "10"
+      - generic [ref=e639] [cursor=pointer]:
+        - generic [ref=e642]: Auto Replenishment
+        - generic [ref=e643]: "11"
+      - generic [ref=e644] [cursor=pointer]:
+        - generic [ref=e647]: PO Receiving
+        - generic [ref=e648]: "12"
+    - generic [ref=e649]:
+      - heading "Store Operations" [level=4] [ref=e650]
+      - generic [ref=e651] [cursor=pointer]:
+        - generic [ref=e654]: Store-to-Store Transfer
+        - generic [ref=e655]: "13"
+      - generic [ref=e656] [cursor=pointer]:
+        - generic [ref=e659]: Return To Vendor
+        - generic [ref=e660]: "14"
+      - generic [ref=e661] [cursor=pointer]:
+        - generic [ref=e664]: Inventory Adjustment
+        - generic [ref=e665]: "15"
+      - generic [ref=e666] [cursor=pointer]:
+        - generic [ref=e669]: Make-up / Break-up
+        - generic [ref=e670]: "16"
+    - generic [ref=e671]:
+      - heading "Sales" [level=4] [ref=e672]
+      - generic [ref=e673] [cursor=pointer]:
+        - generic [ref=e676]: POS Sales
+        - generic [ref=e677]: "17"
+    - generic [ref=e678]:
+      - heading "User Management" [level=4] [ref=e679]
+      - generic [ref=e680] [cursor=pointer]: Users
+      - generic [ref=e684] [cursor=pointer]: Roles
+      - generic [ref=e688] [cursor=pointer]: Branch Access
+      - generic [ref=e692] [cursor=pointer]: Audit Log
+  - main [ref=e149]:
+    - generic [ref=e696]: iConnect ERP › Module 9 › Cost Change Management
+    - generic [ref=e697]:
+      - generic [ref=e698]:
+        - heading "Cost Change Management" [level=1] [ref=e699]
+        - paragraph [ref=e700]: Create cost updates per vendor at Chain, Banner or Store level. Feeds margin recalculation and open-PO revaluation.
+      - generic [ref=e701]:
+        - button "Cost History" [ref=e702] [cursor=pointer]
+        - button "New Cost Update" [ref=e703] [cursor=pointer]
+    - generic [ref=e706]: A cost increase recalculates margin on all affected items. Items falling below the minimum margin threshold (15%) raise a warning and route the update for approval before publish — they are not auto-blocked. On receipt, item cost is re-derived by weighted average across on-hand and in-transit stock.
+    - generic [ref=e711]:
+      - generic [ref=e712]:
+        - heading "Cost Update Requests" [level=3] [ref=e713]
+        - generic [ref=e714]: Per Vendor
+      - table [ref=e717]:
+        - rowgroup [ref=e718]:
+          - row [ref=e719]:
+            - columnheader "Ref" [ref=e720]
+            - columnheader "Vendor" [ref=e721]
+            - columnheader "Level" [ref=e722]
+            - columnheader "Scope" [ref=e723]
+            - columnheader "# Items" [ref=e724]
+            - columnheader "Avg Δ" [ref=e725]
+            - columnheader "Effective" [ref=e726]
+            - columnheader "Status" [ref=e727]
+        - rowgroup [ref=e728]:
+          - row [ref=e729]:
+            - cell "CC-8802" [ref=e730]
+            - cell "Nestlé Philippines" [ref=e731]
+            - cell "Chain" [ref=e732]
+            - cell "All Stores" [ref=e734]
+            - cell "42" [ref=e735]
+            - cell "+4.2%" [ref=e736]
+            - cell "2026-07-16" [ref=e737]
+            - cell "For Approval" [ref=e738]
+          - row [ref=e740]:
+            - cell "CC-8799" [ref=e741]
+            - cell "Alaska Milk Corp." [ref=e742]
+            - cell "Chain" [ref=e743]
+            - cell "All Stores" [ref=e745]
+            - cell "18" [ref=e746]
+            - cell "+2.8%" [ref=e747]
+            - cell "2026-07-14" [ref=e748]
+            - cell "Approved" [ref=e749]
+          - row [ref=e751]:
+            - cell "CC-8794" [ref=e752]
+            - cell "Universal Robina" [ref=e753]
+            - cell "Banner" [ref=e754]
+            - cell "Extra" [ref=e756]
+            - cell "64" [ref=e757]
+            - cell "−1.5%" [ref=e758]
+            - cell "2026-07-12" [ref=e759]
+            - cell "Published" [ref=e760]
+          - row [ref=e762]:
+            - cell "CC-8790" [ref=e763]
+            - cell "San Miguel Foods" [ref=e764]
+            - cell "Store" [ref=e765]
+            - cell "0233 Cebu" [ref=e767]
+            - cell "9" [ref=e768]
+            - cell "+6.0%" [ref=e769]
+            - cell "2026-07-11" [ref=e770]
+            - cell "Margin Alert" [ref=e771]
+          - row [ref=e773]:
+            - cell "CC-8785" [ref=e774]
+            - cell "Monde Nissin Corp." [ref=e775]
+            - cell "Chain" [ref=e776]
+            - cell "All Stores" [ref=e778]
+            - cell "30" [ref=e779]
+            - cell "+3.1%" [ref=e780]
+            - cell "2026-07-09" [ref=e781]
+            - cell "Draft" [ref=e782]
+      - generic [ref=e784]:
+        - generic [ref=e785]: Showing 5 of 88 records
+        - generic [ref=e786]:
+          - button "‹ Prev" [ref=e787] [cursor=pointer]
+          - button "1" [ref=e788] [cursor=pointer]
+          - button "2" [ref=e789] [cursor=pointer]
+          - button "3" [ref=e790] [cursor=pointer]
+          - button "Next ›" [ref=e791] [cursor=pointer]
+    - generic [ref=e792]:
+      - generic [ref=e793]:
+        - heading "Cost Update Detail" [level=3] [ref=e794]
+        - generic [ref=e795]: CC-8802 · Nestlé Philippines
+      - generic [ref=e797]:
+        - generic [ref=e798]:
+          - generic [ref=e799]: Vendor
+          - textbox [ref=e800]: Nestlé Philippines (V-1140)
+        - generic [ref=e801]:
+          - generic [ref=e802]: Cost Level
+          - combobox [ref=e803]:
+            - option "Chain (all stores)" [selected]
+            - option "Banner"
+            - option "Store"
+        - generic [ref=e804]:
+          - generic [ref=e805]: Effective Date
+          - textbox [ref=e806]: 2026-07-16
+        - generic [ref=e807]:
+          - generic [ref=e808]: Source Document
+          - textbox [ref=e809]: Vendor Advisory 2026-07-01
+      - table [ref=e812]:
+        - rowgroup [ref=e813]:
+          - row [ref=e814]:
+            - columnheader "Item" [ref=e815]
+            - columnheader "Old Cost" [ref=e816]
+            - columnheader "New Cost" [ref=e817]
+            - columnheader "Δ" [ref=e818]
+            - columnheader "Retail" [ref=e819]
+            - columnheader "Old Margin" [ref=e820]
+            - columnheader "New Margin" [ref=e821]
+            - columnheader "Flag" [ref=e822]
+        - rowgroup [ref=e823]:
+          - row [ref=e824]:
+            - cell "Nescafé Classic 100g" [ref=e825]
+            - cell "118.00" [ref=e826]
+            - cell "123.50" [ref=e827]
+            - cell "+4.7%" [ref=e828]
+            - cell "149.75" [ref=e829]
+            - cell "23.8%" [ref=e830]
+            - cell "20.1%" [ref=e831]
+            - cell "OK" [ref=e832]
+          - row [ref=e834]:
+            - cell "Bear Brand 300g" [ref=e835]
+            - cell "86.00" [ref=e836]
+            - cell "90.20" [ref=e837]
+            - cell "+4.9%" [ref=e838]
+            - cell "104.00" [ref=e839]
+            - cell "20.9%" [ref=e840]
+            - cell "15.9%" [ref=e841]
+            - cell "Watch" [ref=e842]
+          - row [ref=e844]:
+            - cell "Milo 24g x10" [ref=e845]
+            - cell "92.00" [ref=e846]
+            - cell "97.50" [ref=e847]
+            - cell "+6.0%" [ref=e848]
+            - cell "108.00" [ref=e849]
+            - cell "17.4%" [ref=e850]
+            - cell "11.9%" [ref=e851]
+            - cell "Below Min" [ref=e852]
+      - generic [ref=e854]:
+        - generic [ref=e855]: 1 item below minimum margin — price review recommended
+        - generic [ref=e856]:
+          - button "Create Price Change" [ref=e857] [cursor=pointer]
+          - button "Approve" [ref=e858] [cursor=pointer]

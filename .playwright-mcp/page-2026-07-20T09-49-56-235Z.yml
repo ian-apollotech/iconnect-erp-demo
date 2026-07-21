@@ -1,0 +1,180 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic "Tasks" [ref=e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e14] [cursor=pointer]: "3"
+      - generic [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: RC
+        - generic [ref=e21]:
+          - generic [ref=e22]: Rica Cruz
+          - generic [ref=e23]: Merchandise Admin
+  - navigation [ref=e24]:
+    - generic [ref=e3277]:
+      - heading "Overview" [level=4] [ref=e3278]
+      - generic [ref=e3279] [cursor=pointer]: Dashboard
+    - generic [ref=e3283]:
+      - heading "Master Data" [level=4] [ref=e3284]
+      - generic [ref=e3285] [cursor=pointer]:
+        - generic [ref=e3288]: Company Maintenance
+        - generic [ref=e3289]: "1"
+      - generic [ref=e3290]:
+        - heading "Store Branch Maintenance" [level=5] [ref=e3291]
+        - generic [ref=e3292] [cursor=pointer]:
+          - generic [ref=e3295]: Branch
+          - generic [ref=e3296]: "2"
+      - generic [ref=e3297]:
+        - heading "Store Grouping" [level=5] [ref=e3298]
+        - generic [ref=e3299] [cursor=pointer]: Price Zone
+        - generic [ref=e3303] [cursor=pointer]: Cost Zone
+        - generic [ref=e3307] [cursor=pointer]: Store Cluster
+        - generic [ref=e3311] [cursor=pointer]: Assortment Plan
+        - generic [ref=e3315] [cursor=pointer]: Replenishment Policy
+      - generic [ref=e3319]:
+        - heading "Vendor Maintenance" [level=5] [ref=e3320]
+        - generic [ref=e3321] [cursor=pointer]:
+          - generic [ref=e3324]: Vendor
+          - generic [ref=e3325]: "3"
+        - generic [ref=e3326] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=e3330] [cursor=pointer]: Vendor Catalog
+        - generic [ref=e3334] [cursor=pointer]:
+          - generic [ref=e3337]: Vendor Allowance
+          - generic [ref=e3338]: "4"
+      - generic [ref=e3339]:
+        - heading "Product Maintenance" [level=5] [ref=e3340]
+        - generic [ref=e3341] [cursor=pointer]:
+          - generic [ref=e3344]: Category Hierarchy
+          - generic [ref=e3345]: "5"
+        - generic [ref=e3346] [cursor=pointer]:
+          - generic [ref=e3349]: Product
+          - generic [ref=e3350]: "6"
+    - generic [ref=e3351]:
+      - heading "Inventory & Pricing" [level=4] [ref=e3352]
+      - generic [ref=e3353] [cursor=pointer]:
+        - generic [ref=e3356]: Product Inventory
+        - generic [ref=e3357]: "7"
+      - generic [ref=e3358] [cursor=pointer]:
+        - generic [ref=e3361]: Price Change Mgmt
+        - generic [ref=e3362]: "8"
+      - generic [ref=e3363] [cursor=pointer]:
+        - generic [ref=e3366]: Cost Change Mgmt
+        - generic [ref=e3367]: "9"
+    - generic [ref=e3368]:
+      - heading "Procurement" [level=4] [ref=e3369]
+      - generic [ref=e3370] [cursor=pointer]:
+        - generic [ref=e3373]: Purchase Order
+        - generic [ref=e3374]: "10"
+      - generic [ref=e3375] [cursor=pointer]:
+        - generic [ref=e3378]: Auto Replenishment
+        - generic [ref=e3379]: "11"
+      - generic [ref=e3380] [cursor=pointer]:
+        - generic [ref=e3383]: PO Receiving
+        - generic [ref=e3384]: "12"
+    - generic [ref=e3385]:
+      - heading "Store Operations" [level=4] [ref=e3386]
+      - generic [ref=e3387] [cursor=pointer]:
+        - generic [ref=e3390]: Store-to-Store Transfer
+        - generic [ref=e3391]: "13"
+      - generic [ref=e3392] [cursor=pointer]:
+        - generic [ref=e3395]: Return To Vendor
+        - generic [ref=e3396]: "14"
+      - generic [ref=e3397] [cursor=pointer]:
+        - generic [ref=e3400]: Inventory Adjustment
+        - generic [ref=e3401]: "15"
+      - generic [ref=e3402] [cursor=pointer]:
+        - generic [ref=e3405]: Make-up / Break-up
+        - generic [ref=e3406]: "16"
+    - generic [ref=e3407]:
+      - heading "Sales" [level=4] [ref=e3408]
+      - generic [ref=e3409] [cursor=pointer]:
+        - generic [ref=e3412]: POS Sales
+        - generic [ref=e3413]: "17"
+    - generic [ref=e3414]:
+      - heading "User Management" [level=4] [ref=e3415]
+      - generic [ref=e3416] [cursor=pointer]: Users
+      - generic [ref=e3420] [cursor=pointer]: Roles
+      - generic [ref=e3424] [cursor=pointer]: Branch Access
+      - generic [ref=e3428] [cursor=pointer]: Audit Log
+  - main [ref=e180]:
+    - generic [ref=e3432]: iConnect ERP › New Assortment Plan
+    - generic [ref=e3434]:
+      - heading "New Assortment Plan" [level=1] [ref=e3435]
+      - paragraph [ref=e3436]: Set identity & scope, effectivity, choose the SKU range, then review and save.
+    - generic [ref=e3437]:
+      - generic [ref=e3438]:
+        - heading "New Assortment Plan" [level=3] [ref=e3439]
+        - generic [ref=e3440]: New (copy of AP-0001) · Draft · duplicated from AP-0001
+      - generic [ref=e3442]:
+        - generic [ref=e3443]:
+          - generic [ref=e3444]: "1"
+          - text: Identity & Scope
+        - generic [ref=e3445]:
+          - generic [ref=e3446]: "2"
+          - text: Effectivity
+        - generic [ref=e3447]:
+          - generic [ref=e3448]: "3"
+          - text: SKU List
+        - generic [ref=e3449]:
+          - generic [ref=e3450]: "4"
+          - text: Review
+      - generic [ref=e3452]:
+        - generic [ref=e3453]:
+          - generic [ref=e3454]: Plan Name
+          - generic [ref=e3455]: Urban-Large Core Range (copy)
+        - generic [ref=e3456]:
+          - generic [ref=e3457]: Company
+          - generic [ref=e3458]: Puregold Price Club, Inc.
+        - generic [ref=e3459]:
+          - generic [ref=e3460]: Assignment Level
+          - generic [ref=e3461]: Store Cluster
+        - generic [ref=e3462]:
+          - generic [ref=e3463]: Target
+          - generic [ref=e3464]: CL-URB-L · Urban Large
+        - generic [ref=e3465]:
+          - generic [ref=e3466]: Assortment Type
+          - generic [ref=e3467]: Regular
+        - generic [ref=e3468]:
+          - generic [ref=e3469]: Effective From
+          - generic [ref=e3470]: —
+        - generic [ref=e3471]:
+          - generic [ref=e3472]: Affected Stores
+          - generic [ref=e3473]: 1 cluster
+        - generic [ref=e3474]:
+          - generic [ref=e3475]: Ranged SKUs
+          - generic [ref=e3476]: 7 SKU(s)
+      - table [ref=e3479]:
+        - rowgroup [ref=e3480]:
+          - row [ref=e3481]:
+            - columnheader "Ranged SKU" [ref=e3482]
+            - columnheader "Category" [ref=e3483]
+        - rowgroup [ref=e3484]:
+          - row [ref=e3485]:
+            - cell "Lucky Me Pancit Canton 60g 100234" [ref=e3486]
+            - cell "Noodles" [ref=e3487]
+          - row [ref=e3488]:
+            - cell "Nescafé Classic 100g 200145" [ref=e3489]
+            - cell "Coffee" [ref=e3490]
+          - row [ref=e3491]:
+            - cell "Alaska Fresh Milk 1L 300102" [ref=e3492]
+            - cell "Milk" [ref=e3493]
+          - row [ref=e3494]:
+            - cell "Gardenia White Bread 600g 400210" [ref=e3495]
+            - cell "Bakery" [ref=e3496]
+          - row [ref=e3497]:
+            - cell "Coke Mismo 300ml 500301" [ref=e3498]
+            - cell "Beverage" [ref=e3499]
+          - row [ref=e3500]:
+            - cell "Eden Cheese 165g 600401" [ref=e3501]
+            - cell "Dairy" [ref=e3502]
+          - row [ref=e3503]:
+            - cell "Sky Flakes 250g 400225" [ref=e3504]
+            - cell "Bakery" [ref=e3505]
+      - generic [ref=e3506]:
+        - generic [ref=e3507]:
+          - button "‹ Back" [ref=e3508] [cursor=pointer]
+          - button "Cancel" [ref=e3509] [cursor=pointer]
+        - button "Save Assortment Plan" [ref=e3511] [cursor=pointer]

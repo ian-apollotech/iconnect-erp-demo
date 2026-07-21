@@ -1,0 +1,280 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic [ref=e9]: Company
+      - combobox [ref=e10] [cursor=pointer]:
+        - option "Puregold Price Club, Inc." [selected]
+        - option "Ayagold Retailers Inc."
+      - generic [ref=e11]: Branch
+      - combobox [ref=e12] [cursor=pointer]:
+        - option "All Branches" [selected]
+        - option "0102 · Ortigas Ext."
+        - option "0107 · Araneta Cubao"
+        - option "0233 · Cebu (Mandaue)"
+    - generic [ref=e13]:
+      - generic "Tasks" [ref=e14] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e19] [cursor=pointer]: "3"
+      - generic [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: RC
+        - generic [ref=e26]:
+          - generic [ref=e27]: Rica Cruz
+          - generic [ref=e28]: Merchandise Admin
+  - navigation [ref=e29]:
+    - generic [ref=e1427]:
+      - heading "Overview" [level=4] [ref=e1428]
+      - generic [ref=e1429] [cursor=pointer]: Dashboard
+    - generic [ref=e1433]:
+      - heading "Master Data" [level=4] [ref=e1434]
+      - generic [ref=e1435] [cursor=pointer]:
+        - generic [ref=e1438]: Company Maintenance
+        - generic [ref=e1439]: "1"
+      - generic [ref=e1440] [cursor=pointer]:
+        - generic [ref=e1443]: Store Branch Maintenance
+        - generic [ref=e1444]: "2"
+      - generic [ref=e1445] [cursor=pointer]:
+        - generic [ref=e1448]: Vendor Maintenance
+        - generic [ref=e1449]: "3"
+      - generic [ref=e1450] [cursor=pointer]:
+        - generic [ref=e1453]: Vendor Allowance
+        - generic [ref=e1454]: "4"
+      - generic [ref=e1455] [cursor=pointer]:
+        - generic [ref=e1458]: Item Hierarchy
+        - generic [ref=e1459]: "5"
+      - generic [ref=e1460] [cursor=pointer]:
+        - generic [ref=e1463]: Item Maintenance
+        - generic [ref=e1464]: "6"
+    - generic [ref=e1465]:
+      - heading "Inventory & Pricing" [level=4] [ref=e1466]
+      - generic [ref=e1467] [cursor=pointer]:
+        - generic [ref=e1470]: Product Inventory
+        - generic [ref=e1471]: "7"
+      - generic [ref=e1472] [cursor=pointer]:
+        - generic [ref=e1475]: Price Change Mgmt
+        - generic [ref=e1476]: "8"
+      - generic [ref=e1477] [cursor=pointer]:
+        - generic [ref=e1480]: Cost Change Mgmt
+        - generic [ref=e1481]: "9"
+    - generic [ref=e1482]:
+      - heading "Procurement" [level=4] [ref=e1483]
+      - generic [ref=e1484] [cursor=pointer]:
+        - generic [ref=e1487]: Purchase Order
+        - generic [ref=e1488]: "10"
+      - generic [ref=e1489] [cursor=pointer]:
+        - generic [ref=e1492]: Auto Replenishment
+        - generic [ref=e1493]: "11"
+      - generic [ref=e1494] [cursor=pointer]:
+        - generic [ref=e1497]: PO Receiving
+        - generic [ref=e1498]: "12"
+    - generic [ref=e1499]:
+      - heading "Store Operations" [level=4] [ref=e1500]
+      - generic [ref=e1501] [cursor=pointer]:
+        - generic [ref=e1504]: Store-to-Store Transfer
+        - generic [ref=e1505]: "13"
+      - generic [ref=e1506] [cursor=pointer]:
+        - generic [ref=e1509]: Return To Vendor
+        - generic [ref=e1510]: "14"
+      - generic [ref=e1511] [cursor=pointer]:
+        - generic [ref=e1514]: Inventory Adjustment
+        - generic [ref=e1515]: "15"
+      - generic [ref=e1516] [cursor=pointer]:
+        - generic [ref=e1519]: Make-up / Break-up
+        - generic [ref=e1520]: "16"
+    - generic [ref=e1521]:
+      - heading "Sales" [level=4] [ref=e1522]
+      - generic [ref=e1523] [cursor=pointer]:
+        - generic [ref=e1526]: POS Sales
+        - generic [ref=e1527]: "17"
+    - generic [ref=e1528]:
+      - heading "User Management" [level=4] [ref=e1529]
+      - generic [ref=e1530] [cursor=pointer]: Users
+      - generic [ref=e1534] [cursor=pointer]: Roles
+      - generic [ref=e1538] [cursor=pointer]: Branch Access
+      - generic [ref=e1542] [cursor=pointer]: Audit Log
+  - main [ref=e149]:
+    - generic [ref=e1546]: iConnect ERP › Module 2 › Store Branch Maintenance
+    - generic [ref=e1547]:
+      - generic [ref=e1548]:
+        - heading "Store Branch Maintenance" [level=1] [ref=e1549]
+        - paragraph [ref=e1550]: Physical selling locations. Assign a pricing banner, primary/alternate vendor, the cross-dock hub that serves the store, warehouse and selling areas.
+      - generic [ref=e1551]:
+        - button "Import" [ref=e1552] [cursor=pointer]
+        - button "New Branch" [ref=e1555] [cursor=pointer]
+    - generic [ref=e1558]:
+      - generic [ref=e1559]:
+        - generic [ref=e1560]:
+          - generic [ref=e1561]: Search
+          - textbox "Branch code or name…" [ref=e1562]
+        - generic [ref=e1563]:
+          - generic [ref=e1564]: Company (Chain)
+          - combobox [ref=e1565]:
+            - option "All Chains" [selected]
+            - option "Puregold Price Club, Inc."
+            - option "Ayagold Retailers Inc."
+        - generic [ref=e1566]:
+          - generic [ref=e1567]: Banner
+          - combobox [ref=e1568]:
+            - option "All Banners" [selected]
+            - option "Price Club"
+            - option "Extra"
+            - option "Minimart"
+            - option "Merkado"
+        - generic [ref=e1569]:
+          - generic [ref=e1570]: Status
+          - combobox [ref=e1571]:
+            - option "All" [selected]
+            - option "Active"
+            - option "Closed"
+        - button "Apply" [ref=e1572] [cursor=pointer]
+      - table [ref=e1575]:
+        - rowgroup [ref=e1576]:
+          - row [ref=e1577]:
+            - columnheader "Code" [ref=e1578]
+            - columnheader "Branch Name" [ref=e1579]
+            - columnheader "Banner" [ref=e1580]
+            - columnheader "Primary Vendor" [ref=e1581]
+            - columnheader "Cross-Dock" [ref=e1582]
+            - columnheader "Selling Areas" [ref=e1583]
+            - columnheader "Warehouse" [ref=e1584]
+            - columnheader "Status" [ref=e1585]
+        - rowgroup [ref=e1586]:
+          - row [ref=e1587]:
+            - cell "0102" [ref=e1588]
+            - cell "Puregold Ortigas Ext. (Rosario, Pasig)" [ref=e1589]
+            - cell "Price Club" [ref=e1590]
+            - cell "Nestlé PH" [ref=e1592]
+            - cell "CD Meycauayan" [ref=e1593]
+            - cell "6" [ref=e1594]
+            - cell "Yes" [ref=e1595]
+            - cell "Active" [ref=e1597]
+          - row [ref=e1599]:
+            - cell "0107" [ref=e1600]
+            - cell "Puregold Araneta Cubao (QC)" [ref=e1601]
+            - cell "Price Club" [ref=e1602]
+            - cell "Alaska Milk" [ref=e1604]
+            - cell "CD Meycauayan" [ref=e1605]
+            - cell "5" [ref=e1606]
+            - cell "Yes" [ref=e1607]
+            - cell "Active" [ref=e1609]
+          - row [ref=e1611]:
+            - cell "0233" [ref=e1612]
+            - cell "Puregold Mandaue (Cebu)" [ref=e1613]
+            - cell "Price Club" [ref=e1614]
+            - cell "Universal Robina" [ref=e1616]
+            - cell "CD Cebu" [ref=e1617]
+            - cell "5" [ref=e1618]
+            - cell "Yes" [ref=e1619]
+            - cell "Active" [ref=e1621]
+          - row [ref=e1623]:
+            - cell "0311" [ref=e1624]
+            - cell "Puregold Bajada (Davao)" [ref=e1625]
+            - cell "Price Club" [ref=e1626]
+            - cell "San Miguel" [ref=e1628]
+            - cell "CD Davao" [ref=e1629]
+            - cell "7" [ref=e1630]
+            - cell "Yes" [ref=e1631]
+            - cell "Active" [ref=e1633]
+          - row [ref=e1635]:
+            - cell "0461" [ref=e1636]
+            - cell "Puregold Clark (Pampanga)" [ref=e1637]
+            - cell "Price Club" [ref=e1638]
+            - cell "Nestlé PH" [ref=e1640]
+            - cell "CD Meycauayan" [ref=e1641]
+            - cell "6" [ref=e1642]
+            - cell "Yes" [ref=e1643]
+            - cell "Active" [ref=e1645]
+          - row [ref=e1647]:
+            - cell "0119" [ref=e1648]
+            - cell "Puregold Jr. Baclaran (Parañaque)" [ref=e1649]
+            - cell "Price Club" [ref=e1650]
+            - cell "Gardenia (DSD)" [ref=e1652]
+            - cell "—" [ref=e1653]
+            - cell "3" [ref=e1654]
+            - cell "No" [ref=e1655]
+            - cell "Active" [ref=e1657]
+          - row [ref=e1659]:
+            - cell "0450" [ref=e1660]
+            - cell "Puregold Jr. Marcos Hwy (Baguio)" [ref=e1661]
+            - cell "Price Club" [ref=e1662]
+            - cell "Monde Nissin" [ref=e1664]
+            - cell "CD Meycauayan" [ref=e1665]
+            - cell "3" [ref=e1666]
+            - cell "No" [ref=e1667]
+            - cell "Active" [ref=e1669]
+          - row [ref=e1671]:
+            - cell "0146" [ref=e1672]
+            - cell "Puregold Extra Brookside Cainta" [ref=e1673]
+            - cell "Extra" [ref=e1674]
+            - cell "Universal Robina" [ref=e1676]
+            - cell "CD Meycauayan" [ref=e1677]
+            - cell "2" [ref=e1678]
+            - cell "No" [ref=e1679]
+            - cell "Active" [ref=e1681]
+          - row [ref=e1683]:
+            - cell "0088" [ref=e1684]
+            - cell "Puregold Extra Tandang Sora (QC)" [ref=e1685]
+            - cell "Extra" [ref=e1686]
+            - cell "—" [ref=e1688]
+            - cell "—" [ref=e1689]
+            - cell "2" [ref=e1690]
+            - cell "No" [ref=e1691]
+            - cell "Closed" [ref=e1693]
+          - row [ref=e1695]:
+            - cell "0531" [ref=e1696]
+            - cell "Puregold Mini Kamias (QC)" [ref=e1697]
+            - cell "Minimart" [ref=e1698]
+            - cell "Universal Robina" [ref=e1700]
+            - cell "—" [ref=e1701]
+            - cell "1" [ref=e1702]
+            - cell "No" [ref=e1703]
+            - cell "Active" [ref=e1705]
+          - row [ref=e1707]:
+            - cell "0548" [ref=e1708]
+            - cell "Puregold Mini Katipunan (QC)" [ref=e1709]
+            - cell "Minimart" [ref=e1710]
+            - cell "Universal Robina" [ref=e1712]
+            - cell "—" [ref=e1713]
+            - cell "1" [ref=e1714]
+            - cell "No" [ref=e1715]
+            - cell "Active" [ref=e1717]
+          - row [ref=e1719]:
+            - cell "AYA-03" [ref=e1720]
+            - cell "Merkado — UP Town Center (QC)" [ref=e1721]
+            - cell "Merkado" [ref=e1722]
+            - cell "Nestlé PH" [ref=e1724]
+            - cell "CD Meycauayan" [ref=e1725]
+            - cell "4" [ref=e1726]
+            - cell "No" [ref=e1727]
+            - cell "Active" [ref=e1729]
+          - row [ref=e1731]:
+            - cell "AYA-05" [ref=e1732]
+            - cell "Merkado — Vertis North (QC)" [ref=e1733]
+            - cell "Merkado" [ref=e1734]
+            - cell "Alaska Milk" [ref=e1736]
+            - cell "CD Meycauayan" [ref=e1737]
+            - cell "4" [ref=e1738]
+            - cell "No" [ref=e1739]
+            - cell "Active" [ref=e1741]
+          - row [ref=e1743]:
+            - cell "AYA-07" [ref=e1744]
+            - cell "Puregold Ayala Malls Marikina" [ref=e1745]
+            - cell "Merkado" [ref=e1746]
+            - cell "San Miguel" [ref=e1748]
+            - cell "CD Meycauayan" [ref=e1749]
+            - cell "4" [ref=e1750]
+            - cell "No" [ref=e1751]
+            - cell "Active" [ref=e1753]
+      - generic [ref=e1755]:
+        - generic [ref=e1756]: Showing 14 of 441 records
+        - generic [ref=e1757]:
+          - button "‹ Prev" [ref=e1758] [cursor=pointer]
+          - button "1" [ref=e1759] [cursor=pointer]
+          - button "2" [ref=e1760] [cursor=pointer]
+          - button "3" [ref=e1761] [cursor=pointer]
+          - button "Next ›" [ref=e1762] [cursor=pointer]
+    - generic [ref=e1763]: Banner is the pricing/cost grouping level (Chain → Banner → Store); physical store-format classification is parked. Primary / alternate vendor sources replenishment & POs, and the cross-dock hub routes Mother-PO allocations and cross-dock deliveries (Module 11 / 12).
+    - generic [ref=e1768]: "Branch Warehouse & Top Load: Branches flagged with a warehouse maintain a receiving dock and a Top Load holding area used for cross-dock and overflow stock, tracked separately in Product Inventory (Module 7)."

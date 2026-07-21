@@ -1,0 +1,32 @@
+- generic [ref=f5e2]:
+  - paragraph [ref=f5e3]: System Architecture
+  - heading "iConnect ERP — Top-Level Integration Overview" [level=1] [ref=f5e4]
+  - paragraph [ref=f5e5]: Possible data-integration points between iConnect ERP, a Warehouse Management System (WMS), and a Transport Management System (TMS). Each connection is bidirectional — data flows both ways between every pair of systems.
+  - generic [ref=f5e6]: iConnectERP is being developed as the replacement for the legacy JDA (Blue Yonder) platform. In the legacy system, warehouse and transport logistics are handled manually inside the ERP itself — there is no dedicated WMS or TMS today. iConnectERP introduces WMS and TMS as new, dedicated integration points for these functions.
+  - img "Triangle diagram showing ERP, WMS, and TMS connected by bidirectional data flows" [ref=f5e12]:
+    - generic [ref=f5e15]: Inventory & Order Data
+    - generic [ref=f5e17]: Shipment & Delivery Data
+    - generic [ref=f5e19]: Dispatch & Logistics Data
+    - generic [ref=f5e22]:
+      - generic [ref=f5e23]: ERP
+      - paragraph [ref=f5e24]: iConnect ERP
+      - paragraph [ref=f5e25]: Merchandising, replenishment, pricing & master data — the system of record.
+    - generic [ref=f5e27]:
+      - generic [ref=f5e28]: WMS
+      - paragraph [ref=f5e29]: Warehouse Management
+      - paragraph [ref=f5e30]: Receiving, put-away, picking & stock accuracy in the warehouse.
+    - generic [ref=f5e32]:
+      - generic [ref=f5e33]: TMS
+      - paragraph [ref=f5e34]: Transport Management
+      - paragraph [ref=f5e35]: Carrier selection, freight booking, tracking & delivery confirmation.
+  - generic [ref=f5e36]: Every line represents a two-way exchange — each system can both send and receive data with the other two.
+  - generic [ref=f5e40]:
+    - generic [ref=f5e41]:
+      - generic [ref=f5e43]: ERP
+      - text: — iConnect ERP
+    - generic [ref=f5e44]:
+      - generic [ref=f5e46]: WMS
+      - text: — Warehouse Management System
+    - generic [ref=f5e47]:
+      - generic [ref=f5e49]: TMS
+      - text: — Transport Management System

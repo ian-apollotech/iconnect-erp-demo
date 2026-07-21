@@ -1,0 +1,31 @@
+- generic [ref=f4e2]:
+  - paragraph [ref=f4e3]: System Architecture
+  - heading "iConnect ERP — Top-Level Integration Overview" [level=1] [ref=f4e4]
+  - paragraph [ref=f4e5]: Possible data-integration points between iConnect ERP, a Warehouse Management System (WMS), and a Transport Management System (TMS). Each connection is bidirectional — data flows both ways between every pair of systems.
+  - img "Triangle diagram showing ERP, WMS, and TMS connected by bidirectional data flows" [ref=f4e7]:
+    - generic [ref=f4e10]: Inventory & Order Data
+    - generic [ref=f4e12]: Shipment & Delivery Data
+    - generic [ref=f4e14]: Dispatch & Logistics Data
+    - generic [ref=f4e17]:
+      - generic [ref=f4e18]: ERP
+      - paragraph [ref=f4e19]: iConnect ERP
+      - paragraph [ref=f4e20]: Merchandising, replenishment, pricing & master data — the system of record.
+    - generic [ref=f4e22]:
+      - generic [ref=f4e23]: WMS
+      - paragraph [ref=f4e24]: Warehouse Management
+      - paragraph [ref=f4e25]: Receiving, put-away, picking & stock accuracy in the warehouse.
+    - generic [ref=f4e27]:
+      - generic [ref=f4e28]: TMS
+      - paragraph [ref=f4e29]: Transport Management
+      - paragraph [ref=f4e30]: Carrier selection, freight booking, tracking & delivery confirmation.
+  - generic [ref=f4e31]: Every line represents a two-way exchange — each system can both send and receive data with the other two.
+  - generic [ref=f4e35]:
+    - generic [ref=f4e36]:
+      - generic [ref=f4e38]: ERP
+      - text: — iConnect ERP
+    - generic [ref=f4e39]:
+      - generic [ref=f4e41]: WMS
+      - text: — Warehouse Management System
+    - generic [ref=f4e42]:
+      - generic [ref=f4e44]: TMS
+      - text: — Transport Management System

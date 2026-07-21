@@ -1,0 +1,266 @@
+<title>JDA Location & Pricing Schema — Chain / Zone / Store</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fbfcfd;
+    --ink:#1e293b; --ink-soft:#64748b; --ink-faint:#94a3b8;
+    --line:#e2e8f0; --line-2:#eef1f5;
+    --accent:#4338ca; --accent-soft:#eef2ff; --accent-line:#c7d2fe;
+    --amber:#b45309; --amber-bg:#fffbeb; --amber-line:#fde68a;
+    --green:#15803d; --green-bg:#f0fdf4; --green-line:#bbf7d0;
+    --canvas:#ffffff; --canvas-line:#e2e8f0;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0f141b; --surface:#161d27; --surface-2:#131a23;
+      --ink:#e5eaf1; --ink-soft:#9aa7b8; --ink-faint:#6b7a8d;
+      --line:#263243; --line-2:#1e2833;
+      --accent:#a5b4fc; --accent-soft:#1c2338; --accent-line:#37406a;
+      --amber:#fbbf24; --amber-bg:#231a0d; --amber-line:#4d3a17;
+      --green:#4ade80; --green-bg:#0f2019; --green-line:#1f4536;
+      --canvas:#f4f6f8; --canvas-line:#d5dbe3;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fbfcfd;
+    --ink:#1e293b; --ink-soft:#64748b; --ink-faint:#94a3b8;
+    --line:#e2e8f0; --line-2:#eef1f5;
+    --accent:#4338ca; --accent-soft:#eef2ff; --accent-line:#c7d2fe;
+    --amber:#b45309; --amber-bg:#fffbeb; --amber-line:#fde68a;
+    --green:#15803d; --green-bg:#f0fdf4; --green-line:#bbf7d0;
+    --canvas:#ffffff; --canvas-line:#e2e8f0;
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f141b; --surface:#161d27; --surface-2:#131a23;
+    --ink:#e5eaf1; --ink-soft:#9aa7b8; --ink-faint:#6b7a8d;
+    --line:#263243; --line-2:#1e2833;
+    --accent:#a5b4fc; --accent-soft:#1c2338; --accent-line:#37406a;
+    --amber:#fbbf24; --amber-bg:#231a0d; --amber-line:#4d3a17;
+    --green:#4ade80; --green-bg:#0f2019; --green-line:#1f4536;
+    --canvas:#f4f6f8; --canvas-line:#d5dbe3;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.62;font-size:15.5px;-webkit-font-smoothing:antialiased;margin:0}
+  .wrap{max-width:980px;margin:0 auto;padding:56px 24px 96px}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 14px}
+  h1{font-size:30px;line-height:1.15;letter-spacing:-.02em;font-weight:680;
+    margin:0 0 14px;text-wrap:balance}
+  h2{font-size:19px;letter-spacing:-.01em;font-weight:650;margin:44px 0 4px;
+    padding-top:22px;border-top:1px solid var(--line);text-wrap:balance}
+  h2 .n{font-family:var(--mono);color:var(--accent);font-size:14px;margin-right:10px}
+  .lede{font-size:17px;color:var(--ink-soft);max-width:66ch;margin:0 0 8px}
+  p{max-width:70ch;margin:12px 0}
+  .sub{color:var(--ink-soft);font-size:13.5px;margin:6px 0 0}
+  code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);
+    color:var(--accent);padding:1px 5px;border-radius:4px;border:1px solid var(--accent-line)}
+  strong{font-weight:650;color:var(--ink)}
+  .canvas{background:var(--canvas);border:1px solid var(--canvas-line);border-radius:12px;
+    padding:18px;margin:22px 0 6px;overflow-x:auto;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+  .mermaid{min-width:720px}
+  .caption{font-size:12.5px;color:var(--ink-faint);font-family:var(--mono);margin:0 0 26px}
+  table{border-collapse:collapse;width:100%;margin:16px 0 4px;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-2);vertical-align:top}
+  thead th{border-bottom:1.5px solid var(--line);font-size:11.5px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+  tbody tr:last-child td{border-bottom:none}
+  .k{font-family:var(--mono);font-size:12.5px;color:var(--ink);white-space:nowrap}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;
+    background:var(--surface)}
+  .tbl-wrap table{margin:0}
+  .tbl-wrap th,.tbl-wrap td{padding:10px 14px}
+  .pill{display:inline-block;font-family:var(--mono);font-size:11px;padding:1px 7px;
+    border-radius:999px;font-weight:600;letter-spacing:.02em}
+  .pill.amber{color:var(--amber);background:var(--amber-bg);border:1px solid var(--amber-line)}
+  .pill.green{color:var(--green);background:var(--green-bg);border:1px solid var(--green-line)}
+  .pill.indigo{color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line)}
+  .callout{border-radius:12px;padding:20px 22px;margin:26px 0;border:1px solid}
+  .callout.amber{background:var(--amber-bg);border-color:var(--amber-line)}
+  .callout.green{background:var(--green-bg);border-color:var(--green-line)}
+  .callout h3{margin:0 0 8px;font-size:15px;font-weight:650;display:flex;align-items:center;gap:9px}
+  .callout.amber h3{color:var(--amber)} .callout.green h3{color:var(--green)}
+  .callout p{margin:6px 0;font-size:14.5px;color:var(--ink)}
+  .callout .tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;padding:2px 8px;border-radius:5px;border:1px solid currentColor}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 2px;font-size:12.5px;color:var(--ink-soft)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;flex:none;border:1px solid rgba(0,0,0,.12)}
+  ul{max-width:70ch;padding-left:20px} li{margin:6px 0}
+  .foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--ink-faint)}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">JDA / Blue Yonder · Logical Data Model</p>
+  <h1>How JDA models Chain → Zone → Store</h1>
+  <p class="lede">Puregold's <code>Company → Zone(format) → Store</code> is a <strong>configuration</strong> of a much more flexible schema — not the schema itself. In JDA-lineage systems (JDA&nbsp;MMS / Blue&nbsp;Yonder Merchandise Operations), "Zone" is a <strong>many-to-many price-zone membership</strong> and store format is a <strong>location trait</strong> — so the same data model supports format, geography, tier, and competitive zones <em>simultaneously</em>.</p>
+  <p class="sub">The three price-event levels in the spec — <strong>Chain / Zone / Store</strong> — are not three fixed org tiers. <strong>Chain</strong> resolves to the <code>COMPANY</code> row, <strong>Store</strong> to a <code>LOCATION</code> row, and <strong>Zone</strong> to <em>any</em> <code>ZONE</code> row in <em>any</em> zone group. That indirection is the whole source of the flexibility.</p>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--canvas)"></span>Core structural entity</span>
+    <span><span class="dot" style="background:#fde68a"></span>Where Puregold's 3 formats live</span>
+    <span><span class="dot" style="background:#bbf7d0"></span>Flexibility the schema adds for free</span>
+  </div>
+
+  <div class="canvas">
+    <pre class="mermaid">
+%%{init: {'theme':'neutral', 'er':{'entityPadding':10}}}%%
+erDiagram
+  COMPANY ||--o{ LOCATION : "owns"
+  COMPANY ||--o{ ZONE_GROUP : "defines"
+  LOCATION_TYPE ||--o{ LOCATION : "classifies"
+  LOCATION ||--o| LOCATION : "served by cross-dock"
+  LOCATION ||--o{ LOCATION_TRAIT_MAP : "tagged"
+  LOCATION_TRAIT ||--o{ LOCATION_TRAIT_MAP : "via"
+  TRAIT_TYPE ||--o{ LOCATION_TRAIT : "groups"
+  ZONE_GROUP ||--o{ ZONE : "contains"
+  ZONE ||--o{ ZONE_LOCATION : "assigns"
+  LOCATION ||--o{ ZONE_LOCATION : "member of"
+  VENDOR ||--o{ LOCATION_VENDOR : "supplies"
+  LOCATION ||--o{ LOCATION_VENDOR : "primary/alt"
+  PRICE_LEVEL ||--o{ PRICE_EVENT : "granularity"
+  COMPANY ||..o{ PRICE_EVENT : "scope = Chain"
+  ZONE ||..o{ PRICE_EVENT : "scope = Zone"
+  LOCATION ||..o{ PRICE_EVENT : "scope = Store"
+  PRICE_EVENT ||--o{ PRICE_EVENT_LINE : "lines"
+  ITEM ||--o{ PRICE_EVENT_LINE : "priced"
+
+  COMPANY {
+    int company_id PK
+    string legal_name
+    string tin
+    string currency
+    string role "regarded as Chain"
+  }
+  LOCATION {
+    int location_id PK
+    int company_id FK
+    int location_type_id FK
+    int crossdock_id FK "self-ref"
+    string store_code
+    string name
+    string status
+  }
+  LOCATION_TYPE {
+    int location_type_id PK
+    string name "Store / DC / Cross-dock"
+  }
+  ZONE_GROUP {
+    int zone_group_id PK
+    int company_id FK
+    string name "Format / Region / Tier..."
+    string purpose "Pricing / Cost / Replen"
+  }
+  ZONE {
+    int zone_id PK
+    int zone_group_id FK
+    string name
+  }
+  ZONE_LOCATION {
+    int zone_id FK
+    int location_id FK
+  }
+  TRAIT_TYPE {
+    int trait_type_id PK
+    string name "Format / Region / Climate"
+  }
+  LOCATION_TRAIT {
+    int trait_id PK
+    int trait_type_id FK
+    string value
+  }
+  LOCATION_TRAIT_MAP {
+    int location_id FK
+    int trait_id FK
+  }
+  PRICE_LEVEL {
+    int level_id PK
+    string name "Chain / Zone / Store"
+  }
+  PRICE_EVENT {
+    int event_id PK
+    int level_id FK
+    string scope_type "COMPANY|ZONE|LOCATION"
+    int scope_id "polymorphic"
+    string pca_type "Regular / Promo"
+    date start_date
+    date end_date
+  }
+  PRICE_EVENT_LINE {
+    int event_id FK
+    int item_id FK
+    decimal new_price
+  }
+  ITEM { int item_id PK
+    string sku
+    string description
+  }
+  VENDOR { int vendor_id PK
+    string name
+    bool rtv_allowed
+  }
+  LOCATION_VENDOR {
+    int location_id FK
+    int vendor_id FK
+    string source "Primary / Alternate"
+  }
+    </pre>
+  </div>
+  <p class="caption">JDA-pattern logical model (representative naming) — the org / location / zone / pricing slice. Dotted links = the polymorphic <code>scope_id</code> resolving to one of the 3 price levels.</p>
+
+  <h2><span class="n">01</span>The two things that make it flexible</h2>
+  <p>Everything hinges on two structures that Puregold's usage never exercises:</p>
+  <ul>
+    <li><strong>Price zones are a many-to-many membership, not a hierarchy tier.</strong> <code>ZONE_GROUP → ZONE → ZONE_LOCATION</code> means a store joins a zone <em>within a group</em>, and can belong to <strong>many groups at once</strong> — one for format, one for region, one for competitive tier. A price event points at a <code>zone_id</code> from <em>any</em> group.</li>
+    <li><strong>Store format is a location trait.</strong> "Price Club / Extra / Minimart" is one <code>TRAIT_TYPE</code> ("Format") among many. Traits classify without consuming the org hierarchy, so geography stays available as a separate axis.</li>
+  </ul>
+  <p class="sub">Because of this, JDA does not have to pick "format" <em>or</em> "geography" as the middle level — it holds both, and a price event simply targets whichever <code>ZONE</code> it needs.</p>
+
+  <h2><span class="n">02</span>How Puregold configures it</h2>
+  <p>Puregold lights up exactly one zone group and uses format as its pricing axis. Nothing in the spec is wrong — it's just a narrow instantiation of the model above:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Schema entity</th><th>Puregold's rows</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="k">COMPANY</td><td>Puregold Price Club, Inc. · Ayagold Retailers Inc.</td><td>Each "regarded as Chain" (spec §1d). <em>Ayagold not in the PDF.</em></td></tr>
+        <tr><td class="k">ZONE_GROUP</td><td><span class="pill amber">Format</span> &nbsp;<span class="sub">(purpose = Pricing &amp; Cost)</span></td><td>The <strong>only</strong> group Puregold defines.</td></tr>
+        <tr><td class="k">ZONE <span class="sub">(in Format)</span></td><td>Price&nbsp;Club · Extra · Minimart <span class="sub">(PGOLD)</span> · Merkado <span class="sub">(AYAG)</span></td><td>The spec's "3 types." Merkado is the extrapolation.</td></tr>
+        <tr><td class="k">ZONE_LOCATION</td><td>each store → its one format zone</td><td>The store's "pricing zone" attribute (spec §2b).</td></tr>
+        <tr><td class="k">PRICE_LEVEL</td><td>Chain → Zone → Store</td><td>Maps 1:1 to the spec's price-event levels (§8a).</td></tr>
+        <tr><td class="k">ZONE_GROUP <span class="sub">(Region)</span></td><td><span class="pill green">— empty —</span></td><td>Supported by the schema, but Puregold never creates it.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout green">
+    <h3><span class="tag">Zero schema change</span> Adding geography is a data insert, not a redesign</h3>
+    <p>To get regional pricing, you don't touch the model — you add <strong>one <code>ZONE_GROUP</code> "Region"</strong> with zones <code>NCR · N.Luzon · S.Luzon · Visayas · Mindanao</code>, then rows in <code>ZONE_LOCATION</code> mapping each store to its region.</p>
+    <p>Now a single store is simultaneously <code>Format = Price Club</code> <em>and</em> <code>Region = NCR</code>. A price event can target the format zone <em>or</em> the region zone — so a Price Club in Davao can be priced differently from one in Manila without dropping to individual Store level. <strong>That is exactly the capability the geographic-zone question is about.</strong></p>
+  </div>
+
+  <div class="callout amber">
+    <h3><span class="tag">The reconciliation</span> Spec vs. schema, resolved</h3>
+    <p>The spec isn't in conflict with the schema — it's a <strong>subset</strong> of it. "Zone = 3 formats" is Puregold's current config; "Zone = geography" is just a <em>second zone group</em> in the same model. You never had to choose one <em>or</em> the other; JDA holds both. The naming collision ("Price Club" the company vs. the zone) also dissolves — the company is a <code>COMPANY</code> row, the zone is a <code>ZONE</code> row in the Format group. Different tables, same string.</p>
+  </div>
+
+  <h2><span class="n">03</span>Mapping to JDA / Blue Yonder terminology</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>This model</th><th>JDA MMS / Blue Yonder concept</th></tr></thead>
+      <tbody>
+        <tr><td class="k">COMPANY / Chain</td><td>Company — top of the configurable location hierarchy</td></tr>
+        <tr><td class="k">ZONE_GROUP → ZONE</td><td>Price Zone / zone pricing (many-to-many location membership)</td></tr>
+        <tr><td class="k">LOCATION_TRAIT</td><td>Location attributes / traits (format, region, climate, size)</td></tr>
+        <tr><td class="k">LOCATION (self-ref)</td><td>Store ↔ serving DC / cross-dock</td></tr>
+        <tr><td class="k">PRICE_EVENT</td><td>Price Change / Promotion event (Regular &amp; Promo PCA)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub">Representative names for clarity — not literal DDL. The <strong>pattern</strong> — configurable location hierarchy + location traits + many-to-many price zones — is the JDA/Blue Yonder way of modeling exactly the Chain/Zone/Store levels the spec names.</p>
+
+  <p class="foot">JDA logical model · location / pricing slice only (merchandise hierarchy and item↔vendor terms shown in outline).</p>
+
+</div>

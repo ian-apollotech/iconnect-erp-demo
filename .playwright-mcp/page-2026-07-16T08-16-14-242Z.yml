@@ -1,0 +1,186 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic [ref=e9]: Company
+      - combobox [ref=e10] [cursor=pointer]:
+        - option "Puregold Price Club, Inc." [selected]
+        - option "Ayagold Retailers Inc."
+      - generic [ref=e11]: Branch
+      - combobox [ref=e12] [cursor=pointer]:
+        - option "All Branches" [selected]
+        - option "0102 · Ortigas Ext."
+        - option "0107 · Araneta Cubao"
+        - option "0233 · Cebu (Mandaue)"
+    - generic [ref=e13]:
+      - generic "Tasks" [ref=e14] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e19] [cursor=pointer]: "3"
+      - generic [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: RC
+        - generic [ref=e26]:
+          - generic [ref=e27]: Rica Cruz
+          - generic [ref=e28]: Merchandise Admin
+  - navigation [ref=e29]:
+    - generic [ref=e1773]:
+      - heading "Overview" [level=4] [ref=e1774]
+      - generic [ref=e1775] [cursor=pointer]: Dashboard
+    - generic [ref=e1779]:
+      - heading "Master Data" [level=4] [ref=e1780]
+      - generic [ref=e1781] [cursor=pointer]:
+        - generic [ref=e1784]: Company Maintenance
+        - generic [ref=e1785]: "1"
+      - generic [ref=e1786] [cursor=pointer]:
+        - generic [ref=e1789]: Store Branch Maintenance
+        - generic [ref=e1790]: "2"
+      - generic [ref=e1791] [cursor=pointer]:
+        - generic [ref=e1794]: Vendor Maintenance
+        - generic [ref=e1795]: "3"
+      - generic [ref=e1796] [cursor=pointer]:
+        - generic [ref=e1799]: Vendor Allowance
+        - generic [ref=e1800]: "4"
+      - generic [ref=e1801] [cursor=pointer]:
+        - generic [ref=e1804]: Item Hierarchy
+        - generic [ref=e1805]: "5"
+      - generic [ref=e1806] [cursor=pointer]:
+        - generic [ref=e1809]: Item Maintenance
+        - generic [ref=e1810]: "6"
+    - generic [ref=e1811]:
+      - heading "Inventory & Pricing" [level=4] [ref=e1812]
+      - generic [ref=e1813] [cursor=pointer]:
+        - generic [ref=e1816]: Product Inventory
+        - generic [ref=e1817]: "7"
+      - generic [ref=e1818] [cursor=pointer]:
+        - generic [ref=e1821]: Price Change Mgmt
+        - generic [ref=e1822]: "8"
+      - generic [ref=e1823] [cursor=pointer]:
+        - generic [ref=e1826]: Cost Change Mgmt
+        - generic [ref=e1827]: "9"
+    - generic [ref=e1828]:
+      - heading "Procurement" [level=4] [ref=e1829]
+      - generic [ref=e1830] [cursor=pointer]:
+        - generic [ref=e1833]: Purchase Order
+        - generic [ref=e1834]: "10"
+      - generic [ref=e1835] [cursor=pointer]:
+        - generic [ref=e1838]: Auto Replenishment
+        - generic [ref=e1839]: "11"
+      - generic [ref=e1840] [cursor=pointer]:
+        - generic [ref=e1843]: PO Receiving
+        - generic [ref=e1844]: "12"
+    - generic [ref=e1845]:
+      - heading "Store Operations" [level=4] [ref=e1846]
+      - generic [ref=e1847] [cursor=pointer]:
+        - generic [ref=e1850]: Store-to-Store Transfer
+        - generic [ref=e1851]: "13"
+      - generic [ref=e1852] [cursor=pointer]:
+        - generic [ref=e1855]: Return To Vendor
+        - generic [ref=e1856]: "14"
+      - generic [ref=e1857] [cursor=pointer]:
+        - generic [ref=e1860]: Inventory Adjustment
+        - generic [ref=e1861]: "15"
+      - generic [ref=e1862] [cursor=pointer]:
+        - generic [ref=e1865]: Make-up / Break-up
+        - generic [ref=e1866]: "16"
+    - generic [ref=e1867]:
+      - heading "Sales" [level=4] [ref=e1868]
+      - generic [ref=e1869] [cursor=pointer]:
+        - generic [ref=e1872]: POS Sales
+        - generic [ref=e1873]: "17"
+    - generic [ref=e1874]:
+      - heading "User Management" [level=4] [ref=e1875]
+      - generic [ref=e1876] [cursor=pointer]: Users
+      - generic [ref=e1880] [cursor=pointer]: Roles
+      - generic [ref=e1884] [cursor=pointer]: Branch Access
+      - generic [ref=e1888] [cursor=pointer]: Audit Log
+  - main [ref=e149]:
+    - generic [ref=e1892]: iConnect ERP › Module 2 › New Branch
+    - generic [ref=e1893]:
+      - generic [ref=e1894]:
+        - heading "New Branch" [level=1] [ref=e1895]
+        - paragraph [ref=e1896]: Open a new store location.
+      - generic [ref=e1897]:
+        - button "‹ Back to list" [ref=e1898] [cursor=pointer]
+        - button "Save Draft" [ref=e1899] [cursor=pointer]
+        - button "Save Branch" [ref=e1900] [cursor=pointer]
+    - generic [ref=e1901]:
+      - generic [ref=e1902]:
+        - heading "Details" [level=3] [ref=e1903]
+        - generic [ref=e1904]: New Branch · Draft
+      - generic [ref=e1906]:
+        - generic [ref=e1907]: Identity
+        - generic [ref=e1908]:
+          - generic [ref=e1909]: Branch Code *
+          - textbox [ref=e1910]
+        - generic [ref=e1911]:
+          - generic [ref=e1912]: Branch Name *
+          - textbox [ref=e1913]
+        - generic [ref=e1914]:
+          - generic [ref=e1915]: Banner *
+          - combobox [ref=e1916]:
+            - option "Price Club" [selected]
+            - option "Extra"
+            - option "Minimart"
+            - option "Merkado (Ayagold)"
+          - generic [ref=e1917]: Banner drives pricing/cost grouping and store classification.
+        - generic [ref=e1918]: Setup
+        - generic [ref=e1919]:
+          - generic [ref=e1920]: No. of Selling Areas
+          - spinbutton [ref=e1921]: "4"
+        - generic [ref=e1922]:
+          - generic [ref=e1923]: Has Branch Warehouse
+          - combobox [ref=e1924]:
+            - option "Yes" [selected]
+            - option "No"
+        - generic [ref=e1925]:
+          - generic [ref=e1926]: Cross-Dock Hub
+          - combobox [ref=e1927]:
+            - option "— Direct-to-store —" [selected]
+            - option "CD-NCR North"
+            - option "CD-NCR South"
+            - option "CD-Cebu"
+            - option "CD-Davao"
+          - generic [ref=e1928]: Serving cross-dock, if not direct delivery.
+        - generic [ref=e1929]:
+          - generic [ref=e1930]: Primary Vendor
+          - combobox [ref=e1931]:
+            - option "— Select —" [selected]
+            - option "Nestlé Philippines"
+            - option "Alaska Milk Corp."
+            - option "Universal Robina Corp."
+            - option "San Miguel Foods"
+            - option "Monde Nissin Corp."
+            - option "Gardenia Bakeries PH"
+            - option "Selecta Ice Cream (RFM)"
+        - generic [ref=e1932]:
+          - generic [ref=e1933]: Alternate Vendor
+          - combobox [ref=e1934]:
+            - option "— None —" [selected]
+            - option "Nestlé Philippines"
+            - option "Alaska Milk Corp."
+            - option "Universal Robina Corp."
+            - option "San Miguel Foods"
+            - option "Monde Nissin Corp."
+            - option "Gardenia Bakeries PH"
+            - option "Selecta Ice Cream (RFM)"
+        - generic [ref=e1935]:
+          - generic [ref=e1936]: Opening Date
+          - textbox [ref=e1937]: 2026-08-01
+        - generic [ref=e1938]: Address
+        - generic [ref=e1939]:
+          - generic [ref=e1940]: Street / Building
+          - textbox [ref=e1941]
+        - generic [ref=e1942]:
+          - generic [ref=e1943]: City / Municipality
+          - textbox [ref=e1944]
+        - generic [ref=e1945]:
+          - generic [ref=e1946]: Province
+          - textbox [ref=e1947]
+    - generic [ref=e1949]:
+      - generic [ref=e1950]: Required fields (*) must be completed before submission.
+      - generic [ref=e1951]:
+        - button "Cancel" [ref=e1952] [cursor=pointer]
+        - button "Save Draft" [ref=e1953] [cursor=pointer]
+        - button "Save Branch" [ref=e1954] [cursor=pointer]

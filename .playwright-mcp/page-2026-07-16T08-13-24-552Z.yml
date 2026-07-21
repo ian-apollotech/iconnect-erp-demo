@@ -1,0 +1,169 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic [ref=e9]: Company
+      - combobox [ref=e10] [cursor=pointer]:
+        - option "Puregold Price Club, Inc." [selected]
+        - option "Ayagold Retailers Inc."
+      - generic [ref=e11]: Branch
+      - combobox [ref=e12] [cursor=pointer]:
+        - option "All Branches" [selected]
+        - option "0102 · Ortigas Ext."
+        - option "0107 · Araneta Cubao"
+        - option "0233 · Cebu (Mandaue)"
+    - generic [ref=e13]:
+      - generic "Tasks" [ref=e14] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e19] [cursor=pointer]: "3"
+      - generic [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: RC
+        - generic [ref=e26]:
+          - generic [ref=e27]: Rica Cruz
+          - generic [ref=e28]: Merchandise Admin
+  - navigation [ref=e29]:
+    - generic [ref=e859]:
+      - heading "Overview" [level=4] [ref=e860]
+      - generic [ref=e861] [cursor=pointer]: Dashboard
+    - generic [ref=e865]:
+      - heading "Master Data" [level=4] [ref=e866]
+      - generic [ref=e867] [cursor=pointer]:
+        - generic [ref=e870]: Company Maintenance
+        - generic [ref=e871]: "1"
+      - generic [ref=e872] [cursor=pointer]:
+        - generic [ref=e875]: Store Branch Maintenance
+        - generic [ref=e876]: "2"
+      - generic [ref=e877] [cursor=pointer]:
+        - generic [ref=e880]: Vendor Maintenance
+        - generic [ref=e881]: "3"
+      - generic [ref=e882] [cursor=pointer]:
+        - generic [ref=e885]: Vendor Allowance
+        - generic [ref=e886]: "4"
+      - generic [ref=e887] [cursor=pointer]:
+        - generic [ref=e890]: Item Hierarchy
+        - generic [ref=e891]: "5"
+      - generic [ref=e892] [cursor=pointer]:
+        - generic [ref=e895]: Item Maintenance
+        - generic [ref=e896]: "6"
+    - generic [ref=e897]:
+      - heading "Inventory & Pricing" [level=4] [ref=e898]
+      - generic [ref=e899] [cursor=pointer]:
+        - generic [ref=e902]: Product Inventory
+        - generic [ref=e903]: "7"
+      - generic [ref=e904] [cursor=pointer]:
+        - generic [ref=e907]: Price Change Mgmt
+        - generic [ref=e908]: "8"
+      - generic [ref=e909] [cursor=pointer]:
+        - generic [ref=e912]: Cost Change Mgmt
+        - generic [ref=e913]: "9"
+    - generic [ref=e914]:
+      - heading "Procurement" [level=4] [ref=e915]
+      - generic [ref=e916] [cursor=pointer]:
+        - generic [ref=e919]: Purchase Order
+        - generic [ref=e920]: "10"
+      - generic [ref=e921] [cursor=pointer]:
+        - generic [ref=e924]: Auto Replenishment
+        - generic [ref=e925]: "11"
+      - generic [ref=e926] [cursor=pointer]:
+        - generic [ref=e929]: PO Receiving
+        - generic [ref=e930]: "12"
+    - generic [ref=e931]:
+      - heading "Store Operations" [level=4] [ref=e932]
+      - generic [ref=e933] [cursor=pointer]:
+        - generic [ref=e936]: Store-to-Store Transfer
+        - generic [ref=e937]: "13"
+      - generic [ref=e938] [cursor=pointer]:
+        - generic [ref=e941]: Return To Vendor
+        - generic [ref=e942]: "14"
+      - generic [ref=e943] [cursor=pointer]:
+        - generic [ref=e946]: Inventory Adjustment
+        - generic [ref=e947]: "15"
+      - generic [ref=e948] [cursor=pointer]:
+        - generic [ref=e951]: Make-up / Break-up
+        - generic [ref=e952]: "16"
+    - generic [ref=e953]:
+      - heading "Sales" [level=4] [ref=e954]
+      - generic [ref=e955] [cursor=pointer]:
+        - generic [ref=e958]: POS Sales
+        - generic [ref=e959]: "17"
+    - generic [ref=e960]:
+      - heading "User Management" [level=4] [ref=e961]
+      - generic [ref=e962] [cursor=pointer]: Users
+      - generic [ref=e966] [cursor=pointer]: Roles
+      - generic [ref=e970] [cursor=pointer]: Branch Access
+      - generic [ref=e974] [cursor=pointer]: Audit Log
+  - main [ref=e149]:
+    - generic [ref=e978]: iConnect ERP › Module 11 › Auto Replenishment
+    - generic [ref=e979]:
+      - generic [ref=e980]:
+        - heading "Auto Replenishment" [level=1] [ref=e981]
+        - paragraph [ref=e982]: Demand-driven PO generation. Regular PO per vendor/store (DTS or Cross-dock) and consolidated Mother-PO for one vendor across many stores.
+      - generic [ref=e983]:
+        - button "Run Parameters" [ref=e984] [cursor=pointer]
+        - button "Generate Proposals" [ref=e985] [cursor=pointer]
+    - generic [ref=e988]:
+      - generic [ref=e989]:
+        - generic [ref=e990]: Proposals Pending
+        - generic [ref=e991]: "86"
+      - generic [ref=e992]:
+        - generic [ref=e993]: Auto-Approved
+        - generic [ref=e994]: "142"
+        - generic [ref=e995]: within tolerance
+      - generic [ref=e996]:
+        - generic [ref=e997]: Below ROP (SKU/Branch)
+        - generic [ref=e998]: 1,204
+      - generic [ref=e999]:
+        - generic [ref=e1000]: Next Run
+        - generic [ref=e1001]: 18:00 today
+    - generic [ref=e1002]:
+      - generic [ref=e1003]:
+        - generic [ref=e1004] [cursor=pointer]: Regular PO (per Vendor / Store)
+        - generic [ref=e1005] [cursor=pointer]: Mother-PO (1 Vendor / Multi-Store)
+        - generic [ref=e1006] [cursor=pointer]: Vendor Schedule & Params
+      - generic [ref=e1086]:
+        - generic [ref=e1087]: Replenishment runs on a per-vendor order schedule (order days + lead time), not one global cycle. Suggested Qty = (ROP + Safety Stock + Review-Period Demand) − On-Hand − On-Order, rounded up to the vendor order increment and never below MOQ. The parameters below are exposed and editable per vendor/item.
+        - table [ref=e1094]:
+          - rowgroup [ref=e1095]:
+            - row [ref=e1096]:
+              - columnheader "Vendor" [ref=e1097]
+              - columnheader "Order Days" [ref=e1098]
+              - columnheader "Lead Time" [ref=e1099]
+              - columnheader "Review Period" [ref=e1100]
+              - columnheader "Safety Stock" [ref=e1101]
+              - columnheader "Service Level" [ref=e1102]
+              - columnheader "MOQ" [ref=e1103]
+              - columnheader "Order Incr." [ref=e1104]
+          - rowgroup [ref=e1105]:
+            - row [ref=e1106]:
+              - cell "Nestlé Philippines" [ref=e1107]
+              - cell "Mon · Thu" [ref=e1108]
+              - cell "2 days" [ref=e1109]
+              - cell "3 days" [ref=e1110]
+              - cell "7 days cover" [ref=e1111]
+              - cell "97.5%" [ref=e1112]
+              - cell "20 cs" [ref=e1113]
+              - cell "5 cs" [ref=e1114]
+            - row [ref=e1115]:
+              - cell "Alaska Milk Corp." [ref=e1116]
+              - cell "Wed" [ref=e1117]
+              - cell "1 day" [ref=e1118]
+              - cell "7 days" [ref=e1119]
+              - cell "5 days cover" [ref=e1120]
+              - cell "95.0%" [ref=e1121]
+              - cell "10 cs" [ref=e1122]
+              - cell "2 cs" [ref=e1123]
+            - row [ref=e1124]:
+              - cell "Universal Robina" [ref=e1125]
+              - cell "Tue · Fri" [ref=e1126]
+              - cell "3 days" [ref=e1127]
+              - cell "3 days" [ref=e1128]
+              - cell "10 days cover" [ref=e1129]
+              - cell "98.0%" [ref=e1130]
+              - cell "30 cs" [ref=e1131]
+              - cell "6 cs" [ref=e1132]
+        - generic [ref=e1133]:
+          - generic [ref=e1134]: Params inherit vendor defaults; item-level overrides live on the item↔vendor link.
+          - button "Edit Parameters" [ref=e1136] [cursor=pointer]

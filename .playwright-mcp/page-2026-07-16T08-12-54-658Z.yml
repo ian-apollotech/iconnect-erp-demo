@@ -1,0 +1,216 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic [ref=e9]: Company
+      - combobox [ref=e10] [cursor=pointer]:
+        - option "Puregold Price Club, Inc." [selected]
+        - option "Ayagold Retailers Inc."
+      - generic [ref=e11]: Branch
+      - combobox [ref=e12] [cursor=pointer]:
+        - option "All Branches" [selected]
+        - option "0102 · Ortigas Ext."
+        - option "0107 · Araneta Cubao"
+        - option "0233 · Cebu (Mandaue)"
+    - generic [ref=e13]:
+      - generic "Tasks" [ref=e14] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e19] [cursor=pointer]: "3"
+      - generic [ref=e24] [cursor=pointer]:
+        - generic [ref=e25]: RC
+        - generic [ref=e26]:
+          - generic [ref=e27]: Rica Cruz
+          - generic [ref=e28]: Merchandise Admin
+  - navigation [ref=e29]:
+    - generic [ref=e325]:
+      - heading "Overview" [level=4] [ref=e326]
+      - generic [ref=e327] [cursor=pointer]: Dashboard
+    - generic [ref=e331]:
+      - heading "Master Data" [level=4] [ref=e332]
+      - generic [ref=e333] [cursor=pointer]:
+        - generic [ref=e336]: Company Maintenance
+        - generic [ref=e337]: "1"
+      - generic [ref=e338] [cursor=pointer]:
+        - generic [ref=e341]: Store Branch Maintenance
+        - generic [ref=e342]: "2"
+      - generic [ref=e343] [cursor=pointer]:
+        - generic [ref=e346]: Vendor Maintenance
+        - generic [ref=e347]: "3"
+      - generic [ref=e348] [cursor=pointer]:
+        - generic [ref=e351]: Vendor Allowance
+        - generic [ref=e352]: "4"
+      - generic [ref=e353] [cursor=pointer]:
+        - generic [ref=e356]: Item Hierarchy
+        - generic [ref=e357]: "5"
+      - generic [ref=e358] [cursor=pointer]:
+        - generic [ref=e361]: Item Maintenance
+        - generic [ref=e362]: "6"
+    - generic [ref=e363]:
+      - heading "Inventory & Pricing" [level=4] [ref=e364]
+      - generic [ref=e365] [cursor=pointer]:
+        - generic [ref=e368]: Product Inventory
+        - generic [ref=e369]: "7"
+      - generic [ref=e370] [cursor=pointer]:
+        - generic [ref=e373]: Price Change Mgmt
+        - generic [ref=e374]: "8"
+      - generic [ref=e375] [cursor=pointer]:
+        - generic [ref=e378]: Cost Change Mgmt
+        - generic [ref=e379]: "9"
+    - generic [ref=e380]:
+      - heading "Procurement" [level=4] [ref=e381]
+      - generic [ref=e382] [cursor=pointer]:
+        - generic [ref=e385]: Purchase Order
+        - generic [ref=e386]: "10"
+      - generic [ref=e387] [cursor=pointer]:
+        - generic [ref=e390]: Auto Replenishment
+        - generic [ref=e391]: "11"
+      - generic [ref=e392] [cursor=pointer]:
+        - generic [ref=e395]: PO Receiving
+        - generic [ref=e396]: "12"
+    - generic [ref=e397]:
+      - heading "Store Operations" [level=4] [ref=e398]
+      - generic [ref=e399] [cursor=pointer]:
+        - generic [ref=e402]: Store-to-Store Transfer
+        - generic [ref=e403]: "13"
+      - generic [ref=e404] [cursor=pointer]:
+        - generic [ref=e407]: Return To Vendor
+        - generic [ref=e408]: "14"
+      - generic [ref=e409] [cursor=pointer]:
+        - generic [ref=e412]: Inventory Adjustment
+        - generic [ref=e413]: "15"
+      - generic [ref=e414] [cursor=pointer]:
+        - generic [ref=e417]: Make-up / Break-up
+        - generic [ref=e418]: "16"
+    - generic [ref=e419]:
+      - heading "Sales" [level=4] [ref=e420]
+      - generic [ref=e421] [cursor=pointer]:
+        - generic [ref=e424]: POS Sales
+        - generic [ref=e425]: "17"
+    - generic [ref=e426]:
+      - heading "User Management" [level=4] [ref=e427]
+      - generic [ref=e428] [cursor=pointer]: Users
+      - generic [ref=e432] [cursor=pointer]: Roles
+      - generic [ref=e436] [cursor=pointer]: Branch Access
+      - generic [ref=e440] [cursor=pointer]: Audit Log
+  - main [ref=e149]:
+    - generic [ref=e444]: iConnect ERP › Module 1 › Company Maintenance
+    - generic [ref=e445]:
+      - generic [ref=e446]:
+        - heading "Company Maintenance" [level=1] [ref=e447]
+        - paragraph [ref=e448]: Corporate legal entities operating under the group. Configure fiscal calendar, tax, and default accounting.
+      - generic [ref=e449]:
+        - button "Export" [ref=e450] [cursor=pointer]
+        - button "New Company" [ref=e453] [cursor=pointer]
+    - generic [ref=e456]:
+      - generic [ref=e457]:
+        - generic [ref=e458]:
+          - generic [ref=e459]: Search
+          - textbox "Company code, legal name or TIN…" [ref=e460]
+        - generic [ref=e461]:
+          - generic [ref=e462]: Currency
+          - combobox [ref=e463]:
+            - option "All" [selected]
+            - option "PHP"
+        - generic [ref=e464]:
+          - generic [ref=e465]: Status
+          - combobox [ref=e466]:
+            - option "Active" [selected]
+            - option "Inactive"
+            - option "All"
+        - button "Apply" [ref=e467] [cursor=pointer]
+      - table [ref=e470]:
+        - rowgroup [ref=e471]:
+          - row [ref=e472]:
+            - columnheader [ref=e473]
+            - columnheader "Code" [ref=e474]
+            - columnheader "Legal Name" [ref=e475]
+            - columnheader "TIN" [ref=e476]
+            - columnheader "Banners" [ref=e477]
+            - columnheader "Branches" [ref=e478]
+            - columnheader "Currency" [ref=e479]
+            - columnheader "Status" [ref=e480]
+        - rowgroup [ref=e481]:
+          - row [ref=e482]:
+            - cell [ref=e483]:
+              - checkbox [ref=e484] [cursor=pointer]
+            - cell "PGOLD" [ref=e485]
+            - cell "Puregold Price Club, Inc." [ref=e486]
+            - cell "201-810-736-000" [ref=e487]
+            - cell "3" [ref=e488]
+            - cell "437" [ref=e489]
+            - cell "PHP" [ref=e490]
+            - cell "Active" [ref=e491]
+          - row [ref=e493]:
+            - cell [ref=e494]:
+              - checkbox [ref=e495] [cursor=pointer]
+            - cell "AYAG" [ref=e496]
+            - cell "Ayagold Retailers Inc. (Merkado)" [ref=e497]
+            - cell "008-217-540-000" [ref=e498]
+            - cell "1" [ref=e499]
+            - cell "3" [ref=e500]
+            - cell "PHP" [ref=e501]
+            - cell "Active" [ref=e502]
+      - generic [ref=e504]:
+        - generic [ref=e505]: Showing 2 of 2 records
+        - generic [ref=e506]:
+          - button "‹ Prev" [ref=e507] [cursor=pointer]
+          - button "1" [ref=e508] [cursor=pointer]
+          - button "2" [ref=e509] [cursor=pointer]
+          - button "3" [ref=e510] [cursor=pointer]
+          - button "Next ›" [ref=e511] [cursor=pointer]
+    - generic [ref=e512]:
+      - generic [ref=e513]:
+        - heading "Buyer Master" [level=3] [ref=e514]
+        - generic [ref=e515]: Category buyers
+      - generic [ref=e516]: A buyer owns one or more merchandise departments and their vendor relationships; every Purchase Order is raised under a buyer. Buyers are maintained here and selected on the PO header.
+      - table [ref=e523]:
+        - rowgroup [ref=e524]:
+          - row [ref=e525]:
+            - columnheader "Buyer Code" [ref=e526]
+            - columnheader "Name" [ref=e527]
+            - columnheader "Assigned Departments" [ref=e528]
+            - columnheader "Vendors" [ref=e529]
+            - columnheader "Open POs" [ref=e530]
+            - columnheader "Status" [ref=e531]
+        - rowgroup [ref=e532]:
+          - row [ref=e533]:
+            - cell "BUY-01" [ref=e534]
+            - cell "R. Cruz" [ref=e535]
+            - cell "01 · Grocery Food" [ref=e536]
+            - cell "42" [ref=e537]
+            - cell "23" [ref=e538]
+            - cell "Active" [ref=e539]
+          - row [ref=e541]:
+            - cell "BUY-02" [ref=e542]
+            - cell "L. Domingo" [ref=e543]
+            - cell "02 · Fresh & Perishables" [ref=e544]
+            - cell "28" [ref=e545]
+            - cell "17" [ref=e546]
+            - cell "Active" [ref=e547]
+          - row [ref=e549]:
+            - cell "BUY-03" [ref=e550]
+            - cell "P. Salas" [ref=e551]
+            - cell "03 · Non-Food & Household" [ref=e552]
+            - cell "35" [ref=e553]
+            - cell "19" [ref=e554]
+            - cell "Active" [ref=e555]
+          - row [ref=e557]:
+            - cell "BUY-04" [ref=e558]
+            - cell "M. Ferrer" [ref=e559]
+            - cell "04 · Fashion & Apparel" [ref=e560]
+            - cell "21" [ref=e561]
+            - cell "6" [ref=e562]
+            - cell "Active" [ref=e563]
+          - row [ref=e565]:
+            - cell "BUY-05" [ref=e566]
+            - cell "A. Yu" [ref=e567]
+            - cell "02 · Fresh & Perishables (Frozen)" [ref=e568]
+            - cell "14" [ref=e569]
+            - cell "8" [ref=e570]
+            - cell "On Leave" [ref=e571]
+      - generic [ref=e573]:
+        - generic [ref=e574]: 5 buyers
+        - button "New Buyer" [ref=e576] [cursor=pointer]

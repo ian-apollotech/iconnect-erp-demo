@@ -1,0 +1,230 @@
+- generic [ref=f2e2]:
+  - banner [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]: iC
+      - generic [ref=f2e6]:
+        - text: iConnect ERP
+        - generic [ref=f2e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=f2e8]:
+      - generic "Tasks" [ref=f2e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=f2e14] [cursor=pointer]: "3"
+      - generic [ref=f2e19] [cursor=pointer]:
+        - generic [ref=f2e20]: RC
+        - generic [ref=f2e21]:
+          - generic [ref=f2e22]: Rica Cruz
+          - generic [ref=f2e23]: Merchandise Admin
+  - navigation [ref=f2e24]:
+    - generic [ref=f2e798]:
+      - heading "Overview" [level=4] [ref=f2e799]
+      - generic [ref=f2e800] [cursor=pointer]: Dashboard
+    - generic [ref=f2e804]:
+      - heading "Master Data" [level=4] [ref=f2e805]
+      - generic [ref=f2e806] [cursor=pointer]:
+        - generic [ref=f2e809]: Company Maintenance
+        - generic [ref=f2e810]: "1"
+      - generic [ref=f2e811]:
+        - heading "Store Branch Maintenance" [level=5] [ref=f2e812]
+        - generic [ref=f2e813] [cursor=pointer]: Chain
+        - generic [ref=f2e817] [cursor=pointer]: Zone
+        - generic [ref=f2e821] [cursor=pointer]:
+          - generic [ref=f2e824]: Branch
+          - generic [ref=f2e825]: "2"
+      - generic [ref=f2e826]:
+        - heading "Vendor Maintenance" [level=5] [ref=f2e827]
+        - generic [ref=f2e828] [cursor=pointer]:
+          - generic [ref=f2e831]: Vendor
+          - generic [ref=f2e832]: "3"
+        - generic [ref=f2e833] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=f2e837] [cursor=pointer]: Vendor Catalog
+        - generic [ref=f2e841] [cursor=pointer]:
+          - generic [ref=f2e844]: Vendor Allowance
+          - generic [ref=f2e845]: "4"
+      - generic [ref=f2e846]:
+        - heading "Product Maintenance" [level=5] [ref=f2e847]
+        - generic [ref=f2e848] [cursor=pointer]:
+          - generic [ref=f2e851]: Category Hierarchy
+          - generic [ref=f2e852]: "5"
+        - generic [ref=f2e853] [cursor=pointer]:
+          - generic [ref=f2e856]: Product
+          - generic [ref=f2e857]: "6"
+    - generic [ref=f2e858]:
+      - heading "Inventory & Pricing" [level=4] [ref=f2e859]
+      - generic [ref=f2e860] [cursor=pointer]:
+        - generic [ref=f2e863]: Product Inventory
+        - generic [ref=f2e864]: "7"
+      - generic [ref=f2e865] [cursor=pointer]:
+        - generic [ref=f2e868]: Price Change Mgmt
+        - generic [ref=f2e869]: "8"
+      - generic [ref=f2e870] [cursor=pointer]:
+        - generic [ref=f2e873]: Cost Change Mgmt
+        - generic [ref=f2e874]: "9"
+    - generic [ref=f2e875]:
+      - heading "Procurement" [level=4] [ref=f2e876]
+      - generic [ref=f2e877] [cursor=pointer]:
+        - generic [ref=f2e880]: Purchase Order
+        - generic [ref=f2e881]: "10"
+      - generic [ref=f2e882] [cursor=pointer]:
+        - generic [ref=f2e885]: Auto Replenishment
+        - generic [ref=f2e886]: "11"
+      - generic [ref=f2e887] [cursor=pointer]:
+        - generic [ref=f2e890]: PO Receiving
+        - generic [ref=f2e891]: "12"
+    - generic [ref=f2e892]:
+      - heading "Store Operations" [level=4] [ref=f2e893]
+      - generic [ref=f2e894] [cursor=pointer]:
+        - generic [ref=f2e897]: Store-to-Store Transfer
+        - generic [ref=f2e898]: "13"
+      - generic [ref=f2e899] [cursor=pointer]:
+        - generic [ref=f2e902]: Return To Vendor
+        - generic [ref=f2e903]: "14"
+      - generic [ref=f2e904] [cursor=pointer]:
+        - generic [ref=f2e907]: Inventory Adjustment
+        - generic [ref=f2e908]: "15"
+      - generic [ref=f2e909] [cursor=pointer]:
+        - generic [ref=f2e912]: Make-up / Break-up
+        - generic [ref=f2e913]: "16"
+    - generic [ref=f2e914]:
+      - heading "Sales" [level=4] [ref=f2e915]
+      - generic [ref=f2e916] [cursor=pointer]:
+        - generic [ref=f2e919]: POS Sales
+        - generic [ref=f2e920]: "17"
+    - generic [ref=f2e921]:
+      - heading "User Management" [level=4] [ref=f2e922]
+      - generic [ref=f2e923] [cursor=pointer]: Users
+      - generic [ref=f2e927] [cursor=pointer]: Roles
+      - generic [ref=f2e931] [cursor=pointer]: Branch Access
+      - generic [ref=f2e935] [cursor=pointer]: Audit Log
+  - main [ref=f2e166]:
+    - generic [ref=f2e939]: iConnect ERP › Module 3 › Vendor
+    - generic [ref=f2e940]:
+      - generic [ref=f2e941]:
+        - heading "Vendor" [level=1] [ref=f2e942]
+        - paragraph [ref=f2e943]: Supplier master — identity, commercial terms, delivery model (DTS / Cross-dock / DSD), lead time, payment terms and RTV eligibility.
+      - generic [ref=f2e944]:
+        - button "Export" [ref=f2e945] [cursor=pointer]
+        - button "New Vendor" [ref=f2e948] [cursor=pointer]
+    - generic [ref=f2e951]: A vendor no longer carries a single category. Instead each vendor owns a 2-level Vendor Category Hierarchy and a Vendor Catalog of sellable SKUs (both maintained as separate functions in this module). The RTV-allowed flag governs whether damaged or unsold stock from this vendor can be returned — RTV documents can only be raised against vendors flagged Yes.
+    - generic [ref=f2e956]:
+      - generic [ref=f2e957]:
+        - generic [ref=f2e958]:
+          - generic [ref=f2e959]: Search
+          - textbox "Vendor code, name or TIN…" [ref=f2e960]
+        - generic [ref=f2e961]:
+          - generic [ref=f2e962]: Delivery Model
+          - combobox [ref=f2e963]:
+            - option "All" [selected]
+            - option "Direct-to-Store (DTS)"
+            - option "Cross-dock"
+            - option "DSD"
+        - generic [ref=f2e964]:
+          - generic [ref=f2e965]: RTV
+          - combobox [ref=f2e966]:
+            - option "All" [selected]
+            - option "Allowed"
+            - option "Not Allowed"
+        - generic [ref=f2e967]:
+          - generic [ref=f2e968]: Status
+          - combobox [ref=f2e969]:
+            - option "Active" [selected]
+            - option "Hold"
+            - option "All"
+        - button "Apply" [ref=f2e970] [cursor=pointer]
+      - table [ref=f2e973]:
+        - rowgroup [ref=f2e974]:
+          - row [ref=f2e975]:
+            - columnheader "Code" [ref=f2e976]
+            - columnheader "Vendor Name" [ref=f2e977]
+            - columnheader "Delivery" [ref=f2e978]
+            - columnheader "Terms" [ref=f2e979]
+            - columnheader "Lead Time" [ref=f2e980]
+            - columnheader "RTV" [ref=f2e981]
+            - columnheader "Categories" [ref=f2e982]
+            - columnheader "Catalog SKUs" [ref=f2e983]
+            - columnheader "Allowances" [ref=f2e984]
+            - columnheader "Status" [ref=f2e985]
+        - rowgroup [ref=f2e986]:
+          - row [ref=f2e987]:
+            - cell "V-1004" [ref=f2e988]
+            - cell "Alaska Milk Corporation" [ref=f2e989]
+            - cell "Cross-dock" [ref=f2e990]
+            - cell "30 days" [ref=f2e992]
+            - cell "2 days" [ref=f2e993]
+            - cell "Allowed" [ref=f2e994]
+            - cell "5" [ref=f2e996]
+            - cell "62" [ref=f2e997]
+            - cell "4" [ref=f2e998]
+            - cell "Active" [ref=f2e999]
+          - row [ref=f2e1001]:
+            - cell "V-1027" [ref=f2e1002]
+            - cell "Gardenia Bakeries PH" [ref=f2e1003]
+            - cell "DSD" [ref=f2e1004]
+            - cell "7 days" [ref=f2e1006]
+            - cell "Daily" [ref=f2e1007]
+            - cell "Allowed" [ref=f2e1008]
+            - cell "3" [ref=f2e1010]
+            - cell "38" [ref=f2e1011]
+            - cell "2" [ref=f2e1012]
+            - cell "Active" [ref=f2e1013]
+          - row [ref=f2e1015]:
+            - cell "V-1033" [ref=f2e1016]
+            - cell "Selecta Ice Cream (RFM)" [ref=f2e1017]
+            - cell "DSD" [ref=f2e1018]
+            - cell "15 days" [ref=f2e1020]
+            - cell "Daily" [ref=f2e1021]
+            - cell "Allowed" [ref=f2e1022]
+            - cell "2" [ref=f2e1024]
+            - cell "24" [ref=f2e1025]
+            - cell "1" [ref=f2e1026]
+            - cell "Active" [ref=f2e1027]
+          - row [ref=f2e1029]:
+            - cell "V-1140" [ref=f2e1030]
+            - cell "Nestlé Philippines" [ref=f2e1031]
+            - cell "DTS" [ref=f2e1032]
+            - cell "45 days" [ref=f2e1034]
+            - cell "3 days" [ref=f2e1035]
+            - cell "Allowed" [ref=f2e1036]
+            - cell "6" [ref=f2e1038]
+            - cell "128" [ref=f2e1039]
+            - cell "6" [ref=f2e1040]
+            - cell "Active" [ref=f2e1041]
+          - row [ref=f2e1043]:
+            - cell "V-1208" [ref=f2e1044]
+            - cell "San Miguel Foods" [ref=f2e1045]
+            - cell "DTS" [ref=f2e1046]
+            - cell "30 days" [ref=f2e1048]
+            - cell "2 days" [ref=f2e1049]
+            - cell "Not Allowed" [ref=f2e1050]
+            - cell "4" [ref=f2e1052]
+            - cell "71" [ref=f2e1053]
+            - cell "5" [ref=f2e1054]
+            - cell "Active" [ref=f2e1055]
+          - row [ref=f2e1057]:
+            - cell "V-1315" [ref=f2e1058]
+            - cell "Monde Nissin Corp." [ref=f2e1059]
+            - cell "Cross-dock" [ref=f2e1060]
+            - cell "30 days" [ref=f2e1062]
+            - cell "4 days" [ref=f2e1063]
+            - cell "Allowed" [ref=f2e1064]
+            - cell "3" [ref=f2e1066]
+            - cell "46" [ref=f2e1067]
+            - cell "3" [ref=f2e1068]
+            - cell "On Hold" [ref=f2e1069]
+          - row [ref=f2e1071]:
+            - cell "V-1422" [ref=f2e1072]
+            - cell "Universal Robina Corp." [ref=f2e1073]
+            - cell "DTS" [ref=f2e1074]
+            - cell "30 days" [ref=f2e1076]
+            - cell "2 days" [ref=f2e1077]
+            - cell "Not Allowed" [ref=f2e1078]
+            - cell "7" [ref=f2e1080]
+            - cell "153" [ref=f2e1081]
+            - cell "7" [ref=f2e1082]
+            - cell "Active" [ref=f2e1083]
+      - generic [ref=f2e1085]:
+        - generic [ref=f2e1086]: Showing 7 of 318 records
+        - generic [ref=f2e1087]:
+          - button "‹ Prev" [ref=f2e1088] [cursor=pointer]
+          - button "1" [ref=f2e1089] [cursor=pointer]
+          - button "2" [ref=f2e1090] [cursor=pointer]
+          - button "3" [ref=f2e1091] [cursor=pointer]
+          - button "Next ›" [ref=f2e1092] [cursor=pointer]

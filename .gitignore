@@ -1,0 +1,4 @@
+target/
+data/
+*.log
+jdk21.tar.gz

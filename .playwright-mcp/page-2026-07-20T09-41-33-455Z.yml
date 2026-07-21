@@ -1,0 +1,231 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]: iC
+      - generic [ref=e6]:
+        - text: iConnect ERP
+        - generic [ref=e7]: Puregold · Merchandise & Supply Chain
+    - generic [ref=e8]:
+      - generic "Tasks" [ref=e9] [cursor=pointer]: "7"
+      - generic "Notifications" [ref=e14] [cursor=pointer]: "3"
+      - generic [ref=e19] [cursor=pointer]:
+        - generic [ref=e20]: RC
+        - generic [ref=e21]:
+          - generic [ref=e22]: Rica Cruz
+          - generic [ref=e23]: Merchandise Admin
+  - navigation [ref=e24]:
+    - generic [ref=e1289]:
+      - heading "Overview" [level=4] [ref=e1290]
+      - generic [ref=e1291] [cursor=pointer]: Dashboard
+    - generic [ref=e1295]:
+      - heading "Master Data" [level=4] [ref=e1296]
+      - generic [ref=e1297] [cursor=pointer]:
+        - generic [ref=e1300]: Company Maintenance
+        - generic [ref=e1301]: "1"
+      - generic [ref=e1302]:
+        - heading "Store Branch Maintenance" [level=5] [ref=e1303]
+        - generic [ref=e1304] [cursor=pointer]:
+          - generic [ref=e1307]: Branch
+          - generic [ref=e1308]: "2"
+      - generic [ref=e1309]:
+        - heading "Store Grouping" [level=5] [ref=e1310]
+        - generic [ref=e1311] [cursor=pointer]: Price Zone
+        - generic [ref=e1315] [cursor=pointer]: Cost Zone
+        - generic [ref=e1319] [cursor=pointer]: Store Cluster
+        - generic [ref=e1323] [cursor=pointer]: Assortment Plan
+        - generic [ref=e1327] [cursor=pointer]: Replenishment Policy
+      - generic [ref=e1331]:
+        - heading "Vendor Maintenance" [level=5] [ref=e1332]
+        - generic [ref=e1333] [cursor=pointer]:
+          - generic [ref=e1336]: Vendor
+          - generic [ref=e1337]: "3"
+        - generic [ref=e1338] [cursor=pointer]: Vendor Category Hierarchy
+        - generic [ref=e1342] [cursor=pointer]: Vendor Catalog
+        - generic [ref=e1346] [cursor=pointer]:
+          - generic [ref=e1349]: Vendor Allowance
+          - generic [ref=e1350]: "4"
+      - generic [ref=e1351]:
+        - heading "Product Maintenance" [level=5] [ref=e1352]
+        - generic [ref=e1353] [cursor=pointer]:
+          - generic [ref=e1356]: Category Hierarchy
+          - generic [ref=e1357]: "5"
+        - generic [ref=e1358] [cursor=pointer]:
+          - generic [ref=e1361]: Product
+          - generic [ref=e1362]: "6"
+    - generic [ref=e1363]:
+      - heading "Inventory & Pricing" [level=4] [ref=e1364]
+      - generic [ref=e1365] [cursor=pointer]:
+        - generic [ref=e1368]: Product Inventory
+        - generic [ref=e1369]: "7"
+      - generic [ref=e1370] [cursor=pointer]:
+        - generic [ref=e1373]: Price Change Mgmt
+        - generic [ref=e1374]: "8"
+      - generic [ref=e1375] [cursor=pointer]:
+        - generic [ref=e1378]: Cost Change Mgmt
+        - generic [ref=e1379]: "9"
+    - generic [ref=e1380]:
+      - heading "Procurement" [level=4] [ref=e1381]
+      - generic [ref=e1382] [cursor=pointer]:
+        - generic [ref=e1385]: Purchase Order
+        - generic [ref=e1386]: "10"
+      - generic [ref=e1387] [cursor=pointer]:
+        - generic [ref=e1390]: Auto Replenishment
+        - generic [ref=e1391]: "11"
+      - generic [ref=e1392] [cursor=pointer]:
+        - generic [ref=e1395]: PO Receiving
+        - generic [ref=e1396]: "12"
+    - generic [ref=e1397]:
+      - heading "Store Operations" [level=4] [ref=e1398]
+      - generic [ref=e1399] [cursor=pointer]:
+        - generic [ref=e1402]: Store-to-Store Transfer
+        - generic [ref=e1403]: "13"
+      - generic [ref=e1404] [cursor=pointer]:
+        - generic [ref=e1407]: Return To Vendor
+        - generic [ref=e1408]: "14"
+      - generic [ref=e1409] [cursor=pointer]:
+        - generic [ref=e1412]: Inventory Adjustment
+        - generic [ref=e1413]: "15"
+      - generic [ref=e1414] [cursor=pointer]:
+        - generic [ref=e1417]: Make-up / Break-up
+        - generic [ref=e1418]: "16"
+    - generic [ref=e1419]:
+      - heading "Sales" [level=4] [ref=e1420]
+      - generic [ref=e1421] [cursor=pointer]:
+        - generic [ref=e1424]: POS Sales
+        - generic [ref=e1425]: "17"
+    - generic [ref=e1426]:
+      - heading "User Management" [level=4] [ref=e1427]
+      - generic [ref=e1428] [cursor=pointer]: Users
+      - generic [ref=e1432] [cursor=pointer]: Roles
+      - generic [ref=e1436] [cursor=pointer]: Branch Access
+      - generic [ref=e1440] [cursor=pointer]: Audit Log
+  - main [ref=e180]:
+    - generic [ref=e1444]: iConnect ERP › New Assortment Plan
+    - generic [ref=e1446]:
+      - heading "New Assortment Plan" [level=1] [ref=e1447]
+      - paragraph [ref=e1448]: Set identity & scope, effectivity, choose the SKU range, then review and save.
+    - generic [ref=e1449]:
+      - generic [ref=e1450]:
+        - heading "New Assortment Plan" [level=3] [ref=e1451]
+        - generic [ref=e1452]: AP-0005 · Draft
+      - generic [ref=e1454]:
+        - generic [ref=e1455]:
+          - generic [ref=e1456]: "1"
+          - text: Identity & Scope
+        - generic [ref=e1457]:
+          - generic [ref=e1458]: "2"
+          - text: Effectivity
+        - generic [ref=e1459]:
+          - generic [ref=e1460]: "3"
+          - text: SKU List
+        - generic [ref=e1461]:
+          - generic [ref=e1462]: "4"
+          - text: Review
+      - table [ref=e1465]:
+        - rowgroup [ref=e1466]:
+          - row [ref=e1467]:
+            - columnheader "Ranged SKU" [ref=e1468]
+            - columnheader "Category" [ref=e1469]
+            - columnheader [ref=e1470]
+        - rowgroup [ref=e1471]:
+          - row [ref=e1472]:
+            - cell "Lucky Me Pancit Canton 60g 100234" [ref=e1473]
+            - cell "Noodles" [ref=e1474]
+            - cell [ref=e1475]:
+              - button "✕" [ref=e1476] [cursor=pointer]
+          - row [ref=e1477]:
+            - cell "Nescafé Classic 100g 200145" [ref=e1478]
+            - cell "Coffee" [ref=e1479]
+            - cell [ref=e1480]:
+              - button "✕" [ref=e1481] [cursor=pointer]
+      - generic [ref=e1482]:
+        - generic [ref=e1483]:
+          - generic [ref=e1484]:
+            - generic [ref=e1485]: Category
+            - combobox [ref=e1486]:
+              - option "All" [selected]
+              - option "Noodles"
+              - option "Coffee"
+              - option "Milk"
+              - option "Bakery"
+              - option "Beverage"
+              - option "Dairy"
+              - option "Home Care"
+          - generic [ref=e1487]:
+            - generic [ref=e1488]: Search
+            - textbox "Product name or code…" [ref=e1489]
+        - table [ref=e1491]:
+          - rowgroup [ref=e1492]:
+            - row [ref=e1493]:
+              - columnheader [ref=e1494]
+              - columnheader "Product" [ref=e1495]
+              - columnheader "Category" [ref=e1496]
+          - rowgroup [ref=e1497]:
+            - row [ref=e1498]:
+              - cell [ref=e1499]:
+                - checkbox [ref=e1500] [cursor=pointer]
+              - cell "Nissin Cup Noodles 60g 100311" [ref=e1501]
+              - cell "Noodles" [ref=e1502]
+            - row [ref=e1503]:
+              - cell [ref=e1504]:
+                - checkbox [ref=e1505] [cursor=pointer]
+              - cell "Kopiko Brown 25g 200188" [ref=e1506]
+              - cell "Coffee" [ref=e1507]
+            - row [ref=e1508]:
+              - cell [ref=e1509]:
+                - checkbox [ref=e1510] [cursor=pointer]
+              - cell "Alaska Fresh Milk 1L 300102" [ref=e1511]
+              - cell "Milk" [ref=e1512]
+            - row [ref=e1513]:
+              - cell [ref=e1514]:
+                - checkbox [ref=e1515] [cursor=pointer]
+              - cell "Bear Brand Powdered 300g 300140" [ref=e1516]
+              - cell "Milk" [ref=e1517]
+            - row [ref=e1518]:
+              - cell [ref=e1519]:
+                - checkbox [ref=e1520] [cursor=pointer]
+              - cell "Nestlé All-Purpose Cream 250ml 300155" [ref=e1521]
+              - cell "Milk" [ref=e1522]
+            - row [ref=e1523]:
+              - cell [ref=e1524]:
+                - checkbox [ref=e1525] [cursor=pointer]
+              - cell "Gardenia White Bread 600g 400210" [ref=e1526]
+              - cell "Bakery" [ref=e1527]
+            - row [ref=e1528]:
+              - cell [ref=e1529]:
+                - checkbox [ref=e1530] [cursor=pointer]
+              - cell "Sky Flakes 250g 400225" [ref=e1531]
+              - cell "Bakery" [ref=e1532]
+            - row [ref=e1533]:
+              - cell [ref=e1534]:
+                - checkbox [ref=e1535] [cursor=pointer]
+              - cell "Coke Mismo 300ml 500301" [ref=e1536]
+              - cell "Beverage" [ref=e1537]
+            - row [ref=e1538]:
+              - cell [ref=e1539]:
+                - checkbox [ref=e1540] [cursor=pointer]
+              - cell "C2 Green Tea 500ml 500312" [ref=e1541]
+              - cell "Beverage" [ref=e1542]
+            - row [ref=e1543]:
+              - cell [ref=e1544]:
+                - checkbox [ref=e1545] [cursor=pointer]
+              - cell "Sprite 1.5L 500330" [ref=e1546]
+              - cell "Beverage" [ref=e1547]
+            - row [ref=e1548]:
+              - cell [ref=e1549]:
+                - checkbox [ref=e1550] [cursor=pointer]
+              - cell "Eden Cheese 165g 600401" [ref=e1551]
+              - cell "Dairy" [ref=e1552]
+            - row [ref=e1553]:
+              - cell [ref=e1554]:
+                - checkbox [ref=e1555] [cursor=pointer]
+              - cell "Tide Powder 1kg 700501" [ref=e1556]
+              - cell "Home Care" [ref=e1557]
+      - generic [ref=e1558]:
+        - generic [ref=e1559]: 0 selected · 2 SKUs ranged
+        - button "Add selected SKUs ›" [ref=e1560] [cursor=pointer]
+      - generic [ref=e1561]:
+        - generic [ref=e1562]:
+          - button "‹ Back" [ref=e1563] [cursor=pointer]
+          - button "Cancel" [ref=e1564] [cursor=pointer]
+        - button "Next ›" [ref=e1566] [cursor=pointer]
