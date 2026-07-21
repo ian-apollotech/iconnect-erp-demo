@@ -7,6 +7,9 @@ import com.puregold.iconnect.company.Company;
 import com.puregold.iconnect.company.CompanyRepository;
 import com.puregold.iconnect.grouping.AssortmentCluster;
 import com.puregold.iconnect.grouping.AssortmentClusterRepository;
+import com.puregold.iconnect.grouping.AssortmentPlan;
+import com.puregold.iconnect.grouping.AssortmentPlanLine;
+import com.puregold.iconnect.grouping.AssortmentPlanRepository;
 import com.puregold.iconnect.grouping.CostZone;
 import com.puregold.iconnect.grouping.CostZoneRepository;
 import com.puregold.iconnect.grouping.PriceZone;
@@ -53,6 +56,7 @@ public class DataSeeder implements CommandLineRunner {
     private final BranchRepository branches;
     private final MerchNodeRepository merchNodes;
     private final ProductRepository products;
+    private final AssortmentPlanRepository assortmentPlans;
 
     // Filled in during seedGroupings(), keyed by grouping name, reused by seedBranches().
     private final Map<String, Long> priceZoneIdByName = new LinkedHashMap<>();
@@ -78,7 +82,8 @@ public class DataSeeder implements CommandLineRunner {
                        VendorProductRepository vendorProducts,
                        BranchRepository branches,
                        MerchNodeRepository merchNodes,
-                       ProductRepository products) {
+                       ProductRepository products,
+                       AssortmentPlanRepository assortmentPlans) {
         this.companies = companies;
         this.priceZones = priceZones;
         this.costZones = costZones;
@@ -92,6 +97,7 @@ public class DataSeeder implements CommandLineRunner {
         this.branches = branches;
         this.merchNodes = merchNodes;
         this.products = products;
+        this.assortmentPlans = assortmentPlans;
     }
 
     @Override
@@ -106,6 +112,7 @@ public class DataSeeder implements CommandLineRunner {
         seedMerchNodes();
         seedProducts();
         seedVendorProducts();
+        seedAssortmentPlans();
     }
 
     // ---------------------------------------------------------------- companies
@@ -562,5 +569,43 @@ public class DataSeeder implements CommandLineRunner {
         vp.setSourcePriority(sourcePriority);
         vp.setStatus("Active");
         vendorProducts.save(vp);
+    }
+
+    // ---------------------------------------------------------------- assortment plans
+
+    // Mirrors PAGES.assortplan sample row AP-0001 "Urban-Large Core Range" (mockup ~L493):
+    // Assortment Cluster level, targeting the seeded "Urban Large" cluster, Company PGOLD,
+    // effective 2026-06-01. Ranged with 3 seeded products (the mockup's 42,500 SKUs is
+    // illustrative scale — a representative subset is seeded here).
+    private void seedAssortmentPlans() {
+        if (assortmentPlans.count() > 0) return;
+        Long pgold = companies.findByCode("PGOLD").orElseThrow().getId();
+        Long urbanLarge = clusterIdByName.get("Urban Large");
+        if (urbanLarge == null) {
+            throw new IllegalStateException("Cannot seed assortment plan: Urban Large cluster not found");
+        }
+
+        AssortmentPlan plan = new AssortmentPlan();
+        plan.setName("Urban-Large Core Range");
+        plan.setClusterId(urbanLarge);
+        plan.setCompanyId(pgold);
+        plan.setEffectiveFrom(LocalDate.of(2026, 6, 1));
+        plan.setStatus("Active");
+
+        for (String description : List.of(
+                "Alaska Fresh Milk 1L", "Nescafé Classic 100g", "Gardenia White Bread 600g")) {
+            products.findAll().stream()
+                .filter(p -> description.equals(p.getDescription()))
+                .findFirst()
+                .ifPresent(p -> {
+                    AssortmentPlanLine line = new AssortmentPlanLine();
+                    line.setProductId(p.getId());
+                    line.setProductCode(p.getCode());
+                    line.setDescription(p.getDescription());
+                    plan.getLines().add(line);
+                });
+        }
+
+        assortmentPlans.save(plan);
     }
 }
