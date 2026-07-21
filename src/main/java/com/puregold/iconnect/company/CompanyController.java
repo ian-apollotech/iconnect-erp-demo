@@ -1,6 +1,7 @@
 // src/main/java/com/puregold/iconnect/company/CompanyController.java
 package com.puregold.iconnect.company;
 
+import com.puregold.iconnect.branch.BranchRepository;
 import com.puregold.iconnect.common.AbstractCrudController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompanyController
         extends AbstractCrudController<Company, CompanyDtos.Request, CompanyDtos.Response> {
 
-    public CompanyController(CompanyService service) { super(service); }
+    private final BranchRepository branchRepository;
+
+    public CompanyController(CompanyService service, BranchRepository branchRepository) {
+        super(service);
+        this.branchRepository = branchRepository;
+    }
 
     @Override
     protected Company toEntity(CompanyDtos.Request req) {
@@ -40,6 +46,6 @@ public class CompanyController
             c.getId(), c.getCode(), c.getLegalName(), c.getTradeName(), c.getTin(),
             c.getFiscalYearStart(), c.getBaseCurrency(), c.getDefaultVat(),
             c.getPriceIncludesVat(), c.getRegisteredAddress(), c.getContactPerson(),
-            c.getStatus(), 0L /* branchCount filled in Task 6a */);
+            c.getStatus(), branchRepository.countByCompanyId(c.getId()));
     }
 }
