@@ -13,6 +13,8 @@ import com.puregold.iconnect.grouping.PriceZone;
 import com.puregold.iconnect.grouping.PriceZoneRepository;
 import com.puregold.iconnect.grouping.ReplenishmentProfile;
 import com.puregold.iconnect.grouping.ReplenishmentProfileRepository;
+import com.puregold.iconnect.product.MerchNode;
+import com.puregold.iconnect.product.MerchNodeRepository;
 import com.puregold.iconnect.vendor.Vendor;
 import com.puregold.iconnect.vendor.VendorAllowance;
 import com.puregold.iconnect.vendor.VendorAllowanceRepository;
@@ -42,6 +44,7 @@ public class DataSeeder implements CommandLineRunner {
     private final VendorScheduleRepository vendorSchedules;
     private final VendorAllowanceRepository vendorAllowances;
     private final BranchRepository branches;
+    private final MerchNodeRepository merchNodes;
 
     // Filled in during seedGroupings(), keyed by grouping name, reused by seedBranches().
     private final Map<String, Long> priceZoneIdByName = new LinkedHashMap<>();
@@ -52,6 +55,9 @@ public class DataSeeder implements CommandLineRunner {
     // Filled in during seedVendors(), keyed by vendor name, reused by categories/schedules/allowances.
     private final Map<String, Long> vendorIdByName = new LinkedHashMap<>();
 
+    // Filled in during seedMerchNodes(), keyed by node code, reused by seedProducts().
+    private final Map<String, Long> merchNodeIdByCode = new LinkedHashMap<>();
+
     public DataSeeder(CompanyRepository companies,
                        PriceZoneRepository priceZones,
                        CostZoneRepository costZones,
@@ -61,7 +67,8 @@ public class DataSeeder implements CommandLineRunner {
                        VendorCategoryRepository vendorCategories,
                        VendorScheduleRepository vendorSchedules,
                        VendorAllowanceRepository vendorAllowances,
-                       BranchRepository branches) {
+                       BranchRepository branches,
+                       MerchNodeRepository merchNodes) {
         this.companies = companies;
         this.priceZones = priceZones;
         this.costZones = costZones;
@@ -72,6 +79,7 @@ public class DataSeeder implements CommandLineRunner {
         this.vendorSchedules = vendorSchedules;
         this.vendorAllowances = vendorAllowances;
         this.branches = branches;
+        this.merchNodes = merchNodes;
     }
 
     @Override
@@ -83,6 +91,7 @@ public class DataSeeder implements CommandLineRunner {
         seedVendorSchedules();
         seedVendorAllowances();
         seedBranches();
+        seedMerchNodes();
     }
 
     // ---------------------------------------------------------------- companies
@@ -378,5 +387,48 @@ public class DataSeeder implements CommandLineRunner {
         if ("Minimart".equals(format)) return replenProfileIdByName.get("Minimart 2×/Week");
         if ("NCR".equals(region)) return replenProfileIdByName.get("Metro Fast-Movers");
         return replenProfileIdByName.get("Provincial Weekly");
+    }
+
+    // ---------------------------------------------------------------- merch hierarchy
+
+    private void seedMerchNodes() {
+        if (merchNodes.count() > 0) {
+            merchNodes.findAll().forEach(n -> merchNodeIdByCode.put(n.getCode(), n.getId()));
+            return;
+        }
+
+        // Departments (L1)
+        Long dept01 = node("Department (L1)", null, "01", "Grocery Food").getId();
+        node("Department (L1)", null, "02", "Fresh & Perishables");
+        node("Department (L1)", null, "03", "Non-Food & Household");
+        node("Department (L1)", null, "04", "Fashion & Apparel");
+
+        // Sub-Departments (L2) under 01 · Grocery Food
+        Long subDept0110 = node("Sub-Department (L2)", dept01, "0110", "Dairy & Chilled").getId();
+        node("Sub-Department (L2)", dept01, "0120", "Bakery");
+        node("Sub-Department (L2)", dept01, "0130", "Beverages");
+
+        // Classes (L3) under 0110 · Dairy & Chilled
+        Long cls011001 = node("Class (L3)", subDept0110, "0110-01", "Milk").getId();
+        node("Class (L3)", subDept0110, "0110-02", "Cheese");
+        node("Class (L3)", subDept0110, "0110-03", "Yogurt");
+
+        // Sub-Classes (L4) under 0110-01 · Milk — seeded directly via repository (not
+        // service.create) so the Class-level auto-scaffold rule isn't re-triggered.
+        node("Sub-Class (L4)", cls011001, "0110-01-101", "Fresh Milk");
+        node("Sub-Class (L4)", cls011001, "0110-01-102", "UHT Milk");
+        node("Sub-Class (L4)", cls011001, "0110-01-103", "Powdered Milk");
+    }
+
+    private MerchNode node(String level, Long parentId, String code, String name) {
+        MerchNode n = new MerchNode();
+        n.setLevel(level);
+        n.setParentId(parentId);
+        n.setCode(code);
+        n.setName(name);
+        n.setStatus("Active");
+        MerchNode saved = merchNodes.save(n);
+        merchNodeIdByCode.put(code, saved.getId());
+        return saved;
     }
 }
