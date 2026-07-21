@@ -790,7 +790,7 @@ PAGES.hierarchy = async ()=>{
   let treeHtml = roots.map((n,i)=>renderHierNode(n, byParent, i===0)).join('');
   if(!treeHtml) treeHtml = '<div class="t-sub" style="padding:14px">No hierarchy nodes yet.</div>';
   return `
-${head('5','Item Hierarchy','One global merchandise tree — Department → Sub-Department → Class → Sub-Class. Governs reporting, replenishment and OTB planning. Vendor supply data lives on the item↔vendor link, not on the tree.', btn('Expand All','')+btn('New Node','primary',iAdd))}
+${head('5','Category Hierarchy','One global merchandise tree — Department → Sub-Department → Class → Sub-Class. Governs reporting, replenishment and OTB planning. Vendor supply data lives on the item↔vendor link, not on the tree.', btn('Expand All','')+btn('New Node','primary',iAdd))}
 <div class="split">
   <div class="panel">${ph('Hierarchy Tree', nodes.length+' nodes')}
     <div class="panel-body"><div class="tree">
@@ -846,7 +846,7 @@ PAGES.item = async ()=>{
     }));
   }
   return `
-${head('6','Item Maintenance','Master item catalog. Manage identity, hierarchy placement, pack config, supplier links, pricing and cost defaults.', btn('Import','',iExport)+btn('New Item','primary',iAdd))}
+${head('6','Product Maintenance','Master item catalog. Manage identity, hierarchy placement, pack config, supplier links, pricing and cost defaults.', btn('Import','',iExport)+btn('New Item','primary',iAdd))}
 <div class="panel">
   ${filterbar([{label:'Search',grow:1,ph:'Item code, barcode or description…'},{label:'Department',html:'<select><option>All Departments</option><option>Dairy & Chilled</option><option>Bakery</option><option>Beverages</option><option>Fresh</option></select>'},{label:'Vendor',html:'<select><option>All Vendors</option><option>Nestlé</option><option>Alaska</option><option>Gardenia</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Discontinued</option><option>All</option></select>'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
