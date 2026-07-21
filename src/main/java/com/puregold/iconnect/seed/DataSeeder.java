@@ -15,6 +15,9 @@ import com.puregold.iconnect.grouping.ReplenishmentProfile;
 import com.puregold.iconnect.grouping.ReplenishmentProfileRepository;
 import com.puregold.iconnect.product.MerchNode;
 import com.puregold.iconnect.product.MerchNodeRepository;
+import com.puregold.iconnect.product.Product;
+import com.puregold.iconnect.product.ProductPackUom;
+import com.puregold.iconnect.product.ProductRepository;
 import com.puregold.iconnect.vendor.Vendor;
 import com.puregold.iconnect.vendor.VendorAllowance;
 import com.puregold.iconnect.vendor.VendorAllowanceRepository;
@@ -26,6 +29,7 @@ import com.puregold.iconnect.vendor.VendorScheduleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,6 +49,7 @@ public class DataSeeder implements CommandLineRunner {
     private final VendorAllowanceRepository vendorAllowances;
     private final BranchRepository branches;
     private final MerchNodeRepository merchNodes;
+    private final ProductRepository products;
 
     // Filled in during seedGroupings(), keyed by grouping name, reused by seedBranches().
     private final Map<String, Long> priceZoneIdByName = new LinkedHashMap<>();
@@ -68,7 +73,8 @@ public class DataSeeder implements CommandLineRunner {
                        VendorScheduleRepository vendorSchedules,
                        VendorAllowanceRepository vendorAllowances,
                        BranchRepository branches,
-                       MerchNodeRepository merchNodes) {
+                       MerchNodeRepository merchNodes,
+                       ProductRepository products) {
         this.companies = companies;
         this.priceZones = priceZones;
         this.costZones = costZones;
@@ -80,6 +86,7 @@ public class DataSeeder implements CommandLineRunner {
         this.vendorAllowances = vendorAllowances;
         this.branches = branches;
         this.merchNodes = merchNodes;
+        this.products = products;
     }
 
     @Override
@@ -92,6 +99,7 @@ public class DataSeeder implements CommandLineRunner {
         seedVendorAllowances();
         seedBranches();
         seedMerchNodes();
+        seedProducts();
     }
 
     // ---------------------------------------------------------------- companies
@@ -430,5 +438,66 @@ public class DataSeeder implements CommandLineRunner {
         MerchNode saved = merchNodes.save(n);
         merchNodeIdByCode.put(code, saved.getId());
         return saved;
+    }
+
+    // ---------------------------------------------------------------- products
+
+    private void seedProducts() {
+        if (products.count() > 0) return;
+
+        // Only Alaska Fresh Milk maps to a seeded Sub-Class node (0110-01-101 · Fresh Milk) —
+        // the other items' categories (Bakery, Coffee, Ice Cream, Eggs, Noodles, Baking, Frozen)
+        // have no corresponding Sub-Class seeded in seedMerchNodes(), so they're left unclassified.
+        Long freshMilk = merchNodeIdByCode.get("0110-01-101");
+
+        Product alaska = product("100482", "Alaska Fresh Milk 1L", "4800016641107",
+            "ALASKA F.MILK 1L", "Alaska", freshMilk, "58.20", "72.00");
+        product("100517", "Gardenia White Bread 600g", "4800092770019",
+            "GARDENIA BREAD 600G", "Gardenia", null, "46.50", "59.75");
+        product("100630", "Nescafé Classic 100g", "4800361001236",
+            "NESCAFE CLASSIC 100G", "Nestlé", null, "118.00", "149.75");
+        product("100744", "Selecta Cornetto Choco 110ml", "4800016114009",
+            "SELECTA CORNETTO CHOC", "Selecta", null, "22.80", "32.00");
+        product("100901", "Fresh Eggs Medium Tray 30s", "4806507050014",
+            "FRESH EGGS MED TRAY30", "San Miguel", null, "196.00", "238.00");
+        product("101120", "Lucky Me Pancit Canton 60g", "4800024570017",
+            "LUCKY ME PANCIT CANT", "Monde Nissin", null, "9.20", "13.50");
+        product("900014", "Pure Basics All-Purpose Flour 1kg", "4809014000148",
+            "PB FLOUR 1KG", "Pure Basics (Own)", null, "44.00", "55.00");
+        product("900027", "Nature’s Peak Mixed Vegetables 400g", "4809014000278",
+            "NP MIXED VEG 400G", "Pure Basics (Own)", null, "52.00", "68.00");
+
+        // Pack & UOM for Alaska Fresh Milk (from mockup Pack & UOM tab)
+        addPackUom(alaska, "Base", "PC", 1, "4800016641107", false, true);
+        addPackUom(alaska, "Inner", "PACK-6", 6, "14800016641104", true, false);
+        addPackUom(alaska, "Case", "CASE-12", 12, "24800016641101", true, false);
+        products.save(alaska);
+    }
+
+    private Product product(String code, String description, String barcode, String shortName,
+                             String brand, Long merchNodeId, String cost, String retail) {
+        Product p = new Product();
+        p.setCode(code);
+        p.setDescription(description);
+        p.setPrimaryBarcode(barcode);
+        p.setShortName(shortName);
+        p.setBrand(brand);
+        p.setMerchNodeId(merchNodeId);
+        p.setStandardCost(new BigDecimal(cost));
+        p.setBaseRetail(new BigDecimal(retail));
+        p.setStatus("Active");
+        return products.save(p);
+    }
+
+    private void addPackUom(Product product, String level, String uom, int qtyInBase,
+                             String barcode, boolean orderable, boolean sellable) {
+        ProductPackUom pu = new ProductPackUom();
+        pu.setLevel(level);
+        pu.setUom(uom);
+        pu.setQtyInBase(qtyInBase);
+        pu.setBarcode(barcode);
+        pu.setOrderable(orderable);
+        pu.setSellable(sellable);
+        product.getPackUoms().add(pu);
     }
 }
