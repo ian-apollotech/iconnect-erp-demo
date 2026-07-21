@@ -1,24 +1,91 @@
 // src/main/java/com/puregold/iconnect/seed/DataSeeder.java
 package com.puregold.iconnect.seed;
 
+import com.puregold.iconnect.branch.Branch;
+import com.puregold.iconnect.branch.BranchRepository;
 import com.puregold.iconnect.company.Company;
 import com.puregold.iconnect.company.CompanyRepository;
+import com.puregold.iconnect.grouping.AssortmentCluster;
+import com.puregold.iconnect.grouping.AssortmentClusterRepository;
+import com.puregold.iconnect.grouping.CostZone;
+import com.puregold.iconnect.grouping.CostZoneRepository;
+import com.puregold.iconnect.grouping.PriceZone;
+import com.puregold.iconnect.grouping.PriceZoneRepository;
+import com.puregold.iconnect.grouping.ReplenishmentProfile;
+import com.puregold.iconnect.grouping.ReplenishmentProfileRepository;
+import com.puregold.iconnect.vendor.Vendor;
+import com.puregold.iconnect.vendor.VendorAllowance;
+import com.puregold.iconnect.vendor.VendorAllowanceRepository;
+import com.puregold.iconnect.vendor.VendorCategory;
+import com.puregold.iconnect.vendor.VendorCategoryRepository;
+import com.puregold.iconnect.vendor.VendorRepository;
+import com.puregold.iconnect.vendor.VendorSchedule;
+import com.puregold.iconnect.vendor.VendorScheduleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
 
     private final CompanyRepository companies;
+    private final PriceZoneRepository priceZones;
+    private final CostZoneRepository costZones;
+    private final AssortmentClusterRepository clusters;
+    private final ReplenishmentProfileRepository replenProfiles;
+    private final VendorRepository vendors;
+    private final VendorCategoryRepository vendorCategories;
+    private final VendorScheduleRepository vendorSchedules;
+    private final VendorAllowanceRepository vendorAllowances;
+    private final BranchRepository branches;
 
-    public DataSeeder(CompanyRepository companies) {
+    // Filled in during seedGroupings(), keyed by grouping name, reused by seedBranches().
+    private final Map<String, Long> priceZoneIdByName = new LinkedHashMap<>();
+    private final Map<String, Long> costZoneIdByName = new LinkedHashMap<>();
+    private final Map<String, Long> clusterIdByName = new LinkedHashMap<>();
+    private final Map<String, Long> replenProfileIdByName = new LinkedHashMap<>();
+
+    // Filled in during seedVendors(), keyed by vendor name, reused by categories/schedules/allowances.
+    private final Map<String, Long> vendorIdByName = new LinkedHashMap<>();
+
+    public DataSeeder(CompanyRepository companies,
+                       PriceZoneRepository priceZones,
+                       CostZoneRepository costZones,
+                       AssortmentClusterRepository clusters,
+                       ReplenishmentProfileRepository replenProfiles,
+                       VendorRepository vendors,
+                       VendorCategoryRepository vendorCategories,
+                       VendorScheduleRepository vendorSchedules,
+                       VendorAllowanceRepository vendorAllowances,
+                       BranchRepository branches) {
         this.companies = companies;
+        this.priceZones = priceZones;
+        this.costZones = costZones;
+        this.clusters = clusters;
+        this.replenProfiles = replenProfiles;
+        this.vendors = vendors;
+        this.vendorCategories = vendorCategories;
+        this.vendorSchedules = vendorSchedules;
+        this.vendorAllowances = vendorAllowances;
+        this.branches = branches;
     }
 
     @Override
     public void run(String... args) {
         seedCompanies();
+        seedGroupings();
+        seedVendors();
+        seedVendorCategories();
+        seedVendorSchedules();
+        seedVendorAllowances();
+        seedBranches();
     }
+
+    // ---------------------------------------------------------------- companies
 
     private void seedCompanies() {
         if (companies.count() > 0) return;
@@ -38,5 +105,278 @@ public class DataSeeder implements CommandLineRunner {
         c.setPriceIncludesVat("Yes (VAT-inclusive)");
         c.setStatus("Active");
         return c;
+    }
+
+    // ---------------------------------------------------------------- groupings
+
+    private void seedGroupings() {
+        Long pgold = companies.findByCode("PGOLD").orElseThrow().getId();
+        Long ayag = companies.findByCode("AYAG").orElseThrow().getId();
+
+        if (priceZones.count() == 0) {
+            for (String name : List.of("Price Club", "Extra", "Minimart", "Merkado", "Visayas", "NCR Metro")) {
+                Long companyId = "Merkado".equals(name) ? ayag : pgold;
+                PriceZone z = new PriceZone();
+                z.setName(name);
+                z.setCode(autoCode("PZ", name));
+                z.setCompanyId(companyId);
+                z.setStatus("Active");
+                PriceZone saved = priceZones.save(z);
+                priceZoneIdByName.put(name, saved.getId());
+            }
+        } else {
+            priceZones.findAll().forEach(z -> priceZoneIdByName.put(z.getName(), z.getId()));
+        }
+
+        if (costZones.count() == 0) {
+            for (String name : List.of("Price Club National", "Luzon Cost", "Visayas–Mindanao Cost", "Merkado Cost")) {
+                Long companyId = name.startsWith("Merkado") ? ayag : pgold;
+                CostZone z = new CostZone();
+                z.setName(name);
+                z.setCode(autoCode("CZ", name));
+                z.setCompanyId(companyId);
+                z.setStatus("Active");
+                CostZone saved = costZones.save(z);
+                costZoneIdByName.put(name, saved.getId());
+            }
+        } else {
+            costZones.findAll().forEach(z -> costZoneIdByName.put(z.getName(), z.getId()));
+        }
+
+        if (clusters.count() == 0) {
+            for (String name : List.of("Urban Large", "Urban Small", "Convenience", "Provincial Mixed")) {
+                AssortmentCluster c = new AssortmentCluster();
+                c.setName(name);
+                c.setCode(autoCode("AC", name));
+                c.setCompanyId(pgold);
+                c.setStatus("Active");
+                AssortmentCluster saved = clusters.save(c);
+                clusterIdByName.put(name, saved.getId());
+            }
+        } else {
+            clusters.findAll().forEach(c -> clusterIdByName.put(c.getName(), c.getId()));
+        }
+
+        if (replenProfiles.count() == 0) {
+            for (String name : List.of("Metro Fast-Movers", "Provincial Weekly", "Minimart 2×/Week")) {
+                ReplenishmentProfile p = new ReplenishmentProfile();
+                p.setName(name);
+                p.setCode(autoCode("RP", name));
+                p.setCompanyId(pgold);
+                p.setStatus("Active");
+                ReplenishmentProfile saved = replenProfiles.save(p);
+                replenProfileIdByName.put(name, saved.getId());
+            }
+        } else {
+            replenProfiles.findAll().forEach(p -> replenProfileIdByName.put(p.getName(), p.getId()));
+        }
+    }
+
+    private String autoCode(String prefix, String name) {
+        String slug = name.toUpperCase()
+            .replace("–", "-")
+            .replaceAll("[^A-Z0-9]+", "-")
+            .replaceAll("^-+|-+$", "");
+        return prefix + "-" + slug;
+    }
+
+    // ---------------------------------------------------------------- vendors
+
+    private void seedVendors() {
+        if (vendors.count() > 0) {
+            vendors.findAll().forEach(v -> vendorIdByName.put(v.getName(), v.getId()));
+            return;
+        }
+        Vendor v1 = vendor("V-1004", "Alaska Milk Corporation", "Cross-dock", "30 days", "2 days", "Yes", "Active");
+        Vendor v2 = vendor("V-1027", "Gardenia Bakeries PH", "DSD", "7 days", "Daily", "Yes", "Active");
+        Vendor v3 = vendor("V-1033", "Selecta Ice Cream (RFM)", "DSD", "15 days", "Daily", "Yes", "Active");
+        Vendor v4 = vendor("V-1140", "Nestlé Philippines", "Direct-to-Store (DTS)", "45 days", "3 days", "Yes", "Active");
+        Vendor v5 = vendor("V-1208", "San Miguel Foods", "Direct-to-Store (DTS)", "30 days", "2 days", "No", "Active");
+        Vendor v6 = vendor("V-1315", "Monde Nissin Corp.", "Cross-dock", "30 days", "4 days", "Yes", "On Hold");
+        Vendor v7 = vendor("V-1422", "Universal Robina Corp.", "Direct-to-Store (DTS)", "30 days", "2 days", "No", "Active");
+
+        for (Vendor v : List.of(v1, v2, v3, v4, v5, v6, v7)) {
+            Vendor saved = vendors.save(v);
+            vendorIdByName.put(saved.getName(), saved.getId());
+        }
+    }
+
+    private Vendor vendor(String code, String name, String deliveryModel, String paymentTerms,
+                           String leadTime, String rtvAllowed, String status) {
+        Vendor v = new Vendor();
+        v.setCode(code);
+        v.setName(name);
+        v.setDeliveryModel(deliveryModel);
+        v.setPaymentTerms(paymentTerms);
+        v.setLeadTime(leadTime);
+        v.setRtvAllowed(rtvAllowed);
+        v.setStatus(status);
+        return v;
+    }
+
+    // ---------------------------------------------------------------- vendor categories
+
+    private void seedVendorCategories() {
+        if (vendorCategories.count() > 0) return;
+        Long nestle = vendorIdByName.get("Nestlé Philippines");
+        if (nestle == null) {
+            throw new IllegalStateException("Cannot seed vendor categories: Nestlé Philippines vendor not found");
+        }
+
+        // L1 -> list of L2 sub-category names
+        Map<String, List<String>> tree = new LinkedHashMap<>();
+        tree.put("Beverages", List.of("Coffee", "Creamer", "Cereal Drinks"));
+        tree.put("Dairy", List.of("Powdered Milk", "Condensed & Evaporated"));
+        tree.put("Culinary", List.of("Sauces & Mixes", "Seasoning"));
+
+        for (Map.Entry<String, List<String>> entry : tree.entrySet()) {
+            VendorCategory l1 = new VendorCategory();
+            l1.setVendorId(nestle);
+            l1.setLevel("Category (L1)");
+            l1.setNodeName(entry.getKey());
+            l1.setStatus("Active");
+            VendorCategory savedL1 = vendorCategories.save(l1);
+
+            for (String subName : entry.getValue()) {
+                VendorCategory l2 = new VendorCategory();
+                l2.setVendorId(nestle);
+                l2.setLevel("Sub-Category (L2)");
+                l2.setParentCategoryId(savedL1.getId());
+                l2.setNodeName(subName);
+                l2.setStatus("Active");
+                vendorCategories.save(l2);
+            }
+        }
+    }
+
+    // ---------------------------------------------------------------- vendor schedules
+
+    private void seedVendorSchedules() {
+        if (vendorSchedules.count() > 0) return;
+        Long pgold = companies.findByCode("PGOLD").orElseThrow().getId();
+
+        for (Vendor v : vendors.findAll()) {
+            VendorSchedule s = new VendorSchedule();
+            s.setCompanyId(pgold);
+            s.setVendorId(v.getId());
+            s.setOrderDays("Mon · Thu");
+            s.setLeadTimeDays(parseLeadTimeDays(v.getLeadTime()));
+            s.setStatus("Active");
+            vendorSchedules.save(s);
+        }
+    }
+
+    private Integer parseLeadTimeDays(String leadTime) {
+        if (leadTime == null) return null;
+        if ("Daily".equalsIgnoreCase(leadTime)) return 1;
+        String digits = leadTime.replaceAll("[^0-9]", "");
+        return digits.isEmpty() ? null : Integer.parseInt(digits);
+    }
+
+    // ---------------------------------------------------------------- vendor allowances
+
+    private void seedVendorAllowances() {
+        if (vendorAllowances.count() > 0) return;
+
+        allowance("AL-3301", "Nestlé Philippines", "Volume Rebate", "% of Purchase", "3.50%",
+            LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31), "Active");
+        allowance("AL-3312", "Alaska Milk Corporation", "Promo Allowance", "Per Case", "₱ 12.00",
+            LocalDate.of(2026, 6, 1), LocalDate.of(2026, 8, 31), "Active");
+        allowance("AL-3320", "Universal Robina Corp.", "Display / Facing", "Fixed Amount", "₱ 250,000",
+            LocalDate.of(2026, 4, 1), LocalDate.of(2026, 9, 30), "Active");
+        allowance("AL-3334", "San Miguel Foods", "Listing Fee", "Fixed Amount", "₱ 80,000",
+            LocalDate.of(2026, 7, 1), LocalDate.of(2027, 6, 30), "Pending");
+        allowance("AL-3340", "Monde Nissin Corp.", "Markdown Support", "% of Purchase", "5.00%",
+            LocalDate.of(2026, 5, 15), LocalDate.of(2026, 7, 31), "Expiring");
+    }
+
+    private void allowance(String ref, String vendorName, String type, String basis, String rateAmount,
+                            LocalDate validFrom, LocalDate validTo, String status) {
+        Long vendorId = vendorIdByName.get(vendorName);
+        if (vendorId == null) {
+            throw new IllegalStateException("Cannot seed allowance " + ref + ": vendor not found: " + vendorName);
+        }
+        VendorAllowance a = new VendorAllowance();
+        a.setRef(ref);
+        a.setVendorId(vendorId);
+        a.setAllowanceType(type);
+        a.setBasis(basis);
+        a.setRateAmount(rateAmount);
+        a.setValidFrom(validFrom);
+        a.setValidTo(validTo);
+        a.setStatus(status);
+        vendorAllowances.save(a);
+    }
+
+    // ---------------------------------------------------------------- branches
+
+    private void seedBranches() {
+        if (branches.count() > 0) return;
+        Long pgold = companies.findByCode("PGOLD").orElseThrow().getId();
+        Long ayag = companies.findByCode("AYAG").orElseThrow().getId();
+
+        // code, name, region
+        String[][] rows = {
+            {"0102", "Ortigas Ext.", "NCR"},
+            {"0107", "Araneta Cubao", "NCR"},
+            {"0233", "Mandaue (Cebu)", "Visayas"},
+            {"0311", "Bajada (Davao)", "Mindanao"},
+            {"0461", "Clark", "N.Luzon"},
+            {"0119", "Jr. Baclaran", "NCR"},
+            {"0450", "Jr. Baguio", "N.Luzon"},
+            {"0146", "Extra Cainta", "S.Luzon"},
+            {"0531", "Mini Kamias", "NCR"},
+            {"AYA-03", "Merkado UP Town", "NCR"},
+        };
+
+        for (String[] row : rows) {
+            String code = row[0];
+            String name = row[1];
+            String region = row[2];
+            String format = formatFor(name);
+            Long companyId = "Merkado".equals(format) ? ayag : pgold;
+
+            Branch b = new Branch();
+            b.setCode(code);
+            b.setName(name);
+            b.setFormat(format);
+            b.setRegion(region);
+            b.setCompanyId(companyId);
+            b.setPriceZoneId(priceZoneIdByName.get(format));
+            b.setCostZoneId(costZoneIdFor(format, region));
+            b.setAssortmentClusterId(clusterIdFor(format, region));
+            b.setReplenishmentProfileId(replenProfileIdFor(format, region));
+            b.setStatus("Active");
+            branches.save(b);
+        }
+    }
+
+    private String formatFor(String name) {
+        if (name.contains("Jr.") || name.contains("Extra")) return "Extra";
+        if (name.contains("Mini")) return "Minimart";
+        if (name.contains("Merkado")) return "Merkado";
+        return "Price Club";
+    }
+
+    private Long costZoneIdFor(String format, String region) {
+        if ("Merkado".equals(format)) return costZoneIdByName.get("Merkado Cost");
+        if ("Visayas".equals(region) || "Mindanao".equals(region)) {
+            return costZoneIdByName.get("Visayas–Mindanao Cost");
+        }
+        if ("N.Luzon".equals(region) || "S.Luzon".equals(region)) return costZoneIdByName.get("Luzon Cost");
+        return costZoneIdByName.get("Price Club National");
+    }
+
+    private Long clusterIdFor(String format, String region) {
+        if ("Minimart".equals(format) || "Merkado".equals(format)) return clusterIdByName.get("Convenience");
+        if ("Extra".equals(format)) return clusterIdByName.get("Urban Small");
+        if ("NCR".equals(region)) return clusterIdByName.get("Urban Large");
+        return clusterIdByName.get("Provincial Mixed");
+    }
+
+    private Long replenProfileIdFor(String format, String region) {
+        if ("Minimart".equals(format)) return replenProfileIdByName.get("Minimart 2×/Week");
+        if ("NCR".equals(region)) return replenProfileIdByName.get("Metro Fast-Movers");
+        return replenProfileIdByName.get("Provincial Weekly");
     }
 }
