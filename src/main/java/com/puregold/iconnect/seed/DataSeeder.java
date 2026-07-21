@@ -23,6 +23,8 @@ import com.puregold.iconnect.vendor.VendorAllowance;
 import com.puregold.iconnect.vendor.VendorAllowanceRepository;
 import com.puregold.iconnect.vendor.VendorCategory;
 import com.puregold.iconnect.vendor.VendorCategoryRepository;
+import com.puregold.iconnect.vendor.VendorProduct;
+import com.puregold.iconnect.vendor.VendorProductRepository;
 import com.puregold.iconnect.vendor.VendorRepository;
 import com.puregold.iconnect.vendor.VendorSchedule;
 import com.puregold.iconnect.vendor.VendorScheduleRepository;
@@ -47,6 +49,7 @@ public class DataSeeder implements CommandLineRunner {
     private final VendorCategoryRepository vendorCategories;
     private final VendorScheduleRepository vendorSchedules;
     private final VendorAllowanceRepository vendorAllowances;
+    private final VendorProductRepository vendorProducts;
     private final BranchRepository branches;
     private final MerchNodeRepository merchNodes;
     private final ProductRepository products;
@@ -72,6 +75,7 @@ public class DataSeeder implements CommandLineRunner {
                        VendorCategoryRepository vendorCategories,
                        VendorScheduleRepository vendorSchedules,
                        VendorAllowanceRepository vendorAllowances,
+                       VendorProductRepository vendorProducts,
                        BranchRepository branches,
                        MerchNodeRepository merchNodes,
                        ProductRepository products) {
@@ -84,6 +88,7 @@ public class DataSeeder implements CommandLineRunner {
         this.vendorCategories = vendorCategories;
         this.vendorSchedules = vendorSchedules;
         this.vendorAllowances = vendorAllowances;
+        this.vendorProducts = vendorProducts;
         this.branches = branches;
         this.merchNodes = merchNodes;
         this.products = products;
@@ -100,6 +105,7 @@ public class DataSeeder implements CommandLineRunner {
         seedBranches();
         seedMerchNodes();
         seedProducts();
+        seedVendorProducts();
     }
 
     // ---------------------------------------------------------------- companies
@@ -499,5 +505,62 @@ public class DataSeeder implements CommandLineRunner {
         pu.setOrderable(orderable);
         pu.setSellable(sellable);
         product.getPackUoms().add(pu);
+    }
+
+    // ---------------------------------------------------------------- vendor products
+
+    // From PAGES.vencatalog (mockup ~L608–612), mockup names "Bear Brand Powdered 300g",
+    // "Milo Activ-Go 300g", "Nestlé All Purpose Cream 250ml" and "Maggi Magic Sarap 8g" have no
+    // corresponding seeded Product (seedProducts() only seeds 8 SKUs, none of those four) — those
+    // links are skipped rather than fabricating a Product. Likewise the item Suppliers tab
+    // (~L719–720) references vendor "Metro Dairy Dist." for the Alternate Alaska Fresh Milk link,
+    // but no such vendor exists in seedVendors() — that link is skipped too rather than
+    // fabricating a Vendor. Only the two links below (Nescafé Classic × Nestlé Philippines,
+    // Alaska Fresh Milk × Alaska Milk Corporation) map to both a seeded Product and a seeded Vendor.
+    private void seedVendorProducts() {
+        if (vendorProducts.count() > 0) return;
+        Long pgold = companies.findByCode("PGOLD").orElseThrow().getId();
+
+        Long nestle = vendorIdByName.get("Nestlé Philippines");
+        Long nescafe = productIdByDescription("Nescafé Classic 100g");
+        if (nestle != null && nescafe != null) {
+            vendorProduct(pgold, nestle, nescafe, "N-COF-100", "CASE-24", 20, 5,
+                "Mon · Thu", "3 days", new BigDecimal("2832"), "Primary");
+        }
+
+        Long alaskaVendor = vendorIdByName.get("Alaska Milk Corporation");
+        Long alaskaProduct = productIdByDescription("Alaska Fresh Milk 1L");
+        if (alaskaVendor != null && alaskaProduct != null) {
+            vendorProduct(pgold, alaskaVendor, alaskaProduct, "AMC-FM1000", "CASE-12", 10, 5,
+                "Mon · Wed · Fri", "2 days", new BigDecimal("698.40"), "Primary");
+        }
+    }
+
+    private Long productIdByDescription(String description) {
+        return products.findAll().stream()
+            .filter(p -> description.equals(p.getDescription()))
+            .map(Product::getId)
+            .findFirst()
+            .orElse(null);
+    }
+
+    private void vendorProduct(Long companyId, Long vendorId, Long productId, String vendorItemNo,
+                                String orderPackUom, int moqCases, int orderIncrementCases,
+                                String orderSchedule, String leadTime, BigDecimal costPerCase,
+                                String sourcePriority) {
+        VendorProduct vp = new VendorProduct();
+        vp.setCompanyId(companyId);
+        vp.setVendorId(vendorId);
+        vp.setProductId(productId);
+        vp.setVendorItemNo(vendorItemNo);
+        vp.setOrderPackUom(orderPackUom);
+        vp.setMoqCases(moqCases);
+        vp.setOrderIncrementCases(orderIncrementCases);
+        vp.setOrderSchedule(orderSchedule);
+        vp.setLeadTime(leadTime);
+        vp.setCostPerCase(costPerCase);
+        vp.setSourcePriority(sourcePriority);
+        vp.setStatus("Active");
+        vendorProducts.save(vp);
     }
 }

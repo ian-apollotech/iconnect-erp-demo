@@ -2,6 +2,10 @@
 package com.puregold.iconnect.product;
 
 import com.puregold.iconnect.common.AbstractCrudController;
+import com.puregold.iconnect.vendor.Vendor;
+import com.puregold.iconnect.vendor.VendorProduct;
+import com.puregold.iconnect.vendor.VendorProductRepository;
+import com.puregold.iconnect.vendor.VendorRepository;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,13 +13,22 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController
         extends AbstractCrudController<Product, ProductDtos.Request, ProductDtos.Response> {
 
-    public ProductController(ProductService service) { super(service); }
+    private final VendorProductRepository vendorProducts;
+    private final VendorRepository vendors;
+
+    public ProductController(ProductService service, VendorProductRepository vendorProducts,
+                              VendorRepository vendors) {
+        super(service);
+        this.vendorProducts = vendorProducts;
+        this.vendors = vendors;
+    }
 
     @Override
     protected Product toEntity(ProductDtos.Request req) {
@@ -71,7 +84,7 @@ public class ProductController
             p.getBrand(), p.getMerchNodeId(), p.getPerishable(), p.getShelfLife(), p.getVatClass(),
             p.getListingFee(), p.getStoreRange(), p.getBuyingUom(), p.getSellingUom(),
             p.getStandardCost(), p.getBaseRetail(), marginPct(p.getStandardCost(), p.getBaseRetail()),
-            null /* preferredVendor — filled from VendorProduct in Task 11 */,
+            preferredVendor(p.getId()),
             p.getStatus(), packUoms);
     }
 
@@ -81,5 +94,12 @@ public class ProductController
             .divide(retail, 4, RoundingMode.HALF_UP)
             .multiply(BigDecimal.valueOf(100))
             .setScale(1, RoundingMode.HALF_UP);
+    }
+
+    private String preferredVendor(Long productId) {
+        if (productId == null) return "—";
+        Optional<VendorProduct> primary = vendorProducts.findByProductIdAndSourcePriority(productId, "Primary");
+        if (primary.isEmpty()) return "—";
+        return vendors.findById(primary.get().getVendorId()).map(Vendor::getName).orElse("—");
     }
 }
