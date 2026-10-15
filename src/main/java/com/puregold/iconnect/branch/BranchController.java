@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/branches")
+@RequestMapping("/backend/branches")
 public class BranchController
         extends AbstractCrudController<Branch, BranchDtos.Request, BranchDtos.Response> {
 

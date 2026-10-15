@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/vendor-categories")
+@RequestMapping("/backend/vendor-categories")
 public class VendorCategoryController
         extends AbstractCrudController<VendorCategory, VendorCategoryDtos.Request, VendorCategoryDtos.Response> {
 

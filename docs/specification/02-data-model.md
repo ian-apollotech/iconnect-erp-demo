@@ -18,9 +18,11 @@ conventions, the cross-module relationships, and the entity catalog.
   - Documents: per-type sequences — `PC-…` (price event), `CC-…` (cost event), `AP-…`
     (assortment plan), `PO-…`, `DSD-…`, `OTB-…`, `MPO-…`, `GRN-…`, `ASN-…`, `TR-…`,
     `RTV-…`, `DM-…` (debit memo), `ADJ-…`, `MK-…`/`FC-…` (conversions), `SB-…` (sales
-    batch), `SRO-{branchCode}-{yyyyMMdd}` (replenishment order). Sequences are allocated
-    from a portable `document_sequence` table (SELECT … FOR UPDATE), not vendor sequence
-    objects.
+    batch), `SRO-{branchCode}-{yyyyMMdd}` (replenishment order). Phase 2 adds `VI-…`
+    (vendor invoice — `AP-…` is already taken by assortment plan ⚑ DR-27), `AC-…`
+    (allowance credit memo), `PP-…` (payment proposal), `PAY-…` (payment). Sequences are
+    allocated from a portable `document_sequence` table (SELECT … FOR UPDATE), not vendor
+    sequence objects.
 
 ## 2. Column conventions (portable) ⚑ DR-05 ⚑ DR-07
 
@@ -115,6 +117,9 @@ erDiagram
   AUDIT_LOG }o--|| USER_ACCOUNT : ""
 ```
 
+Phase-2 payables relationships (vendor invoice ↔ PO/GRN/DSD matching, open items,
+payment application): ERD fragment in `17 §11`.
+
 ## 5. Entity catalog
 
 | Entity | Module | Purpose / notes | Spec |
@@ -154,6 +159,13 @@ erDiagram
 | user_account / role / role_permission / access_scope | admin | RBAC (identity in Keycloak) | 16 |
 | audit_log | admin | Activity trail | 16 §5 |
 | document_sequence | shared | Portable number allocation | §1 |
+| **Phase 2** vendor_invoice (+line) | payables | Vendor bill; 3-way/2-way/non-merch matching | 17 §3 |
+| **Phase 2** allowance_credit_memo | payables | Accrued vendor allowance credit ⚑ DR-32 | 17 §4.2 |
+| **Phase 2** ap_open_item | payables | AP subledger open items (invoices, DM/AC credits, applications) | 17 §7 |
+| **Phase 2** payment_proposal (+line) / payment (+application) | payables | Payment run and executed payments | 17 §6 |
+| **Phase 2** tax_code / ewt_code | payables | Input VAT + BIR ATC withholding masters ⚑ DR-28 | 17 §2.2 |
+| **Phase 2** posting_period | payables | Open/Closed control per company × month ⚑ DR-30 | 17 §2.3 |
+| **Phase 2** house_bank / account_mapping / journal_line | payables | Outgoing banks; external-GL mapping; I-3 journal feed ⚑ DR-26 | 17 §2.4–2.5, §8 |
 
 ## 6. Derived / read-model values (never stored redundantly without an owner)
 

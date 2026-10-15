@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/assortment-plans")
+@RequestMapping("/backend/assortment-plans")
 public class AssortmentPlanController
         extends AbstractCrudController<AssortmentPlan, AssortmentPlanDtos.Request, AssortmentPlanDtos.Response> {
 

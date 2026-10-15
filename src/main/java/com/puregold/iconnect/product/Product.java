@@ -43,6 +43,11 @@ public class Product extends BaseEntity {
     @OrderColumn(name = "pack_uom_order")
     private List<ProductPackUom> packUoms = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    @OrderColumn(name = "attr_value_order")
+    private List<ProductAttrValue> attributes = new ArrayList<>();
+
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
     public String getDescription() { return description; }
@@ -77,4 +82,6 @@ public class Product extends BaseEntity {
     public void setStatus(String status) { this.status = status; }
     public List<ProductPackUom> getPackUoms() { return packUoms; }
     public void setPackUoms(List<ProductPackUom> packUoms) { this.packUoms = packUoms; }
+    public List<ProductAttrValue> getAttributes() { return attributes; }
+    public void setAttributes(List<ProductAttrValue> attributes) { this.attributes = attributes; }
 }

@@ -22,7 +22,7 @@ class VendorScheduleApiTest {
         String body = """
             {"code":"%s","legalName":"Schedule Test Co","baseCurrency":"PHP","status":"Active"}
             """.formatted(code);
-        String response = mvc.perform(post("/api/companies").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/companies").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         return mapper.readTree(response).get("id").asLong();
@@ -32,7 +32,7 @@ class VendorScheduleApiTest {
         String body = """
             {"name":"%s","rtvAllowed":"Yes","status":"Active"}
             """.formatted(name);
-        String response = mvc.perform(post("/api/vendors").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/vendors").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         return mapper.readTree(response).get("id").asLong();
@@ -48,12 +48,12 @@ class VendorScheduleApiTest {
              "deliveryDays":"Wed · Sat","status":"Active"}
             """.formatted(companyId, vendorId);
 
-        mvc.perform(post("/api/vendor-schedules").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendor-schedules").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.orderDays").value("Mon · Thu"))
            .andExpect(jsonPath("$.id").isNumber());
 
-        mvc.perform(get("/api/vendor-schedules"))
+        mvc.perform(get("/backend/vendor-schedules"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.orderDays=='Mon · Thu')]").exists());
     }
@@ -64,7 +64,7 @@ class VendorScheduleApiTest {
         String body = """
             {"companyId":%d,"vendorId":999999,"orderDays":"Mon","leadTimeDays":3}
             """.formatted(companyId);
-        mvc.perform(post("/api/vendor-schedules").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendor-schedules").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

@@ -1,6 +1,8 @@
 // src/test/java/com/puregold/iconnect/vendor/VendorApiTest.java
 package com.puregold.iconnect.vendor;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class VendorApiTest {
     @Autowired MockMvc mvc;
+    @Autowired ObjectMapper mapper;
 
     @Test
     void createThenList() throws Exception {
@@ -24,13 +27,13 @@ class VendorApiTest {
              "email":"jane@vendor.com","status":"Active"}
             """;
 
-        mvc.perform(post("/api/vendors").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendors").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.name").value("Test Vendor Co"))
            .andExpect(jsonPath("$.id").isNumber())
            .andExpect(jsonPath("$.code").value(org.hamcrest.Matchers.startsWith("V-")));
 
-        mvc.perform(get("/api/vendors"))
+        mvc.perform(get("/backend/vendors"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.name=='Test Vendor Co')]").exists());
     }
@@ -40,8 +43,43 @@ class VendorApiTest {
         String body = """
             {"name":"","rtvAllowed":"Yes"}
             """;
-        mvc.perform(post("/api/vendors").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendors").contentType("application/json").content(body))
            .andExpect(status().isBadRequest())
            .andExpect(jsonPath("$.errors.name").exists());
+    }
+
+    private Long createVendor(String name, String vendorType) throws Exception {
+        String body = """
+            {"name":"%s","rtvAllowed":"Yes","vendorType":"%s"}
+            """.formatted(name, vendorType);
+        String response = mvc.perform(post("/backend/vendors").contentType("application/json").content(body))
+           .andExpect(status().isCreated())
+           .andReturn().getResponse().getContentAsString();
+        JsonNode node = mapper.readTree(response);
+        return node.get("id").asLong();
+    }
+
+    @Test
+    void distributorTypeVendorCannotBeBrandManufacturer() throws Exception {
+        Long distributorId = createVendor("Distributor Only Co " + System.nanoTime(), "Distributor");
+
+        String brandBody = """
+            {"name":"Bad Brand Type","code":"BR-BADTYPE-%d","manufacturerId":%d}
+            """.formatted(System.nanoTime(), distributorId);
+
+        mvc.perform(post("/backend/brands").contentType("application/json").content(brandBody))
+           .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void manufacturerTypeVendorCanBeBrandManufacturer() throws Exception {
+        Long manufacturerId = createVendor("Manufacturer Only Co " + System.nanoTime(), "Manufacturer");
+
+        String brandBody = """
+            {"name":"Good Brand Type","code":"BR-GOODTYPE-%d","manufacturerId":%d}
+            """.formatted(System.nanoTime(), manufacturerId);
+
+        mvc.perform(post("/backend/brands").contentType("application/json").content(brandBody))
+           .andExpect(status().isCreated());
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/replenishment-profiles")
+@RequestMapping("/backend/replenishment-profiles")
 public class ReplenishmentProfileController
         extends AbstractCrudController<ReplenishmentProfile, ReplenishmentProfileDtos.Request, ReplenishmentProfileDtos.Response> {
 

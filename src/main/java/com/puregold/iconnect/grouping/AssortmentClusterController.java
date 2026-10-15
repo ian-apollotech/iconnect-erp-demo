@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/assortment-clusters")
+@RequestMapping("/backend/assortment-clusters")
 public class AssortmentClusterController
         extends AbstractCrudController<AssortmentCluster, AssortmentClusterDtos.Request, AssortmentClusterDtos.Response> {
 

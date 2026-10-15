@@ -22,12 +22,14 @@ public final class VendorDtos {
         String contactPerson,
         String phone,
         String email,
-        String status
+        String status,
+        String vendorType
     ) {}
 
     public record Response(
         Long id, String code, String name, String tin, String deliveryModel,
         String paymentTerms, String leadTime, BigDecimal minOrder, String rtvAllowed,
-        String registeredAddress, String contactPerson, String phone, String email, String status
+        String registeredAddress, String contactPerson, String phone, String email, String status,
+        String vendorType
     ) {}
 }

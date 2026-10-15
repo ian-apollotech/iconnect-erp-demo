@@ -22,7 +22,7 @@ class VendorCategoryApiTest {
         String body = """
             {"name":"%s","rtvAllowed":"Yes","status":"Active"}
             """.formatted(name);
-        String response = mvc.perform(post("/api/vendors").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/vendors").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         return mapper.readTree(response).get("id").asLong();
@@ -36,7 +36,7 @@ class VendorCategoryApiTest {
             {"vendorId":%d,"level":"Category (L1)","nodeName":"Grocery","nodeCode":"GRO",
              "allowanceEligible":"Yes","status":"Active"}
             """.formatted(vendorId);
-        String l1Response = mvc.perform(post("/api/vendor-categories").contentType("application/json").content(l1Body))
+        String l1Response = mvc.perform(post("/backend/vendor-categories").contentType("application/json").content(l1Body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.nodeName").value("Grocery"))
            .andReturn().getResponse().getContentAsString();
@@ -46,12 +46,12 @@ class VendorCategoryApiTest {
             {"vendorId":%d,"level":"Sub-Category (L2)","parentCategoryId":%d,"nodeName":"Canned Goods",
              "nodeCode":"GRO-CAN","allowanceEligible":"Yes","status":"Active"}
             """.formatted(vendorId, l1Id);
-        mvc.perform(post("/api/vendor-categories").contentType("application/json").content(l2Body))
+        mvc.perform(post("/backend/vendor-categories").contentType("application/json").content(l2Body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.nodeName").value("Canned Goods"))
            .andExpect(jsonPath("$.parentCategoryId").value(l1Id));
 
-        mvc.perform(get("/api/vendor-categories"))
+        mvc.perform(get("/backend/vendor-categories"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.nodeName=='Canned Goods')]").exists());
     }
@@ -62,7 +62,7 @@ class VendorCategoryApiTest {
         String body = """
             {"vendorId":%d,"level":"Sub-Category (L2)","nodeName":"Orphan","status":"Active"}
             """.formatted(vendorId);
-        mvc.perform(post("/api/vendor-categories").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendor-categories").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

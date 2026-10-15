@@ -22,7 +22,7 @@ class AssortmentClusterApiTest {
         String body = """
             {"code":"%s","legalName":"AssortCluster Test Co","baseCurrency":"PHP","status":"Active"}
             """.formatted(code);
-        String response = mvc.perform(post("/api/companies").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/companies").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         JsonNode node = mapper.readTree(response);
@@ -37,7 +37,7 @@ class AssortmentClusterApiTest {
              "description":"Metro urban stores","storeProfile":"Large Format","tradeArea":"Urban"}
             """.formatted(companyId);
 
-        mvc.perform(post("/api/assortment-clusters").contentType("application/json").content(body))
+        mvc.perform(post("/backend/assortment-clusters").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.code").value("AC001"))
            .andExpect(jsonPath("$.id").isNumber())
@@ -45,7 +45,7 @@ class AssortmentClusterApiTest {
            .andExpect(jsonPath("$.tradeArea").value("Urban"))
            .andExpect(jsonPath("$.storeCount").value(0));
 
-        mvc.perform(get("/api/assortment-clusters"))
+        mvc.perform(get("/backend/assortment-clusters"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.code=='AC001')]").exists());
     }
@@ -55,7 +55,7 @@ class AssortmentClusterApiTest {
         String body = """
             {"name":"Bad Cluster","code":"AC002","companyId":999999}
             """;
-        mvc.perform(post("/api/assortment-clusters").contentType("application/json").content(body))
+        mvc.perform(post("/backend/assortment-clusters").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

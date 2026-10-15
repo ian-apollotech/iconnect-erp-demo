@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/vendor-schedules")
+@RequestMapping("/backend/vendor-schedules")
 public class VendorScheduleController
         extends AbstractCrudController<VendorSchedule, VendorScheduleDtos.Request, VendorScheduleDtos.Response> {
 

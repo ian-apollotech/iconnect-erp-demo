@@ -60,7 +60,9 @@ Per role: **module group × action** grants.
 - Actions: **View · Create · Edit · Approve**.
 - Module groups (rows): `Master Data`, `Inventory & Pricing`, `Price Change`,
   `Cost Change`, `Purchase Order`, `Auto Replenishment`, `PO Receiving`,
-  `Store Operations`, `Sales Audit`, `Administration`.
+  `Store Operations`, `Sales Audit`, `Administration`. Phase 2 adds
+  `Accounts Payable` and `Payments` (`17 §10`), plus standard roles AP Clerk and
+  AP Supervisor (department `Sales Audit / Finance`).
 - Semantics: View gates navigation + read APIs; Create/Edit gate mutations; Approve
   gates lifecycle approval transitions (`11 §1`, `13 §2.3`, `14 §4`). Server-side
   enforcement is authoritative (`03 §2`).

@@ -22,7 +22,7 @@ class BranchApiTest {
         String body = """
             {"code":"%s","legalName":"Branch Test Co","baseCurrency":"PHP","status":"Active"}
             """.formatted(code);
-        String response = mvc.perform(post("/api/companies").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/companies").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         JsonNode node = mapper.readTree(response);
@@ -38,13 +38,13 @@ class BranchApiTest {
              "street":"123 Main St","city":"Quezon City","province":"Metro Manila","status":"Active"}
             """.formatted(companyId);
 
-        mvc.perform(post("/api/branches").contentType("application/json").content(body))
+        mvc.perform(post("/backend/branches").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.code").value("BR001"))
            .andExpect(jsonPath("$.id").isNumber())
            .andExpect(jsonPath("$.companyId").value(companyId));
 
-        mvc.perform(get("/api/branches"))
+        mvc.perform(get("/backend/branches"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.code=='BR001')]").exists());
     }
@@ -54,7 +54,7 @@ class BranchApiTest {
         String body = """
             {"code":"BR002","name":"Test Branch 2","format":"Extra","region":"NCR","companyId":999999}
             """;
-        mvc.perform(post("/api/branches").contentType("application/json").content(body))
+        mvc.perform(post("/backend/branches").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 
@@ -65,7 +65,7 @@ class BranchApiTest {
             {"code":"BR003","name":"Test Branch 4","format":"Extra","region":"NCR","companyId":%d,
              "priceZoneId":999999}
             """.formatted(companyId);
-        mvc.perform(post("/api/branches").contentType("application/json").content(body))
+        mvc.perform(post("/backend/branches").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 
@@ -75,7 +75,7 @@ class BranchApiTest {
         String body = """
             {"code":"","name":"Test Branch 3","format":"Extra","region":"NCR","companyId":%d}
             """.formatted(companyId);
-        mvc.perform(post("/api/branches").contentType("application/json").content(body))
+        mvc.perform(post("/backend/branches").contentType("application/json").content(body))
            .andExpect(status().isBadRequest())
            .andExpect(jsonPath("$.errors.code").exists());
     }

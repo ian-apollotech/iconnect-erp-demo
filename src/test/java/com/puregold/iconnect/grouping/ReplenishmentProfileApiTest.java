@@ -22,7 +22,7 @@ class ReplenishmentProfileApiTest {
         String body = """
             {"code":"%s","legalName":"ReplenProfile Test Co","baseCurrency":"PHP","status":"Active"}
             """.formatted(code);
-        String response = mvc.perform(post("/api/companies").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/companies").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         JsonNode node = mapper.readTree(response);
@@ -36,14 +36,14 @@ class ReplenishmentProfileApiTest {
             {"name":"Fast-Mover Profile","code":"RP001","companyId":%d,"status":"Active","description":"High velocity SKUs"}
             """.formatted(companyId);
 
-        mvc.perform(post("/api/replenishment-profiles").contentType("application/json").content(body))
+        mvc.perform(post("/backend/replenishment-profiles").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.code").value("RP001"))
            .andExpect(jsonPath("$.id").isNumber())
            .andExpect(jsonPath("$.companyId").value(companyId))
            .andExpect(jsonPath("$.storeCount").value(0));
 
-        mvc.perform(get("/api/replenishment-profiles"))
+        mvc.perform(get("/backend/replenishment-profiles"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.code=='RP001')]").exists());
     }
@@ -53,7 +53,7 @@ class ReplenishmentProfileApiTest {
         String body = """
             {"name":"Bad Profile","code":"RP002","companyId":999999}
             """;
-        mvc.perform(post("/api/replenishment-profiles").contentType("application/json").content(body))
+        mvc.perform(post("/backend/replenishment-profiles").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

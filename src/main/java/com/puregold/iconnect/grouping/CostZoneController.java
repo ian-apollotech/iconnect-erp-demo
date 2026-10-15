@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/cost-zones")
+@RequestMapping("/backend/cost-zones")
 public class CostZoneController
         extends AbstractCrudController<CostZone, CostZoneDtos.Request, CostZoneDtos.Response> {
 

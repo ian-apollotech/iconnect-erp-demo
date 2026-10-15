@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/backend/products")
 public class ProductController
         extends AbstractCrudController<Product, ProductDtos.Request, ProductDtos.Response> {
 
@@ -69,6 +69,16 @@ public class ProductController
                 p.getPackUoms().add(entity);
             }
         }
+
+        if (req.attributes() != null) {
+            p.getAttributes().clear();
+            for (ProductDtos.AttrValue av : req.attributes()) {
+                ProductAttrValue entity = new ProductAttrValue();
+                entity.setAttributeName(av.name());
+                entity.setValue(av.value());
+                p.getAttributes().add(entity);
+            }
+        }
     }
 
     @Override
@@ -79,13 +89,17 @@ public class ProductController
                 pu.getId(), pu.getLevel(), pu.getUom(), pu.getQtyInBase(),
                 pu.getBarcode(), pu.isOrderable(), pu.isSellable()));
         }
+        List<ProductDtos.AttrValue> attributes = new ArrayList<>();
+        for (ProductAttrValue av : p.getAttributes()) {
+            attributes.add(new ProductDtos.AttrValue(av.getAttributeName(), av.getValue()));
+        }
         return new ProductDtos.Response(
             p.getId(), p.getCode(), p.getDescription(), p.getPrimaryBarcode(), p.getShortName(),
             p.getBrand(), p.getMerchNodeId(), p.getPerishable(), p.getShelfLife(), p.getVatClass(),
             p.getListingFee(), p.getStoreRange(), p.getBuyingUom(), p.getSellingUom(),
             p.getStandardCost(), p.getBaseRetail(), marginPct(p.getStandardCost(), p.getBaseRetail()),
             preferredVendor(p.getId()),
-            p.getStatus(), packUoms);
+            p.getStatus(), packUoms, attributes);
     }
 
     private BigDecimal marginPct(BigDecimal cost, BigDecimal retail) {

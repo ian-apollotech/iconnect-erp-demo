@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/price-zones")
+@RequestMapping("/backend/price-zones")
 public class PriceZoneController
         extends AbstractCrudController<PriceZone, PriceZoneDtos.Request, PriceZoneDtos.Response> {
 

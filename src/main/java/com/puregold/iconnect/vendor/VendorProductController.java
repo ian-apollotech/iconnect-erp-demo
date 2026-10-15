@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vendor-products")
+@RequestMapping("/backend/vendor-products")
 public class VendorProductController
         extends AbstractCrudController<VendorProduct, VendorProductDtos.Request, VendorProductDtos.Response> {
 
@@ -30,7 +30,7 @@ public class VendorProductController
         this.vendorProducts = vendorProducts;
     }
 
-    // Inherited zero-arg list() (mapped to unconditioned GET /api/vendor-products) handles the
+    // Inherited zero-arg list() (mapped to unconditioned GET /backend/vendor-products) handles the
     // no-filter case; this params-conditioned mapping takes precedence when productId is present.
     @GetMapping(params = "productId")
     public List<VendorProductDtos.Response> listByProduct(@RequestParam Long productId) {

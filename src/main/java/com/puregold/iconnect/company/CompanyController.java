@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/companies")
+@RequestMapping("/backend/companies")
 public class CompanyController
         extends AbstractCrudController<Company, CompanyDtos.Request, CompanyDtos.Response> {
 

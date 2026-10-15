@@ -22,7 +22,7 @@ class CostZoneApiTest {
         String body = """
             {"code":"%s","legalName":"CostZone Test Co","baseCurrency":"PHP","status":"Active"}
             """.formatted(code);
-        String response = mvc.perform(post("/api/companies").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/companies").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         JsonNode node = mapper.readTree(response);
@@ -36,14 +36,14 @@ class CostZoneApiTest {
             {"name":"Luzon Cost Zone","code":"CZ001","companyId":%d,"status":"Active","description":"North Luzon"}
             """.formatted(companyId);
 
-        mvc.perform(post("/api/cost-zones").contentType("application/json").content(body))
+        mvc.perform(post("/backend/cost-zones").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.code").value("CZ001"))
            .andExpect(jsonPath("$.id").isNumber())
            .andExpect(jsonPath("$.companyId").value(companyId))
            .andExpect(jsonPath("$.storeCount").value(0));
 
-        mvc.perform(get("/api/cost-zones"))
+        mvc.perform(get("/backend/cost-zones"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.code=='CZ001')]").exists());
     }
@@ -53,7 +53,7 @@ class CostZoneApiTest {
         String body = """
             {"name":"Bad Zone","code":"CZ002","companyId":999999}
             """;
-        mvc.perform(post("/api/cost-zones").contentType("application/json").content(body))
+        mvc.perform(post("/backend/cost-zones").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

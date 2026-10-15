@@ -23,6 +23,8 @@ public final class ProductDtos {
         String barcode, boolean orderable, boolean sellable
     ) {}
 
+    public record AttrValue(String name, String value) {}
+
     public record Request(
         String code,
         @NotBlank String description,
@@ -40,7 +42,8 @@ public final class ProductDtos {
         BigDecimal standardCost,
         BigDecimal baseRetail,
         String status,
-        List<PackUomRequest> packUoms
+        List<PackUomRequest> packUoms,
+        List<AttrValue> attributes
     ) {}
 
     public record Response(
@@ -48,6 +51,7 @@ public final class ProductDtos {
         String brand, Long merchNodeId, String perishable, String shelfLife, String vatClass,
         String listingFee, String storeRange, String buyingUom, String sellingUom,
         BigDecimal standardCost, BigDecimal baseRetail, BigDecimal marginPct,
-        String preferredVendor, String status, List<PackUomResponse> packUoms
+        String preferredVendor, String status, List<PackUomResponse> packUoms,
+        List<AttrValue> attributes
     ) {}
 }

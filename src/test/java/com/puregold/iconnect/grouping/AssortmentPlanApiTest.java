@@ -22,7 +22,7 @@ class AssortmentPlanApiTest {
         String body = """
             {"code":"%s","legalName":"AssortPlan Test Co","baseCurrency":"PHP","status":"Active"}
             """.formatted(code);
-        String response = mvc.perform(post("/api/companies").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/companies").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         return mapper.readTree(response).get("id").asLong();
@@ -32,7 +32,7 @@ class AssortmentPlanApiTest {
         String body = """
             {"name":"AssortPlan Test Cluster","code":"%s","companyId":%d,"status":"Active"}
             """.formatted(code, companyId);
-        String response = mvc.perform(post("/api/assortment-clusters").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/assortment-clusters").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         return mapper.readTree(response).get("id").asLong();
@@ -49,7 +49,7 @@ class AssortmentPlanApiTest {
                        {"productId":2,"productCode":"100517","description":"Gardenia White Bread 600g"}]}
             """.formatted(clusterId, companyId);
 
-        String response = mvc.perform(post("/api/assortment-plans").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/assortment-plans").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.name").value("Test Plan"))
            .andExpect(jsonPath("$.clusterId").value(clusterId))
@@ -59,7 +59,7 @@ class AssortmentPlanApiTest {
         JsonNode node = mapper.readTree(response);
         Long planId = node.get("id").asLong();
 
-        mvc.perform(get("/api/assortment-plans"))
+        mvc.perform(get("/backend/assortment-plans"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.id==" + planId + ")]").exists());
     }
@@ -69,7 +69,7 @@ class AssortmentPlanApiTest {
         String body = """
             {"name":"Bad Plan","clusterId":999999}
             """;
-        mvc.perform(post("/api/assortment-plans").contentType("application/json").content(body))
+        mvc.perform(post("/backend/assortment-plans").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 
@@ -82,7 +82,7 @@ class AssortmentPlanApiTest {
             {"name":"Bad Company Plan","clusterId":%d,"companyId":999999,"lines":[]}
             """.formatted(clusterId);
 
-        mvc.perform(post("/api/assortment-plans").contentType("application/json").content(body))
+        mvc.perform(post("/backend/assortment-plans").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

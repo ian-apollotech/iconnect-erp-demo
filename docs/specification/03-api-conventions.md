@@ -101,6 +101,7 @@ Full request/response field tables live in each module spec. Resource roots:
 | Inventory | `/stock-positions` (netting/warehouse/selling-area views), `/merchandise-issuances`, `/inventory-adjustments` (+ `/approve`, `/post`), `/stock-transfers` (+ transitions), `/rtvs` (+ transitions), `/conversions` (+ `/post`) |
 | Sales | `/sales-batches` (+ `/validate`, `/release`), nested `/transactions`, balancing summaries |
 | Admin | `/users`, `/roles`, `/access-scopes`, `/audit-log`, `/me` |
+| Payables (**Phase 2**) | `/vendor-invoices` (+ `/match`, `/submit`, `/approve`, `/post`, `/cancel`), `/allowance-credit-memos` (+ `/approve`), `/payment-proposals` (+ transitions), `/payments` (+ `/release`, `/clear`, `/void`), `/ap-open-items`, `/ap-aging`, `/grir-accruals`, `/journal-export`, `/tax-codes`, `/ewt-codes`, `/posting-periods` (+ `/close`, `/reopen`), `/house-banks`, `/account-mappings` |
 
 ## 8. API evolution
 

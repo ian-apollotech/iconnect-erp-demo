@@ -127,6 +127,12 @@
   .tree .cnt{margin-left:auto;font-size:10px;color:var(--muted2)}
   .kv{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:12.5px}
   .kv .k{color:var(--muted)} .kv .v{font-weight:600}
+  .mem-search{width:100%}
+  .mem-list{margin-top:10px;max-height:320px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--radius)}
+  .mem-row{padding:8px 12px;font-size:12.5px;border-bottom:1px solid var(--line)}
+  .mem-row:last-child{border-bottom:none}
+  .mem-row:hover{background:#f8fafc}
+  .mem-empty{padding:10px 12px;font-size:12.5px;color:var(--muted)}
   .steps{display:flex;align-items:center;gap:0;flex-wrap:wrap}
   .step{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
   .step .n{width:22px;height:22px;border-radius:50%;background:#e2e8f0;color:var(--muted);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px}
@@ -217,52 +223,56 @@ const NAV = [
     {id:"home", n:"", label:"Dashboard", icon:"grid"},
   ]},
   {group:"Master Data", items:[
-    {id:"company",   n:"1", label:"Company Maintenance", icon:"building"},
-    {subhead:"Store Branch Maintenance", items:[
-      {id:"branch",  n:"2", label:"Branch", icon:"store"},
+    {subhead:"Organization", items:[
+      {id:"company",   n:"1", label:"Company Maintenance", icon:"building"},
+      {id:"branch",    n:"2", label:"Branch", icon:"store"},
     ]},
     {subhead:"Store Grouping", items:[
-      {id:"pricezone",    n:"", label:"Price Zone",           icon:"tag"},
-      {id:"costzone",     n:"", label:"Cost Zone",            icon:"coins"},
-      {id:"cluster",      n:"", label:"Assortment Cluster",        icon:"layers"},
-      {id:"assortplan",   n:"", label:"Assortment Plan",      icon:"book"},
+      {id:"pricezone",    n:"", label:"Price Zone",            icon:"tag"},
+      {id:"costzone",     n:"", label:"Cost Zone",             icon:"coins"},
+      {id:"cluster",      n:"", label:"Assortment Cluster",    icon:"layers"},
       {id:"replenpolicy", n:"", label:"Replenishment Profile", icon:"refresh"},
     ]},
-    {subhead:"Vendor Maintenance", items:[
+    {subhead:"Vendor", items:[
       {id:"vendor",     n:"3", label:"Vendor", icon:"truck"},
       {id:"vencat",     n:"",  label:"Vendor Category Hierarchy", icon:"tree"},
       {id:"vencatalog", n:"",  label:"Vendor Product", icon:"book"},
-      {id:"vendorschedule", n:"", label:"Vendor Schedule", icon:"refresh"},
       {id:"allowance",  n:"4", label:"Vendor Allowance", icon:"percent"},
     ]},
-    {subhead:"Product Maintenance", items:[
+    {subhead:"Product", items:[
       {id:"hierarchy", n:"5", label:"Category Hierarchy", icon:"tree"},
       {id:"item",      n:"6", label:"Product", icon:"box"},
+      {id:"brand",     n:"", label:"Product Brand", icon:"tag"},
+      {id:"attribute", n:"", label:"Product Attribute", icon:"sliders"},
     ]},
   ]},
-  {group:"Inventory & Pricing", items:[
-    {id:"inventory", n:"7", label:"Product Inventory", icon:"layers"},
+  {group:"Merchandising", items:[
     {id:"price",     n:"8", label:"Price Change Mgmt", icon:"tag"},
     {id:"cost",      n:"9", label:"Cost Change Mgmt", icon:"coins"},
   ]},
+  {group:"Planning & Replenishment", items:[
+    {id:"assortplan",    n:"", label:"Assortment Plan", icon:"book"},
+    {id:"demand",        n:"11", label:"Demand Signal", icon:"activity"},
+    {id:"rpolicy",       n:"", label:"Replenishment Policy", icon:"sliders"},
+    {id:"ordercalendar", n:"", label:"Order Calendar", icon:"book"},
+    {id:"vendorschedule",n:"", label:"Vendor Schedule", icon:"refresh"},
+    {id:"replen",        n:"11", label:"Auto Replenishment", icon:"refresh"},
+  ]},
   {group:"Procurement", items:[
     {id:"po",        n:"10", label:"Purchase Order", icon:"cart"},
-    {id:"demand",    n:"11", label:"Demand Signal", icon:"activity"},
-    {id:"replen",    n:"11", label:"Auto Replenishment", icon:"refresh"},
-    {id:"ordercalendar", n:"", label:"Order Calendar", icon:"book"},
-    {id:"rpolicy",   n:"", label:"Replenishment Policy", icon:"sliders"},
     {id:"receiving", n:"12", label:"PO Receiving", icon:"inbox"},
   ]},
-  {group:"Store Operations", items:[
+  {group:"Inventory", items:[
+    {id:"inventory", n:"7", label:"Product Inventory", icon:"layers"},
+    {id:"adjust",    n:"15", label:"Inventory Adjustment", icon:"sliders"},
     {id:"transfer",  n:"13", label:"Store-to-Store Transfer", icon:"swap"},
     {id:"rtv",       n:"14", label:"Return To Vendor", icon:"undo"},
-    {id:"adjust",    n:"15", label:"Inventory Adjustment", icon:"sliders"},
     {id:"makeup",    n:"16", label:"Make-up / Break-up", icon:"scissors"},
   ]},
   {group:"Sales", items:[
     {id:"salesaudit",n:"17", label:"POS Sales", icon:"receipt"},
   ]},
-  {group:"User Management", items:[
+  {group:"Administration", items:[
     {id:"users",       n:"", label:"Users", icon:"users"},
     {id:"roles",       n:"", label:"Roles", icon:"shield"},
     {id:"branchaccess",n:"", label:"Branch Access", icon:"mappin"},
@@ -346,8 +356,11 @@ function noteBox(html,color){
 
 const PAGES = {};
 
+// API base is derived from where this page is served so it works both at the domain root (local, "/")
+// and behind a path prefix (deployed under "/erp"). Strips a trailing "/" or "/index.html".
+const API_BASE = window.location.pathname.replace(/\/(index\.html)?$/, '');
 async function api(path, opts){
-  const res = await fetch('/api'+path, {
+  const res = await fetch(API_BASE+'/backend'+path, {
     headers:{'Content-Type':'application/json'},
     ...opts
   });
@@ -404,10 +417,10 @@ PAGES.company = async ()=>{
 ${head('1','Company Maintenance','Corporate legal entities operating under the group. Configure fiscal calendar, tax, and default accounting.', btn('Export','',iExport)+btn('New Company','primary',iAdd))}
 ${noteBox('Per the JDA spec, a <b>Company is regarded as the Chain</b> — the top pricing level covering all of its stores.','indigo')}
 <div class="panel">
-  ${filterbar([{label:'Search',grow:1,ph:'Company code, legal name or TIN…'}], btn('Apply','primary'))}
+  ${filterbar([{label:'Search',grow:1,ph:'Company code, legal name or TIN…'},{label:'Currency',html:'<select><option>All</option><option>PHP</option></select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
     [{t:'Code',k:'code'},{t:'Legal Name',k:'name'},{t:'TIN',k:'tin'},{t:'Branches',k:'b',num:1},{t:'Currency',k:'cur'},{t:'Status',k:'st'}],
-    rows.map(r=>({code:'<span class="mono">'+esc(r.code)+'</span>',name:'<span class="row-link">'+esc(r.legalName)+'</span>',tin:esc(r.tin)||'—',b:r.branchCount,cur:esc(r.baseCurrency)||'PHP',st:badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')})))}</div>
+    rows.map(r=>({code:'<span class="mono">'+esc(r.code)+'</span>',name:'<span class="row-link" data-view="company:'+r.id+'">'+esc(r.legalName)+'</span>',tin:esc(r.tin)||'—',b:r.branchCount,cur:esc(r.baseCurrency)||'PHP',st:badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')})))}</div>
   ${pager(rows.length, rows.length)}
 </div>`;
 };
@@ -426,7 +439,7 @@ ${noteBox('A store’s <b>Inventory Locations</b> are seeded from its Format: <b
     [{t:'Code',k:'code'},{t:'Branch Name',k:'name'},{t:'Company',k:'co'},{t:'Format',k:'bn'},{t:'Region',k:'zn'},{t:'Cross-Dock',k:'cd'},{t:'Inventory Locations',k:'wh'},{t:'Status',k:'st'}],
     rows.map(r=>({
       code:'<span class="mono">'+esc(r.code)+'</span>',
-      name:'<span class="row-link">'+esc(r.name)+'</span>',
+      name:'<span class="row-link" data-view="branch:'+r.id+'">'+esc(r.name)+'</span>',
       co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
       bn:badge(fmtColor[r.format]||'gray', esc(r.format)||'—'),
       zn:esc(r.region)||'—',
@@ -435,25 +448,6 @@ ${noteBox('A store’s <b>Inventory Locations</b> are seeded from its Format: <b
       st:badge(r.status==='Active'?'green':(r.status==='Closed'?'red':'gray'), esc(r.status)||'Active')
     })))}</div>
   ${pager(rows.length, rows.length)}
-</div>
-<div class="panel">${ph('Branch Detail — 0102 · Puregold Ortigas Ext.','Price Club · NCR · 2 inventory locations')}
-  <div class="panel-body"><div class="kv" style="grid-template-columns:150px 1fr 150px 1fr">
-    <div class="k">Company</div><div class="v">Puregold Price Club, Inc.</div>
-    <div class="k">Format</div><div class="v">${badge('blue','Price Club')}</div>
-    <div class="k">Region</div><div class="v">NCR</div>
-    <div class="k">Cross-Dock Hub</div><div class="v">CD Meycauayan</div>
-    <div class="k">Delivery Feed</div><div class="v">DTS + Cross-dock</div>
-    <div class="k">Status</div><div class="v">${badge('green','Active')}</div>
-    <div class="k">Price Zone</div><div class="v">${badge('gray','Price Club')} <span class="t-sub">PZ-PC</span></div>
-    <div class="k">Cost Zone</div><div class="v">${badge('gray','Price Club National')} <span class="t-sub">CZ-PC</span></div>
-    <div class="k">Assortment Cluster</div><div class="v">${badge('blue','Urban Large')} <span class="t-sub">CL-URB-L</span></div>
-    <div class="k">Replen. Policy</div><div class="v">${badge('blue','Metro Fast-Movers')} <span class="t-sub">RP-METRO-D</span></div>
-  </div></div>
-  <div class="panel-body flush">${table(
-    [{t:'Inventory Location',k:'l'},{t:'Type',k:'ty'},{t:'Receives',k:'rc'},{t:'Issues / Depletes To',k:'is'},{t:'On-Hand Value',k:'ohv',num:1},{t:'SKUs',k:'sk',num:1}],
-    [{l:'<span class="t-title">Warehouse</span>',ty:badge('blue','Warehouse'),rc:'PO / Cross-dock (RA)',is:'→ Selling Area (Merch. Issuance)',ohv:'₱ 128.9M',sk:'6,120'},
-     {l:'<span class="t-title">Selling Area</span>',ty:badge('cyan','Selling Area'),rc:'Merch. Issuance · DSD',is:'POS sales',ohv:'₱ 183.5M',sk:'5,940'}])}</div>
-  <div class="foot"><span class="t-sub">Store rollup = ₱ 312.4M across both locations. Extra / Minimart / Merkado stores show a single Selling Area row.</span><div class="right">${btn('Manage Locations','')}${btn('Edit Branch','primary')}</div></div>
 </div>`;
 };
 
@@ -470,7 +464,7 @@ ${noteBox('A <b>Price Zone</b> is a reusable set of stores — the “who”. Th
     [{t:'Code',k:'code'},{t:'Price Zone',k:'z'},{t:'Company',k:'co'},{t:'Assigned Stores',k:'ms',num:1},{t:'Active Price Events',k:'ev',num:1},{t:'Status',k:'st'}],
     rows.map(r=>({
       code:'<span class="mono">'+esc(r.code)+'</span>',
-      z:'<span class="row-link">'+esc(r.name)+'</span>',
+      z:'<span class="row-link" data-view="pricezone:'+r.id+'">'+esc(r.name)+'</span>',
       co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
       ms:r.storeCount,
       ev:'—',
@@ -493,7 +487,7 @@ ${noteBox('A <b>Cost Zone</b> groups stores that pay the same landed cost for a 
     [{t:'Code',k:'code'},{t:'Cost Zone',k:'z'},{t:'Company',k:'co'},{t:'Assigned Stores',k:'ms',num:1},{t:'Vendors Using',k:'vn',num:1},{t:'Active Cost Events',k:'ev',num:1},{t:'Status',k:'st'}],
     rows.map(r=>({
       code:'<span class="mono">'+esc(r.code)+'</span>',
-      z:'<span class="row-link">'+esc(r.name)+'</span>',
+      z:'<span class="row-link" data-view="costzone:'+r.id+'">'+esc(r.name)+'</span>',
       co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
       ms:r.storeCount,
       vn:'—',
@@ -517,7 +511,7 @@ ${noteBox('Faithful to JDA: the <b>Assortment Cluster</b> is the store grouping;
     [{t:'Code',k:'code'},{t:'Assortment Cluster',k:'z'},{t:'Profile',k:'pr'},{t:'Company',k:'co'},{t:'Assigned Stores',k:'ms',num:1},{t:'Ranged SKUs',k:'sk',num:1},{t:'Assortment Plans',k:'ap',num:1},{t:'Status',k:'st'}],
     rows.map(r=>({
       code:'<span class="mono">'+esc(r.code)+'</span>',
-      z:'<span class="row-link">'+esc(r.name)+'</span>',
+      z:'<span class="row-link" data-view="cluster:'+r.id+'">'+esc(r.name)+'</span>',
       pr:esc(r.storeProfile)||'—',
       co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
       ms:r.storeCount,
@@ -526,10 +520,7 @@ ${noteBox('Faithful to JDA: the <b>Assortment Cluster</b> is the store grouping;
       st:badge(r.status==='Active'?'green':'gray', esc(r.status)||'Active')
     })))}</div>
   ${pager(rows.length, rows.length)}
-</div>
-<div class="panel">${ph('Assortment Plans','The SKU lists (Layer-2) applied to clusters — managed on their own page')}
-  <div class="panel-body"><span class="t-sub">Assortment Plans are the operational SKU ranges that target a Assortment Cluster.</span>
-  <div style="margin-top:10px"><button class="btn primary" data-route="assortplan">Open Assortment Plan →</button></div></div></div>`;
+</div>`;
 };
 
 PAGES.assortplan = async ()=>{
@@ -575,7 +566,7 @@ ${noteBox('A <b>Replenishment Profile</b> is only a set of stores — the “who
     [{t:'Code',k:'code'},{t:'Replenishment Profile',k:'z'},{t:'Company',k:'co'},{t:'Assigned Stores',k:'ms',num:1},{t:'Status',k:'st'}],
     rows.map(r=>({
       code:'<span class="mono">'+esc(r.code)+'</span>',
-      z:'<span class="row-link">'+esc(r.name)+'</span>',
+      z:'<span class="row-link" data-view="replenpolicy:'+r.id+'">'+esc(r.name)+'</span>',
       co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
       ms:r.storeCount,
       st:badge(r.status==='Active'?'green':'gray', esc(r.status)||'Active')
@@ -599,7 +590,7 @@ ${noteBox('The key is <b>Company · Vendor</b> — no destination axis. The patt
     [{t:'Company',k:'co'},{t:'Vendor',k:'v'},{t:'Order Days',k:'od'},{t:'Lead Time (days)',k:'lt',num:1},{t:'Delivery Days',k:'dd'},{t:'Delivery Model',k:'dm'},{t:'Min Order',k:'mo',num:1},{t:'Status',k:'st'}],
     rows.map(r=>{ const ven=venById[r.vendorId]||{}; return {
       co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
-      v:'<span class="row-link">'+esc(ven.name)+'</span>',
+      v:'<span class="row-link" data-view="vendorschedule:'+r.id+'">'+esc(ven.name)+'</span>',
       od:esc(r.orderDays)||'—',
       lt:r.leadTimeDays,
       dd:esc(r.deliveryDays)||'—',
@@ -611,38 +602,55 @@ ${noteBox('The key is <b>Company · Vendor</b> — no destination axis. The patt
 </div>`;
 };
 
-PAGES.ordercalendar = ()=>`
+PAGES.ordercalendar = async ()=>{
+  const rows = await api('/order-calendar-exceptions');
+  const tyColor = {'Non-order':'blue','Non-delivery':'cyan','Both':'amber'};
+  return `
 ${head('','Order Calendar','Optional overlay of exception dates on top of the weekly Vendor Schedule — company holidays and per-vendor blackouts.', btn('Export','',iExport)+btn('New Calendar Exception','primary',iAdd))}
 ${noteBox('Two exception sources — <b>Company Holiday</b> (key Company) and <b>Vendor Blackout</b> (key Company · Vendor). Each carries a <b>Type</b> = Non-order / Non-delivery / Both. A suppressed <b>order</b> day is skipped and demand accumulates to the next order weekday; a <b>delivery</b> landing on a non-delivery date rolls forward.','indigo')}
 <div class="panel">
   <div class="panel-body">${tabs('octab',[
     {label:'Company Holidays',body:table(
       [{t:'Date',k:'dt'},{t:'Type',k:'ty'},{t:'Label',k:'lb'},{t:'Company',k:'co'}],
-      [{dt:'<span class="mono">2026-08-21</span>',ty:badge('amber','Both'),lb:'Ninoy Aquino Day',co:'<span class="mono">PGOLD</span>'},
-       {dt:'<span class="mono">2026-08-30</span>',ty:badge('amber','Both'),lb:'National Heroes Day',co:'<span class="mono">PGOLD</span>'},
-       {dt:'<span class="mono">2026-11-30</span>',ty:badge('blue','Non-order'),lb:'Bonifacio Day',co:'<span class="mono">PGOLD</span>'},
-       {dt:'<span class="mono">2026-12-25</span>',ty:badge('amber','Both'),lb:'Christmas Day',co:'<span class="mono">PGOLD</span>'}])},
+      rows.filter(r=>r.scope!=='Vendor Blackout').map(r=>({
+        dt:'<span class="mono row-link" data-view="ordercalendar:'+r.id+'">'+esc(r.date)+'</span>',
+        ty:badge(tyColor[r.type]||'gray', esc(r.type)),
+        lb:esc(r.label),
+        co:'<span class="mono">'+esc(r.companyCode)+'</span>'
+      })))},
     {label:'Vendor Blackouts',body:table(
       [{t:'Date',k:'dt'},{t:'Vendor',k:'v'},{t:'Type',k:'ty'},{t:'Label',k:'lb'},{t:'Company',k:'co'}],
-      [{dt:'<span class="mono">2026-12-24 → 2026-12-26</span>',v:'<span class="row-link">Nestlé Philippines</span>',ty:badge('amber','Both'),lb:'Year-end plant shutdown',co:'<span class="mono">PGOLD</span>'},
-       {dt:'<span class="mono">2026-09-15</span>',v:'<span class="row-link">Alaska Milk Corp.</span>',ty:badge('cyan','Non-delivery'),lb:'Fleet maintenance',co:'<span class="mono">PGOLD</span>'},
-       {dt:'<span class="mono">2026-10-05 → 2026-10-06</span>',v:'<span class="row-link">Universal Robina Corp.</span>',ty:badge('blue','Non-order'),lb:'System cutover',co:'<span class="mono">PGOLD</span>'}])}])}</div>
+      rows.filter(r=>r.scope==='Vendor Blackout').map(r=>({
+        dt:'<span class="mono row-link" data-view="ordercalendar:'+r.id+'">'+esc(r.date)+'</span>',
+        v:esc(r.vendorName)||'—',
+        ty:badge(tyColor[r.type]||'gray', esc(r.type)),
+        lb:esc(r.label),
+        co:'<span class="mono">'+esc(r.companyCode)+'</span>'
+      })))}])}</div>
 </div>`;
+};
 
-PAGES.rpolicy = ()=>`
+PAGES.rpolicy = async ()=>{
+  const rows = await api('/replenishment-policies');
+  return `
 ${head('','Replenishment Policy','Resupply parameters resolved by Replenishment Profile × merchandise scope. Most-specific scope wins (SKU overrides category overrides default).', btn('Export','',iExport)+btn('New Replenishment Policy','primary',iAdd))}
 ${noteBox('The grain is <b>Profile × (any merchandise-hierarchy node OR a specific SKU)</b>; resolution is <b>most-specific-wins</b> — a SKU policy overrides a category one, which overrides the default. Parameters are current-state (no dated events). Inventory & sales are run-time engine inputs, not stored here.','indigo')}
 <div class="panel">
-  ${filterbar([{label:'Search',grow:1,ph:'Profile or item scope…'},{label:'Profile',html:'<select><option>All Profiles</option><option>Metro Fast-Movers</option><option>Provincial Weekly</option><option>Minimart 2×/Week</option></select>'},{label:'Method',html:'<select><option>All Methods</option><option>Min / Max</option><option>Days-of-Supply</option><option>Top-off</option></select>'},{label:'Status',html:'<select><option>Active</option><option>All</option></select>'}], btn('Apply','primary'))}
+  ${filterbar([{label:'Search',grow:1,ph:'Profile or item scope…'},{label:'Profile',html:'<select><option>All Profiles</option>'+[...new Set(rows.map(r=>r.profileName))].map(p=>'<option>'+esc(p)+'</option>').join('')+'</select>'},{label:'Method',html:'<select><option>All Methods</option><option>Min / Max (reorder point)</option><option>Days-of-Supply</option><option>Top-off (order-up-to)</option></select>'},{label:'Status',html:'<select><option>Active</option><option>All</option></select>'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
     [{t:'Target Profile',k:'pf'},{t:'Item Scope',k:'sc'},{t:'Method',k:'me'},{t:'Target',k:'tg'},{t:'Safety Stock (days)',k:'ss',num:1},{t:'Service Level',k:'sl',num:1},{t:'Status',k:'st'}],
-    [{pf:'<span class="row-link">Metro Fast-Movers</span>',sc:badge('gray','0110 · Dairy & Chilled'),me:badge('blue','Days-of-Supply'),tg:'DOS 7',ss:'5',sl:'97.5%',st:badge('green','Active')},
-     {pf:'<span class="row-link">Metro Fast-Movers</span>',sc:badge('cyan','SKU 100482 · Alaska Fresh Milk 1L'),me:badge('purple','Top-off'),tg:'Order-up-to 120',ss:'3',sl:'99.0%',st:badge('green','Active')},
-     {pf:'<span class="row-link">Provincial Weekly</span>',sc:badge('gray','01 · Grocery Food'),me:badge('amber','Min / Max'),tg:'Min 3 / Max 8 days',ss:'6',sl:'95.0%',st:badge('green','Active')},
-     {pf:'<span class="row-link">Provincial Weekly</span>',sc:badge('cyan','SKU 100238 · Nescafé Classic 100g'),me:badge('amber','Min / Max'),tg:'Min 4 / Max 10 days',ss:'7',sl:'97.5%',st:badge('green','Active')},
-     {pf:'<span class="row-link">Minimart 2×/Week</span>',sc:badge('gray','0110-01 · Milk'),me:badge('blue','Days-of-Supply'),tg:'DOS 5',ss:'4',sl:'95.0%',st:badge('green','Active')}])}</div>
-  ${pager(5,5)}
+    rows.map(r=>({
+      pf:'<span class="row-link" data-view="rpolicy:'+r.id+'">'+esc(r.profileName)+'</span>',
+      sc:badge(/SKU/i.test(r.itemScopeType||'')?'cyan':'gray', (/SKU/i.test(r.itemScopeType||'')?'SKU ':'')+esc(r.scopeRef)),
+      me:esc(r.method),
+      tg:esc(r.target),
+      ss:r.safetyStockDays,
+      sl:esc(r.serviceLevel),
+      st:badge(r.status==='Active'?'green':'gray', esc(r.status)||'Active')
+    })))}</div>
+  ${pager(rows.length, rows.length)}
 </div>`;
+};
 
 PAGES.vendor = async ()=>{
   const [rows, categories, allowances] = await Promise.all([api('/vendors'), api('/vendor-categories'), api('/vendor-allowances')]);
@@ -654,12 +662,12 @@ PAGES.vendor = async ()=>{
 ${head('3','Vendor','Supplier master — identity, commercial terms, delivery model (DTS / Cross-dock / DSD), lead time, payment terms and RTV eligibility.', btn('Export','',iExport)+btn('New Vendor','primary',iAdd))}
 ${noteBox('A vendor no longer carries a single category. Instead each vendor owns a 2-level <b>Vendor Category Hierarchy</b> and a <b>Vendor Product</b> of sellable SKUs (both maintained as separate functions in this module). The <b>RTV-allowed</b> flag governs whether damaged or unsold stock from this vendor can be returned — RTV documents can only be raised against vendors flagged Yes.')}
 <div class="panel">
-  ${filterbar([{label:'Search',grow:1,ph:'Vendor code, name or TIN…'},{label:'Delivery Model',html:'<select><option>All</option><option>Direct-to-Store (DTS)</option><option>Cross-dock</option><option>DSD</option></select>'},{label:'RTV',html:'<select><option>All</option><option>Allowed</option><option>Not Allowed</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Hold</option><option>All</option></select>'}], btn('Apply','primary'))}
+  ${filterbar([{label:'Search',grow:1,ph:'Vendor code, name or TIN…'},{label:'Delivery Model',html:'<select><option>All</option><option>Direct-to-Store (DTS)</option><option>Cross-dock</option><option>DSD</option></select>'},{label:'RTV',html:'<select><option>All</option><option>Allowed</option><option>Not Allowed</option></select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>On Hold</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
     [{t:'Code',k:'code'},{t:'Vendor Name',k:'name'},{t:'Delivery',k:'del'},{t:'Terms',k:'terms'},{t:'Lead Time',k:'lt'},{t:'RTV',k:'rtv'},{t:'Categories',k:'cats',num:1},{t:'Vendor Product SKUs',k:'sku',num:1},{t:'Allowances',k:'al',num:1},{t:'Status',k:'st'}],
     rows.map(r=>({
       code:'<span class="mono">'+esc(r.code)+'</span>',
-      name:'<span class="row-link">'+esc(r.name)+'</span>',
+      name:'<span class="row-link" data-view="vendor:'+r.id+'">'+esc(r.name)+'</span>',
       del:r.deliveryModel?badge(dmColor[r.deliveryModel]||'gray', esc(r.deliveryModel)):'—',
       terms:esc(r.paymentTerms)||'—',
       lt:esc(r.leadTime)||'—',
@@ -678,13 +686,13 @@ PAGES.vencat = async ()=>{
   const target = vendors.find(v=>v.name==='Nestlé Philippines') || vendors[0] || {};
   const l1s = categories.filter(c=>c.vendorId===target.id && c.level==='Category (L1)');
   const subsOf = l1=>categories.filter(c=>c.vendorId===target.id && c.level==='Sub-Category (L2)' && c.parentCategoryId===l1.id);
-  const row=(main,sub,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:${sub?'8px 14px 8px 44px':'11px 14px'};${i?'border-top:1px solid var(--line2)':''};${sub?'font-size:12.5px':'font-weight:600;background:rgba(2,6,23,.03)'}">${main}</div>`;
+  const row=(main,sub,i,vid)=>`<div data-view="vencat:${vid}" style="display:flex;align-items:center;gap:8px;padding:${sub?'8px 14px 8px 44px':'11px 14px'};${i?'border-top:1px solid var(--line2)':''};${sub?'font-size:12.5px':'font-weight:600;background:rgba(2,6,23,.03)'}">${main}</div>`;
   let html='', subCount=0;
   l1s.forEach((n,i)=>{
     const subs = subsOf(n);
     subCount += subs.length;
-    html+=row(`<span style="color:var(--blue)">▾</span> ${esc(n.nodeName)} <span class="t-sub" style="font-weight:400;margin-left:6px">Category · ${subs.length} sub-categories</span>`,false,i);
-    subs.forEach(s=>{html+=row(`<span style="color:var(--line3,#94a3b8)">•</span> ${esc(s.nodeName)}`,true,1);});
+    html+=row(`<span style="color:var(--blue)">▾</span> ${esc(n.nodeName)} <span class="t-sub" style="font-weight:400;margin-left:6px">Category · ${subs.length} sub-categories</span>`,false,i,n.id);
+    subs.forEach(s=>{html+=row(`<span style="color:var(--line3,#94a3b8)">•</span> ${esc(s.nodeName)}`,true,1,s.id);});
   });
   if(!l1s.length) html='<div class="t-sub" style="padding:14px">No categories for this vendor yet.</div>';
   const venOpts = vendors.map(v=>'<option>'+esc(v.name)+'</option>').join('');
@@ -718,15 +726,14 @@ ${noteBox('This is the <b>vendor-side view of the item↔vendor link</b>, keyed 
 <div class="panel">
   ${filterbar([{label:'Company',html:'<select>'+coOpts+'</select>'},{label:'Vendor',grow:1,html:'<select>'+venOpts+'</select>'},{label:'Vendor Category',html:'<select><option>All Categories</option></select>'},{label:'Source',html:'<select><option>All</option><option>Primary</option><option>Alternate</option></select>'},{label:'Status',html:'<select><option>Active</option><option>All</option></select>'}], btn('Load','primary'))}
   <div class="panel-body flush">${table(
-    [{t:'Item Code',k:'ic'},{t:'Company',k:'co'},{t:'Vendor',k:'ven'},{t:'Description',k:'d'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case (CCM)',k:'c',num:1},{t:'Allowance',k:'al'},{t:'Source',k:'pr'}],
+    [{t:'Item Code',k:'ic'},{t:'Company',k:'co'},{t:'Description',k:'d'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case (CCM)',k:'c',num:1},{t:'Allowance',k:'al'},{t:'Source',k:'pr'}],
     rows.map(r=>{
       const prod = prodById[r.productId]||{};
       const allow = alById[r.allowanceId];
       return {
         ic:'<span class="mono">'+esc(prod.code)+'</span>',
         co:'<span class="mono">'+esc((coById[r.companyId]||{}).code||'—')+'</span>',
-        ven:esc((venById[r.vendorId]||{}).name)||'—',
-        d:'<span class="row-link">'+esc(prod.description)+'</span>',
+        d:'<span class="row-link" data-view="vencatalog:'+r.id+'">'+esc(prod.description)+'</span>',
         vi:esc(r.vendorItemNo)||'—',
         vc:vcLabel(r.vendorCategoryId),
         p:esc(r.orderPackUom)||'—',
@@ -759,7 +766,7 @@ ${head('4','Vendor Allowance Maintenance','Trade agreements — listing fees, vo
   <div class="panel-body flush">${table(
     [{t:'Ref',k:'ref'},{t:'Vendor',k:'v'},{t:'Type',k:'ty'},{t:'Basis',k:'ba'},{t:'Rate / Amount',k:'rt',num:1},{t:'Valid From',k:'vf'},{t:'Valid To',k:'vt'},{t:'Status',k:'st'}],
     rows.map(r=>({
-      ref:'<span class="mono">'+(esc(r.ref)||'—')+'</span>',
+      ref:'<span class="mono row-link" data-view="allowance:'+r.id+'">'+(esc(r.ref)||'Allowance #'+r.id)+'</span>',
       v:esc((venById[r.vendorId]||{}).name)||'—',
       ty:r.allowanceType?badge(tyColor[r.allowanceType]||'gray', esc(r.allowanceType)):'—',
       ba:esc(r.basis)||'—',
@@ -778,7 +785,7 @@ function renderHierNode(n, byParent, isFirst){
   const cls = HIER_LVL_CLASS[n.level] || 'lvl4';
   const caret = children.length ? '<span class="caret">▾</span> ' : '';
   const cnt = children.length ? ` <span class="cnt">${children.length}</span>` : '';
-  let html = `<div class="node ${cls}${isFirst?' active':''}">${caret}${esc(n.code)} · ${esc(n.name)}${cnt}</div>`;
+  let html = `<div class="node ${cls}${isFirst?' active':''}" data-view="hierarchy:${n.id}">${caret}${esc(n.code)} · ${esc(n.name)}${cnt}</div>`;
   children.forEach(c=>{ html += renderHierNode(c, byParent, false); });
   return html;
 }
@@ -791,131 +798,75 @@ PAGES.hierarchy = async ()=>{
   if(!treeHtml) treeHtml = '<div class="t-sub" style="padding:14px">No hierarchy nodes yet.</div>';
   return `
 ${head('5','Category Hierarchy','One global merchandise tree — Department → Sub-Department → Class → Sub-Class. Governs reporting, replenishment and OTB planning. Vendor supply data lives on the item↔vendor link, not on the tree.', btn('Expand All','')+btn('New Node','primary',iAdd))}
-<div class="split">
-  <div class="panel">${ph('Hierarchy Tree', nodes.length+' nodes')}
+<div class="panel">${ph('Hierarchy Tree', nodes.length+' nodes')}
     <div class="panel-body"><div class="tree">
       ${treeHtml}
     </div>
-    ${noteBox('<b>Levels:</b> Department (L1) → Sub-Department (L2) → Class (L3) → Sub-Class (L4). New classes are default-scaffolded with three sub-classes <b>101 / 102 / 103</b>, but a class may hold any number — merchandising can add or remove them.')}</div></div>
-  <div class="panel">${ph('Node Detail','0110-01 · Milk')}
-    <div class="panel-body"><div class="form-grid">
-      <div class="fg"><label>Level</label><input value="Class (L3)" readonly></div>
-      <div class="fg"><label>Node Code</label><input value="0110-01" class="mono"></div>
-      <div class="fg full"><label>Node Name</label><input value="Milk"></div>
-      <div class="fg"><label>Parent Sub-Department</label><input value="0110 · Dairy & Chilled" readonly></div>
-      <div class="fg"><label>Merch Manager</label><select><option>L. Domingo</option><option>P. Salas</option></select></div>
-      <div class="fg"><label>Replen Strategy</label><select><option>Auto (Min/Max)</option><option>Manual</option></select></div>
-      <div class="fg"><label>OTB Planned</label><select><option>No</option><option>Yes (Fashion)</option></select></div>
-      <div class="fg"><label>Perishable</label><select><option>Yes</option><option>No</option></select></div>
-      <div class="fg"><label>Default Shelf Life</label><input value="7 days"></div>
-      <div class="fg"><label>Status</label><select><option>Active</option></select></div>
-    </div></div>
-    <div class="foot"><span class="t-sub">3 sub-classes (101/102/103) · 168 SKUs</span><div class="right">${btn('Cancel','')}${btn('Save','primary')}</div></div></div>
-</div>`;
+    ${noteBox('<b>Levels:</b> Department (L1) → Sub-Department (L2) → Class (L3) → Sub-Class (L4). New classes are default-scaffolded with three sub-classes <b>101 / 102 / 103</b>, but a class may hold any number — merchandising can add or remove them.')}</div></div>`;
 };
 
 PAGES.item = async ()=>{
   const [rows, nodes] = await Promise.all([api('/products'), api('/merch-nodes')]);
   const nodeById = byId(nodes);
-  // Item Detail below is a static mock panel (General / Pack&UOM / Price&Cost tabs remain hardcoded
-  // to the "Alaska Fresh Milk 1L" sample) — only the Suppliers tab is wired live, per the minimum-scope
-  // instruction, since making the whole detail panel row-selectable/data-driven is out of scope here.
-  const target = rows.find(r=>r.code==='100482') || rows[0] || {};
-  let supplierRows = [];
-  if(target.id){
-    const [venProds, vendors, cats] = await Promise.all([
-      api('/vendor-products?productId='+target.id), api('/vendors'), api('/vendor-categories')
-    ]);
-    const venById = byId(vendors), catById = byId(cats);
-    const vcLabel = catId=>{
-      const node = catById[catId]; if(!node) return '—';
-      const parent = catById[node.parentCategoryId];
-      return esc((parent?parent.nodeName+' › ':'')+node.nodeName);
-    };
-    supplierRows = venProds.map(vp=>({
-      v: esc((venById[vp.vendorId]||{}).name)||'—',
-      vi: '<span class="mono">'+esc(vp.vendorItemNo)+'</span>',
-      vc: vcLabel(vp.vendorCategoryId),
-      p: esc(vp.orderPackUom)||'—',
-      moq: vp.moqCases==null?'—':vp.moqCases+' cs',
-      oi: vp.orderIncrementCases==null?'—':vp.orderIncrementCases+' cs',
-      sch: esc(vp.orderSchedule)||'—',
-      lt: esc(vp.leadTime)||'—',
-      c: vp.costPerCase==null?'—':peso(vp.costPerCase),
-      pr: badge(vp.sourcePriority==='Primary'?'green':'gray', esc(vp.sourcePriority)||'Alternate')
-    }));
-  }
   return `
 ${head('6','Product Maintenance','Master item catalog. Manage identity, hierarchy placement, pack config, supplier links, pricing and cost defaults.', btn('Import','',iExport)+btn('New Product','primary',iAdd))}
 <div class="panel">
-  ${filterbar([{label:'Search',grow:1,ph:'Item code, barcode or description…'},{label:'Department',html:'<select><option>All Departments</option><option>Dairy & Chilled</option><option>Bakery</option><option>Beverages</option><option>Fresh</option></select>'},{label:'Vendor',html:'<select><option>All Vendors</option><option>Nestlé</option><option>Alaska</option><option>Gardenia</option></select>'},{label:'Status',html:'<select><option>Active</option><option>Discontinued</option><option>All</option></select>'}], btn('Apply','primary'))}
+  ${filterbar([{label:'Search',grow:1,ph:'Item code, barcode or description…'},{label:'Department',html:'<select><option>All Departments</option><option>Dairy & Chilled</option><option>Bakery</option><option>Beverages</option><option>Fresh</option></select>'},{label:'Brand',html:'<select><option>All Brands</option>'+[...new Set(rows.map(r=>r.brand).filter(Boolean))].map(b=>'<option>'+esc(b)+'</option>').join('')+'</select>'},{label:'Status',html:'<select><option>Active</option><option>Discontinued</option><option>All</option></select>'}], btn('Apply','primary'))}
   <div class="panel-body flush">${table(
-    [{t:'',k:'c'},{t:'Item Code',k:'code'},{t:'Barcode',k:'bc'},{t:'Description',k:'desc'},{t:'Class',k:'cat'},{t:'Vendor',k:'v'},{t:'UOM',k:'u'},{t:'Cost',k:'cost',num:1},{t:'Retail',k:'ret',num:1},{t:'Margin',k:'mg',num:1},{t:'Status',k:'st'}],
+    [{t:'',k:'c'},{t:'Item Code',k:'code'},{t:'Barcode',k:'bc'},{t:'Description',k:'desc'},{t:'Class',k:'cat'},{t:'Brand',k:'br'},{t:'UOM',k:'u'},{t:'Cost',k:'cost',num:1},{t:'Retail',k:'ret',num:1},{t:'Status',k:'st'}],
     rows.map(r=>{
       const node = nodeById[r.merchNodeId];
       return {
         c:'<input type="checkbox" class="chk">',
         code:'<span class="mono">'+esc(r.code)+'</span>',
         bc:'<span class="mono">'+esc(r.primaryBarcode)+'</span>',
-        desc:'<span class="row-link">'+esc(r.description)+'</span>',
+        desc:'<span class="row-link" data-view="item:'+r.id+'">'+esc(r.description)+'</span>',
         cat: node ? esc(node.name) : '—',
-        v: esc(r.preferredVendor) || '—',
+        br: esc(r.brand) || '—',
         u: esc(r.sellingUom || r.buyingUom) || '—',
         cost: r.standardCost==null ? '—' : Number(r.standardCost).toFixed(2),
         ret: r.baseRetail==null ? '—' : Number(r.baseRetail).toFixed(2),
-        mg: r.marginPct==null ? '—' : r.marginPct+'%',
         st: badge(r.status==='Active'?'green':'gray', esc(r.status)||'Active')
       };
     }))}</div>
   ${pager(rows.length, rows.length)}
-</div>
+</div>`;
+};
+
+PAGES.brand = async ()=>{
+  const rows = await api('/brands');
+  return `
+${head('','Product Brand','Brands registered against a manufacturer (vendor). Products reference a brand.', btn('Export','',iExport)+btn('New Brand','primary',iAdd))}
 <div class="panel">
-  ${ph('Product Detail', esc(target.code)+' · '+esc(target.description), btn('Duplicate','sm')+btn('View Inventory','sm'))}
-  <div class="panel-body flush">
-    ${tabs('itemtab',[
-      {label:'General',body:`<div class="panel-body"><div class="form-grid">
-        <div class="section-label">Identity</div>
-        <div class="fg"><label>Item Code</label><input value="100482" readonly class="mono"></div>
-        <div class="fg"><label>Primary Barcode</label><input value="4800016641107" class="mono"></div>
-        <div class="fg full"><label>Description</label><input value="Alaska Fresh Milk 1L"></div>
-        <div class="fg"><label>Short Name (POS)</label><input value="ALASKA F.MILK 1L"></div>
-        <div class="fg"><label>Brand</label><input value="Alaska"></div>
-        <div class="section-label">Classification (global merchandise hierarchy)</div>
-        <div class="fg"><label>Department</label><select><option>01 · Grocery Food</option></select></div>
-        <div class="fg"><label>Sub-Department</label><select><option>0110 · Dairy & Chilled</option></select></div>
-        <div class="fg"><label>Class</label><select><option>0110-01 · Milk</option></select></div>
-        <div class="fg"><label>Sub-Class</label><select><option>101 · Fresh Milk</option><option>102 · UHT Milk</option><option>103 · Powdered Milk</option></select></div>
-        <div class="section-label">Attributes</div>
-        <div class="fg"><label>Perishable</label><select><option>Yes</option></select></div>
-        <div class="fg"><label>Shelf Life</label><input value="7 days"></div>
-        <div class="fg"><label>VAT Class</label><select><option>12% VATable</option></select></div>
-        <div class="fg"><label>Listing Fee</label><select><option>Yes — surfaces in PO validation</option><option>No</option></select></div>
-        <div class="fg"><label>Store Range (carried-by)</label><select><option>All stores</option><option>Price Club only</option><option>Selected stores…</option></select></div>
-        <div class="fg"><label>Buying UOM</label><select><option>CASE-12</option><option>PC</option></select></div>
-        <div class="fg"><label>Selling UOM</label><select><option>PC</option><option>KG</option></select></div>
-        <div class="fg"><label>Status</label><select><option>Active</option></select></div>
-      </div></div>`},
-      {label:'Pack & UOM',body:`<div class="panel-body">${table(
-        [{t:'Level',k:'l'},{t:'UOM',k:'u'},{t:'Qty in Base',k:'q',num:1},{t:'Barcode',k:'b'},{t:'Orderable',k:'o'},{t:'Sellable',k:'s'}],
-        [{l:'Base',u:'PC',q:'1',b:'<span class="mono">4800016641107</span>',o:badge('gray','No'),s:badge('green','Yes')},
-         {l:'Inner',u:'PACK-6',q:'6',b:'<span class="mono">14800016641104</span>',o:badge('green','Yes'),s:badge('gray','No')},
-         {l:'Case',u:'CASE-12',q:'12',b:'<span class="mono">24800016641101</span>',o:badge('green','Yes'),s:badge('gray','No')}])}</div>`},
-      {label:'Suppliers',cnt:supplierRows.length,body:`<div class="panel-body">
-        ${noteBox('Vendor supply data is held on the <b>item↔vendor link</b> — so the primary and alternate vendor can carry different terms. This is the item-side view (read-only); <b>Cost / Case is owned by Cost Change Management</b>. The same lines are maintained per vendor in <b>Vendor Product</b>, and each vendor category is drawn from that vendor’s own 2-level Category Hierarchy.')}
-        ${table(
-        [{t:'Vendor',k:'v'},{t:'Vendor Item #',k:'vi'},{t:'Vendor Cat. (L1 › L2)',k:'vc'},{t:'Pack',k:'p'},{t:'MOQ',k:'moq',num:1},{t:'Order Incr.',k:'oi',num:1},{t:'Order Schedule',k:'sch'},{t:'Lead Time',k:'lt'},{t:'Cost / Case (CCM)',k:'c',num:1},{t:'Source',k:'pr'}],
-        supplierRows.length?supplierRows:[{v:'<span class="t-sub">No linked vendors for this item yet.</span>',vi:'',vc:'',p:'',moq:'',oi:'',sch:'',lt:'',c:'',pr:''}])}</div>`},
-      {label:'Price & Cost',body:`<div class="panel-body"><div class="form-grid">
-        <div class="fg"><label>Standard Cost (net)</label><input value="58.20"></div>
-        <div class="fg"><label>Base Retail (VAT-inc)</label><input value="72.00"></div>
-        <div class="fg"><label>Margin %</label><input value="19.2%" readonly></div>
-        <div class="fg"><label>Price Zone Override</label><select><option>None</option><option>S.Luzon +₱2.00</option></select></div>
-        <div class="fg"><label>Current Promo</label><input value="—" readonly></div>
-        <div class="fg"><label>Last Cost Change</label><input value="2026-06-18" readonly></div>
-      </div></div>`},
-    ])}
-  </div>
-  <div class="foot"><span class="t-sub">Last modified 2026-07-08 by mtan</span><div class="right">${btn('Cancel','')}${btn('Save Item','primary')}</div></div>
+  ${filterbar([{label:'Search',grow:1,ph:'Brand code or name…'},{label:'Manufacturer',html:'<select><option>All Manufacturers</option>'+[...new Set(rows.map(r=>r.manufacturerName).filter(Boolean))].map(mf=>'<option>'+esc(mf)+'</option>').join('')+'</select>'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Code',k:'code'},{t:'Brand',k:'b'},{t:'Manufacturer',k:'mf'},{t:'Products',k:'pc',num:1},{t:'Status',k:'st'}],
+    rows.map(r=>({
+      code:'<span class="mono">'+esc(r.code)+'</span>',
+      b:'<span class="row-link" data-view="brand:'+r.id+'">'+esc(r.name)+'</span>',
+      mf: r.manufacturerName ? (esc(r.manufacturerName)+' <span class="mono">'+esc(r.manufacturerCode)+'</span>') : '—',
+      pc: r.productCount,
+      st: badge(r.status==='Active'?'green':'gray', esc(r.status)||'Active')
+    })))}</div>
+  ${pager(rows.length, rows.length)}
+</div>`;
+};
+
+PAGES.attribute = async ()=>{
+  const rows = await api('/product-attributes');
+  return `
+${head('','Product Attribute','Reusable attribute definitions. Each attribute is a value list — a product picks one of its Allowed Values.', btn('Export','',iExport)+btn('New Product Attribute','primary',iAdd))}
+<div class="panel">
+  ${filterbar([{label:'Search',grow:1,ph:'Attribute code or name…'},{label:'Status',html:'<select><option>All</option><option>Active</option><option>Inactive</option></select>'}], btn('Apply','primary'))}
+  <div class="panel-body flush">${table(
+    [{t:'Code',k:'code'},{t:'Attribute',k:'a'},{t:'Allowed Values',k:'av'},{t:'Status',k:'st'}],
+    rows.map(r=>({
+      code:'<span class="mono">'+esc(r.code)+'</span>',
+      a:'<span class="row-link" data-view="attribute:'+r.id+'">'+esc(r.name)+'</span>',
+      av: esc(r.allowedValues)||'—',
+      st: badge(r.status==='Active'?'green':'gray', esc(r.status)||'Active')
+    })))}</div>
+  ${pager(rows.length, rows.length)}
 </div>`;
 };
 
@@ -1281,12 +1232,73 @@ function lineTable(l){
     ${l.total?`<div class="foot"><span class="t-sub">${l.rows.length} line(s)</span><div class="right"><span style="font-weight:800;color:var(--navy)">Order Total: ${l.total}</span></div></div>`:''}
   </div>`;
 }
+/* ============ Product Attributes: dynamic list of {n:attribute, v:value} ============
+   Every attribute is a value list (master: /product-attributes, allowedValues comma-separated),
+   so a product's value is always chosen from the attribute's Allowed Values. Ported from the
+   ui-mockup's product-attributes engine, adapted to the live API. */
+let ATTR_MASTER = [];               // cached attribute master ({id,name,code,allowedValues,status})
+let ATTR_DRAFT = [];                // working list while adding/editing on New/Edit
+async function ensureAttrMaster(){ if(!ATTR_MASTER.length) ATTR_MASTER = await api('/product-attributes'); return ATTR_MASTER; }
+function cloneAttrs(a){ return (a||[]).map(x=>({n: x.name!=null?x.name:x.n, v: x.value!=null?x.value:x.v})); }
+function byAttrName(n){ return (ATTR_MASTER||[]).find(a=>a.name===n) || {}; }
+function attrVals(a){ return (a&&a.allowedValues) ? a.allowedValues.split(',').map(s=>s.trim()).filter(Boolean) : []; }
+function firstAllowed(a){ return attrVals(a)[0]||''; }
+// Read-only (editable=false) or editable (New/Edit) render of a product's attribute list.
+function attrTab(list, editable){
+  const master = ATTR_MASTER||[];
+  list = list||[];
+  const add = `<button class="btn sm primary" data-attradd="1">+ Add Attribute</button>`;
+  const hdr = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span class="section-label" style="border-top:none;padding-top:0;margin:0">Attributes${list.length?` <span class="badge b-blue">${list.length}</span>`:''}</span>${editable?add:''}</div>`;
+  if(!list.length){
+    const msg = editable
+      ? 'No attributes yet. Click <b>+ Add Attribute</b> to attach one from the Product Attribute master and pick a value.'
+      : 'No attributes on this product. Attributes are optional and managed in Edit.';
+    return `${hdr}<div class="t-sub" style="padding:10px 2px">${msg}</div>`;
+  }
+  const rows = list.map((x,i)=>{
+    const name = x.n!=null?x.n:x.name, val = x.v!=null?x.v:x.value;
+    const a = byAttrName(name), vals = attrVals(a);
+    let atCell, valCell;
+    if(editable){
+      atCell = `<select data-attrname="1" data-i="${i}">${master.map(m=>`<option${m.name===name?' selected':''}>${esc(m.name)}</option>`).join('')}</select>`;
+      valCell = `<select data-attrval="1" data-i="${i}">${vals.length?vals.map(v=>`<option${v===val?' selected':''}>${esc(v)}</option>`).join(''):`<option>${esc(val)}</option>`}</select>`;
+    } else {
+      atCell = esc(name);
+      valCell = `<b>${esc(val)}</b>`;
+    }
+    const r = { at:atCell, vl:valCell, al:`<span class="t-sub">${esc(vals.join(', '))||'—'}</span>` };
+    if(editable) r.act = `<button class="btn ghost sm" data-attrdel="1" data-i="${i}">Remove</button>`;
+    return r;
+  });
+  const cols = editable
+    ? [{t:'Attribute',k:'at'},{t:'Value',k:'vl'},{t:'Allowed Values',k:'al'},{t:'',k:'act'}]
+    : [{t:'Attribute',k:'at'},{t:'Value',k:'vl'},{t:'Allowed Values',k:'al'}];
+  return `${hdr}${table(cols, rows)}`;
+}
+function attrHostHtml(list){ return `<div class="panel-body"><div id="attrHost">${attrTab(list, true)}</div></div>`; }
+function refreshAttrs(){ const h=document.getElementById('attrHost'); if(!h) return; h.innerHTML=attrTab(ATTR_DRAFT, true); bindAttrEditor(); }
+function bindAttrEditor(){
+  const host=document.getElementById('attrHost'); if(!host) return;
+  host.querySelectorAll('[data-attradd]').forEach(b=>b.onclick=()=>{ const f=(ATTR_MASTER||[])[0]||{}; ATTR_DRAFT.push({n:f.name||'', v:firstAllowed(f)}); refreshAttrs(); });
+  host.querySelectorAll('[data-attrdel]').forEach(b=>b.onclick=()=>{ ATTR_DRAFT.splice(+b.getAttribute('data-i'),1); refreshAttrs(); });
+  host.querySelectorAll('[data-attrname]').forEach(s=>s.onchange=()=>{ const i=+s.getAttribute('data-i'); ATTR_DRAFT[i].n=s.value; ATTR_DRAFT[i].v=firstAllowed(byAttrName(s.value)); refreshAttrs(); });
+  host.querySelectorAll('[data-attrval]').forEach(s=>s.onchange=()=>{ ATTR_DRAFT[+s.getAttribute('data-i')].v=s.value; });
+}
 function createForm(cfg){
-  const actions=`<button class="btn" data-back="1">‹ Back to list</button><button class="btn" data-save="1">Save Draft</button><button class="btn primary" data-save="1">${cfg.cta||'Save'}</button>`;
-  const grid=`<div class="panel"><div class="panel-head"><h3>${cfg.formTitle||'Details'}</h3><span class="sub">${cfg.ref||'New · Draft'}</span></div>
-    <div class="panel-body"><div class="form-grid">${cfg.sections.map(s=>`<div class="section-label">${s.l}</div>${s.f.map(ff).join('')}`).join('')}</div></div></div>`;
+  // Save Draft only for records with an approval/draft workflow (cfg.draft); master data saves directly (mockup parity).
+  const draftBtn = cfg.draft ? '<button class="btn" data-save="1">Save Draft</button>' : '';
+  const actions=`<button class="btn" data-back="1">‹ Back to list</button>${draftBtn}<button class="btn primary" data-save="1">${cfg.cta||'Save'}</button>`;
+  const detailsBody = `<div class="panel-body"><div class="form-grid">${cfg.sections.map(s=>`<div class="section-label">${s.l}</div>${s.f.map(ff).join('')}`).join('')}</div></div>`;
+  const isItem = cfg.list==='item';
+  if(isItem) ATTR_DRAFT = [];
+  // Product New/Edit is tabbed (Details + Attributes) — mirrors the mockup's itemnew/itemedit.
+  const body = isItem
+    ? tabs(cfg._edit?'itemedit':'itemnew', [{label:'Details',body:detailsBody},{label:'Attributes',cnt:ATTR_DRAFT.length,body:attrHostHtml(ATTR_DRAFT)}])
+    : detailsBody;
+  const headTitle = isItem ? 'Product' : (cfg.formTitle||'Details');
+  const grid=`<div class="panel"><div class="panel-head"><h3>${headTitle}</h3><span class="sub">${cfg.ref||'New · Draft'}</span></div>${body}</div>`;
   const lines=cfg.lines?lineTable(cfg.lines):'';
-  const foot=`<div class="panel"><div class="foot"><span class="t-sub">${cfg.footNote||'Required fields (*) must be completed before submission.'}</span><div class="right"><button class="btn" data-back="1">Cancel</button><button class="btn" data-save="1">Save Draft</button><button class="btn primary" data-save="1">${cfg.cta||'Save'}</button></div></div></div>`;
+  const foot=`<div class="panel"><div class="foot"><span class="t-sub">${cfg.footNote||'Required fields (*) must be completed before submission.'}</span><div class="right"><button class="btn" data-back="1">Cancel</button>${draftBtn}<button class="btn primary" data-save="1">${cfg.cta||'Save'}</button></div></div></div>`;
   return head(cfg.no,cfg.title,cfg.desc,actions)+grid+lines+foot;
 }
 /* ---- Dual-list store picker (used by Price Zone create) ----
@@ -1344,16 +1356,30 @@ function storePicker(){
     </div>
   </div></div>`;
 }
-function initStorePicker(){
-  const root=document.getElementById('storePicker'); if(!root) return;
-  const companySel=document.getElementById('zoneCompany');
+// Store grouping master -> the Branch FK that models membership (branch-side single source of truth).
+const ZONE_FK = {pricezone:'priceZoneId', costzone:'costZoneId', cluster:'assortmentClusterId', replenpolicy:'replenishmentProfileId'};
+let SPK = {branches:[]};
+// Reconstruct a Branch Request body from a Branch Response (mirrors SAVE.branch.body fields) so a
+// membership-only change can be PUT without dropping the branch's other fields.
+function branchBody(b){
+  return {code:b.code,name:b.name,format:b.format,region:b.region,companyId:b.companyId,
+    inventoryLocations:b.inventoryLocations,crossDockHub:b.crossDockHub,openingDate:b.openingDate,
+    street:b.street,city:b.city,province:b.province,priceZoneId:b.priceZoneId,costZoneId:b.costZoneId,
+    assortmentClusterId:b.assortmentClusterId,replenishmentProfileId:b.replenishmentProfileId,status:b.status};
+}
+// Branch-backed dual-list store picker. On edit, preselects branches already assigned to this record.
+async function initStorePicker(m, key, editRecId){
+  const root=m.querySelector('#storePicker'); if(!root) return;
+  const fk=ZONE_FK[key]; if(!fk) return;
+  const companySel=m.querySelector('#zoneCompany');
   const avail=root.querySelector('.spk-available'), sel=root.querySelector('.spk-selected');
   const search=root.querySelector('.spk-search');
-  const itemHTML=s=>`<div class="spk-item" data-code="${s.code}"><span class="spk-code">${s.code}</span><span>${s.name}</span></div>`;
+  let branches=[];
+  try{ branches=await api('/branches'); }catch(e){ branches=[]; }
+  SPK={branches, fk, key};
+  const itemHTML=b=>`<div class="spk-item" data-id="${b.id}" data-code="${esc(b.code)}"><span class="spk-code">${esc(b.code)}</span><span>${esc(b.name)}</span></div>`;
   function refresh(){
-    // drop any stale empty-state placeholders before recomputing
     root.querySelectorAll('.spk-empty').forEach(n=>n.remove());
-    // available count = only visible (search-filtered) rows
     const q=(search.value||'').toLowerCase();
     let shown=0;
     avail.querySelectorAll('.spk-item').forEach(it=>{
@@ -1366,21 +1392,41 @@ function initStorePicker(){
     if(!sel.querySelector('.spk-item')) sel.innerHTML='<div class="spk-empty">No stores selected yet</div>';
   }
   function build(){
-    const ci=companySel?Math.max(0,BUYERS.indexOf(companySel.value)):0;
-    avail.innerHTML=STORES.filter(s=>s.co===ci).map(itemHTML).join('');
-    sel.innerHTML=''; search.value=''; refresh();
+    const companyId=companySel&&companySel.selectedOptions[0]?Number(companySel.selectedOptions[0].dataset.id):null;
+    const inCo=branches.filter(b=>companyId==null||Number(b.companyId)===companyId);
+    const members=inCo.filter(b=>editRecId!=null&&Number(b[fk])===Number(editRecId));
+    const memberSet=new Set(members.map(b=>b.id));
+    avail.innerHTML=inCo.filter(b=>!memberSet.has(b.id)).map(itemHTML).join('');
+    sel.innerHTML=members.map(itemHTML).join('');
+    search.value=''; refresh();
   }
   function move(from,to){
     from.querySelectorAll('.spk-item.sel').forEach(it=>{it.classList.remove('sel');to.appendChild(it);});
   }
-  root.addEventListener('click',e=>{
+  root.onclick=e=>{
     const it=e.target.closest('.spk-item'); if(it){it.classList.toggle('sel'); return;}
     if(e.target.closest('.spk-add')){ move(avail,sel); refresh(); }
     else if(e.target.closest('.spk-rem')){ move(sel,avail); refresh(); }
-  });
-  search.addEventListener('input',refresh);
-  if(companySel) companySel.addEventListener('change',build);
+  };
+  search.oninput=refresh;
+  if(companySel) companySel.onchange=build;
   build();
+}
+// After the grouping record is saved, reconcile branch memberships by PUTing only the branches whose
+// membership actually changed (added or removed). No backend member endpoint needed — the Branch FK is the store.
+async function persistStorePicker(key, zoneId){
+  const fk=ZONE_FK[key]; if(!fk||zoneId==null) return;
+  const root=document.getElementById('storePicker'); if(!root) return;
+  const selEl=root.querySelector('.spk-selected'); if(!selEl) return;
+  const selectedIds=new Set([...selEl.querySelectorAll('.spk-item')].map(it=>Number(it.dataset.id)));
+  let branches=[];
+  try{ branches=await api('/branches'); }catch(e){ return; }
+  const zid=Number(zoneId), puts=[];
+  branches.forEach(b=>{
+    const isMember=Number(b[fk])===zid, shouldBe=selectedIds.has(b.id);
+    if(isMember!==shouldBe){ const body=branchBody(b); body[fk]=shouldBe?zid:null; puts.push(api('/branches/'+b.id,{method:'PUT',body:JSON.stringify(body)})); }
+  });
+  await Promise.all(puts);
 }
 function initPcaType(root){
   const sel=root.querySelector('#pcaType'); if(!sel) return;
@@ -1718,7 +1764,7 @@ function initAssortScope(root){
     const ci=Math.max(0,BUYERS.indexOf(companyName));
     const co=(AW.companies||[]).find(c=>c.legalName===companyName);
     const lv=level.value; let opts;
-    // Assortment Cluster options are loaded live from /api/assortment-clusters (real ids, carried
+    // Assortment Cluster options are loaded live from /backend/assortment-clusters (real ids, carried
     // via data-id) so the wizard can submit a real clusterId; Company/Store options remain the
     // static mock lists — the API's AssortmentPlanDtos.Request only has clusterId (required) and
     // companyId, no storeId, so Store-level targets can't be captured as a distinct id yet.
@@ -1917,22 +1963,26 @@ const CREATE = {
       {l:'Assignment',f:[{l:'Role',type:'select',req:1,opt:['System Administrator','Category Manager','Buyer','Pricing Analyst','Store Manager','Receiving Clerk','Sales Auditor','Inventory Controller','Vendor Coordinator','Viewer']},{l:'Department',type:'select',opt:['Merchandising — Grocery','Merchandising — Fresh','Merchandising — Non-Food','Store Operations','Supply Chain / Warehouse','Sales Audit / Finance','IT / Administration']},{l:'Reports To',type:'select',opt:['Rica Cruz (System Administrator)','Marco Reyes (Category Manager)','— None —']}]},
       {l:'Branch Access',f:[{l:'Access Scope',type:'select',req:1,opt:['Company-wide (all 437 stores)','By Region','By Store']},{l:'Region',type:'select',opt:['— Not applicable —','NCR','N.Luzon','S.Luzon','Visayas','Mindanao'],hint:'Used when scope is “By Region”.'},{l:'Home Branch',type:'select',opt:['— Not applicable —',...BR],hint:'Used when scope is “By Store”. Add more stores after creation on the Branch Access tab.'}]},
       {l:'Security',f:[{l:'Status',type:'select',opt:['Active','Inactive']},{l:'Multi-Factor Auth',type:'select',opt:['Enabled','Disabled']},{l:'Temporary Password',ph:'Leave blank to auto-generate'},{l:'Force Password Reset on First Login',type:'select',opt:['Yes','No']}]}]},
-  po:{no:10,list:'po',title:'New Purchase Order',desc:'Create a purchase order, add line items, then route for approval.',ref:'PO-100483 · Draft',cta:'Submit for Approval',
+  po:{no:10,list:'po',title:'New Purchase Order',desc:'Create a purchase order, add line items, then route for approval.',ref:'PO-100483 · Draft',cta:'Submit for Approval',draft:1,
     sections:[{l:'Order Header',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Order Type',type:'select',opt:['Regular','DSD (no PO)','One-Time-Buy (OTB)']},{l:'Delivery Model',type:'select',opt:['Direct-to-Store (DTS)','Cross-dock']},{l:'Ship To Branch',type:'select',opt:BR,req:1},{l:'Order Date',type:'date',v:'2026-07-15'},{l:'Expected Delivery',type:'date',v:'2026-07-18'},{l:'Buyer',type:'select',req:1,opt:BUYERS},{l:'Payment Terms',v:'45 days',ro:1}]},{l:'Notes',f:[{l:'Line Validation',ro:1,v:'Active SKUs only · restricted items auto-dropped (logged) · below-min-margin lines flagged for approval'},{l:'Remarks',type:'area',span:'full',ph:'Optional instructions to vendor / receiving…'}]}],
     lines:{title:'Line Items',sub:'Quantities in cases',cols:[{t:'Item'},{t:'UOM'},{t:'Order Qty',num:1},{t:'Cost / Case',num:1},{t:'Amount',num:1}],rows:[['<span class="t-title">Nescafé Classic 100g</span>','CASE-24',ci('40'),ci('2,832'),'₱ 113,280'],['<span class="t-title">Bear Brand Powdered 300g</span>','CASE-48',ci('30'),ci('4,128'),'₱ 123,840']],total:'₱ 237,120'}},
   item:{no:6,list:'item',title:'New Product',desc:'Register a new SKU in the master catalog.',ref:'New Product · Draft',cta:'Save Item',
-    sections:[{l:'Identity',f:[{l:'Description',req:1,span:'full',ph:'e.g. Alaska Fresh Milk 1L'},{l:'Primary Barcode',ph:'13-digit EAN'},{l:'Short Name (POS)'},{l:'Brand'}]},{l:'Classification',f:[{l:'Department',type:'select',id:'itemDept',opt:[],hint:'Loaded from the merchandise hierarchy.'},{l:'Sub-Department',type:'select',id:'itemSubDept',opt:[]},{l:'Class',type:'select',id:'itemClass',opt:[]},{l:'Sub-Class',type:'select',id:'itemSubClass',opt:[]}]},{l:'Attributes & Pricing',f:[{l:'Perishable',type:'select',opt:['No','Yes']},{l:'Shelf Life',ph:'e.g. 7 days'},{l:'VAT Class',type:'select',opt:['12% VATable','VAT Exempt','Zero-rated']},{l:'Preferred Vendor',type:'select',opt:VEN,hint:'Item default source; a store may source this item locally from a different vendor by location/availability.'},{l:'Standard Cost',type:'number',ph:'0.00'},{l:'Base Retail (VAT-inc)',type:'number',ph:'0.00'}]}]},
+    sections:[{l:'Identity',f:[{l:'Description',req:1,span:'full',ph:'e.g. Alaska Fresh Milk 1L'},{l:'Primary Barcode',ph:'13-digit EAN'},{l:'Short Name (POS)'},{l:'Brand',type:'select',opt:[]}]},{l:'Classification',f:[{l:'Department',type:'select',id:'itemDept',opt:[],hint:'Loaded from the merchandise hierarchy.'},{l:'Sub-Department',type:'select',id:'itemSubDept',opt:[]},{l:'Class',type:'select',id:'itemClass',opt:[]},{l:'Sub-Class',type:'select',id:'itemSubClass',opt:[]}]},{l:'Attributes & Pricing',f:[{l:'Perishable',type:'select',opt:['No','Yes']},{l:'Shelf Life',ph:'e.g. 7 days'},{l:'VAT Class',type:'select',opt:['12% VATable','VAT Exempt','Zero-rated']},{l:'Standard Cost',type:'number',ph:'0.00'},{l:'Base Retail (VAT-inc)',type:'number',ph:'0.00'},{l:'Status',type:'select',opt:['Active','Discontinued','On Promo','House Brand']}]}]},
+  brand:{no:'',list:'brand',title:'New Brand',desc:'Register a product brand and its manufacturer.',ref:'New Brand · Draft',cta:'Save Brand',footNote:'A brand is owned by a Manufacturer (a vendor). Products reference a brand.',
+    sections:[{l:'Identity',f:[{l:'Brand Name',req:1,span:'full',ph:'e.g. Alaska'},{l:'Brand Code',ph:'Auto if left blank'},{l:'Manufacturer',type:'select',req:1,opt:[]},{l:'Status',type:'select',opt:['Active','Inactive']},{l:'Description',type:'area',span:'full',rows:3}]}]},
+  attribute:{no:'',list:'attribute',title:'New Product Attribute',desc:'Define an attribute and its allowed values.',ref:'New Attribute · Draft',cta:'Save Attribute',footNote:'Every attribute is a value list — a product picks one of the Allowed Values.',
+    sections:[{l:'Definition',f:[{l:'Attribute Name',req:1,span:'full',ph:'e.g. Size'},{l:'Attribute Code',ph:'Auto if left blank'},{l:'Status',type:'select',opt:['Active','Inactive']},{l:'Allowed Values',type:'area',req:1,span:'full',rows:2,ph:'Comma-separated, e.g. XS, S, M, L, XL'}]}]},
   vendor:{no:3,list:'vendor',title:'New Vendor',desc:'Onboard a supplier and its commercial terms.',ref:'New Vendor · Draft',cta:'Save Vendor',footNote:'Required fields (*) must be completed. This vendor’s Category Hierarchy and sellable SKUs (Vendor Product) are set up after onboarding, in their own functions under Vendor Maintenance.',
-    sections:[{l:'Identity',f:[{l:'Vendor Name',req:1,span:'full'},{l:'TIN'},{l:'Vendor Code',ph:'Auto if left blank'}]},{l:'Commercial Terms',f:[{l:'Delivery Model',type:'select',opt:['Direct-to-Store (DTS)','Cross-dock','DSD']},{l:'Payment Terms',type:'select',opt:['7 days','15 days','30 days','45 days','60 days']},{l:'Lead Time',ph:'e.g. 2 days'},{l:'Min Order (₱)',type:'number'},{l:'RTV Allowed',type:'select',req:1,opt:['Yes','No'],hint:'Controls whether damaged / unsold stock can be returned to this vendor.'}]},{l:'Contact',f:[{l:'Registered Address',span:'full'},{l:'Contact Person'},{l:'Phone'},{l:'Email',type:'email'}]}]},
+    sections:[{l:'Identity',f:[{l:'Vendor Name',req:1,span:'full'},{l:'TIN'},{l:'Vendor Code',ph:'Auto if left blank'},{l:'Vendor Type',type:'select',req:1,opt:['Manufacturer','Distributor','Manufacturer & Distributor'],hint:'Only Manufacturer-type vendors can own a Product Brand.'}]},{l:'Commercial Terms',f:[{l:'Delivery Model',type:'select',opt:['Direct-to-Store (DTS)','Cross-dock','DSD']},{l:'Payment Terms',type:'select',opt:['7 days','15 days','30 days','45 days','60 days']},{l:'Lead Time',ph:'e.g. 2 days'},{l:'Min Order (₱)',type:'number'},{l:'RTV Allowed',type:'select',req:1,opt:['Yes','No'],hint:'Controls whether damaged / unsold stock can be returned to this vendor.'}]},{l:'Contact',f:[{l:'Registered Address',span:'full'},{l:'Contact Person'},{l:'Phone'},{l:'Email',type:'email'},{l:'Status',type:'select',opt:['Active','On Hold','Inactive']}]}]},
   vencat:{no:'',list:'vencat',title:'New Vendor Category',desc:'Add a node to the selected vendor’s 2-level category hierarchy.',ref:'New Vendor Category · Draft',cta:'Save Category',footNote:'Level 1 = Category, Level 2 = Sub-Category (choose its parent). Vendor Product SKUs are tagged to Sub-Category nodes.',
     sections:[{l:'Node',f:[{l:'Vendor',type:'select',req:1,opt:VEN},{l:'Level',type:'select',req:1,opt:['Category (L1)','Sub-Category (L2)']},{l:'Parent Category',type:'select',opt:['— None (top level) —','Beverages','Dairy','Culinary'],hint:'Required for a Sub-Category.'},{l:'Node Name',req:1,span:'full',ph:'e.g. Coffee'},{l:'Node Code',ph:'e.g. BEV-COF'},{l:'Allowance / Promo Eligible',type:'select',opt:['No','Yes'],hint:'If Yes, SKUs under this node can be linked to vendor allowances / promos.'}]}]},
   vencatalog:{no:'',list:'vencatalog',title:'Add Vendor Product',desc:'Add a sellable SKU to this vendor and set the terms for ordering it from them.',ref:'New Vendor Product · Draft',cta:'Save Vendor Product',footNote:'These terms live on the item↔vendor link — the same SKU sourced from a different vendor can carry different terms.',
     sections:[{l:'Link',f:[{l:'Company',type:'select',req:1,opt:BUYERS},{l:'Vendor',type:'select',req:1,opt:VEN},{l:'Item / SKU',type:'select',req:1,span:'full',opt:['100238 · Nescafé Classic 100g','100561 · Bear Brand Powdered 300g','100774 · Milo Activ-Go 300g','100902 · Nestlé All Purpose Cream 250ml','101033 · Maggi Magic Sarap 8g']},{l:'Vendor Item #',ph:'Supplier’s own SKU code'},{l:'Vendor Category',type:'select',opt:['Beverages › Coffee','Beverages › Creamer','Beverages › Cereal Drinks','Dairy › Powdered Milk','Culinary › Sauces & Mixes','Culinary › Seasoning'],hint:'From this vendor’s category hierarchy.'},{l:'Source Priority',type:'select',opt:['Primary','Alternate']}]},{l:'Ordering Terms',f:[{l:'Order Pack / UOM',type:'select',opt:['CASE-24','CASE-48','CASE-100','PACK-6','PC'],hint:'From the item’s orderable UOM levels.'},{l:'MOQ (cases)',type:'number',ph:'e.g. 20'},{l:'Order Increment (cases)',type:'number',ph:'e.g. 5'},{l:'Order Schedule',ph:'e.g. Mon · Thu'},{l:'Lead Time',ph:'e.g. 3 days'},{l:'Cost / Case (CCM)',ro:1,v:'Maintained in Cost Change Management',hint:'Vendor purchase cost is owned by CCM — not editable here.'},{l:'Allowance',type:'select',opt:['— None —','Volume Rebate','Promo Allowance','Display / Facing'],hint:'Links this line to a Vendor Allowance agreement.'}]}]},
   company:{no:1,list:'company',title:'New Company',desc:'Register a corporate / operating entity.',ref:'New Company · Draft',cta:'Save Company',
-    sections:[{l:'Identity',f:[{l:'Company Code',req:1},{l:'Legal Name',req:1,span:'full'},{l:'Trade Name'},{l:'TIN'}]},{l:'Fiscal & Tax',f:[{l:'Fiscal Year Start',type:'select',opt:['January','April']},{l:'Base Currency',type:'select',opt:['PHP — Philippine Peso']},{l:'Default VAT',type:'select',opt:['12% VATable','VAT Exempt']},{l:'Price Includes VAT',type:'select',opt:['Yes (VAT-inclusive)','No']}]},{l:'Contact',f:[{l:'Registered Address',span:'full'},{l:'Contact Person'}]}]},
+    sections:[{l:'Identity',f:[{l:'Company Code',req:1},{l:'Legal Name',req:1,span:'full'},{l:'Trade Name'},{l:'TIN'}]},{l:'Fiscal & Tax',f:[{l:'Fiscal Year Start',type:'select',opt:['January','April']},{l:'Base Currency',type:'select',opt:['PHP — Philippine Peso']},{l:'Default VAT',type:'select',opt:['12% VATable','VAT Exempt']},{l:'Price Includes VAT',type:'select',opt:['Yes (VAT-inclusive)','No']}]},{l:'Contact',f:[{l:'Registered Address',span:'full'},{l:'Contact Person'},{l:'Status',type:'select',opt:['Active','Inactive']}]}]},
   branch:{no:2,list:'branch',title:'New Branch',desc:'Open a new store location.',ref:'New Branch · Draft',cta:'Save Branch',
     sections:[{l:'Identity',f:[{l:'Company',type:'select',req:1,opt:BUYERS},{l:'Branch Code',req:1},{l:'Branch Name',req:1,span:'full'},{l:'Format',type:'select',req:1,opt:['Price Club','Extra','Minimart','Merkado (Ayagold)'],hint:'Store brand/format — sets the store’s Format-zone membership.'},{l:'Region',type:'select',req:1,opt:['NCR','N.Luzon','S.Luzon','Visayas','Mindanao'],hint:'Geographic zone — drives regional price/cost grouping.'}]},{l:'Setup',f:[{l:'Inventory Locations',type:'select',opt:['Selling Area + Warehouse (Price Club default)','Selling Area only'],hint:'Seeded from Format — Price Club opens with two locations (Warehouse + Selling Area); other formats with one.'},{l:'Cross-Dock Hub',type:'select',opt:['— Direct-to-store —','CD-NCR North','CD-NCR South','CD-Cebu','CD-Davao'],hint:'Serving cross-dock, if not direct delivery.'},{l:'Opening Date',type:'date',v:'2026-08-01'}]},{l:'Grouping Assignments',f:[{l:'Price Zone',type:'select',opt:['Price Club','Extra','Minimart','Merkado','Visayas','NCR Metro'],hint:'Retail-price group this store follows.'},{l:'Cost Zone',type:'select',opt:['Price Club National','Luzon Cost','Visayas–Mindanao Cost','Merkado Cost']},{l:'Assortment Cluster',type:'select',opt:['Urban Large','Urban Small','Convenience','Provincial Mixed']},{l:'Replenishment Profile',type:'select',opt:['Metro Fast-Movers','Provincial Weekly','Minimart 2×/Week']}]},
-{l:'Address',f:[{l:'Street / Building',span:'full'},{l:'City / Municipality'},{l:'Province'}]}]},
+{l:'Address',f:[{l:'Street / Building',span:'full'},{l:'City / Municipality'},{l:'Province'},{l:'Status',type:'select',opt:['Active','Closed','Inactive']}]}]},
   pricezone:{no:'',list:'pricezone',title:'New Price Zone',desc:'Define a store group that shares a retail price.',ref:'New Price Zone · Draft',cta:'Save Price Zone',footNote:'The zone is only a set of stores. Actual prices are set as dated Price Events in Price Change Management, which target this zone.',
     sections:[{l:'Identity',f:[{l:'Zone Name',req:1,span:'full',ph:'e.g. Visayas Metro'},{l:'Zone Code',ph:'Auto if left blank'},{l:'Company',type:'select',req:1,opt:BUYERS,id:'zoneCompany'},{l:'Status',type:'select',opt:['Active','Inactive']},{l:'Description',type:'area',span:'full',rows:3,ph:'Long description of this price zone — which stores it covers and why they share a retail price.'}]},
       {l:'Assign Stores',f:[{l:'Stores',type:'storepicker',span:'full',hint:'Select one or more stores under the company chosen above, then use › to add them to this zone (‹ to remove). Changing the company resets the selection.'}]}]},
@@ -1948,22 +1998,22 @@ const CREATE = {
       {l:'Assign Stores',f:[{l:'Stores',type:'storepicker',span:'full',hint:'Select one or more stores under the company chosen above, then use › to add them to this profile (‹ to remove). Changing the company resets the selection.'}]}]},
   vendorschedule:{no:'',list:'vendorschedule',title:'New Vendor Schedule',desc:'Set the weekday order pattern for a Company · Vendor.',ref:'New Vendor Schedule · Draft',cta:'Save Schedule',footNote:'The pattern applies every week — there is no dated calendar here. Exception dates are handled on the Order Calendar; delivery lands at order day + lead time.',
     sections:[{l:'Scope',f:[{l:'Company',type:'select',req:1,opt:BUYERS},{l:'Vendor',type:'select',req:1,opt:VEN}]},
-      {l:'Order Pattern',f:[{l:'Order Days',ph:'e.g. Mon · Thu',hint:'Weekdays this vendor can be ordered; applies every week (no dated calendar).'},{l:'Lead Time (days)',type:'number',v:'3'},{l:'Delivery Days (optional)',ph:'e.g. Thu · Sun',hint:'Leave blank to derive from order day + lead time.'}]},
+      {l:'Order Pattern',f:[{l:'Order Days',ph:'e.g. Mon · Thu',hint:'Weekdays this vendor can be ordered; applies every week (no dated calendar).'},{l:'Lead Time (days)',type:'number',v:'3'},{l:'Delivery Days (optional)',ph:'e.g. Thu · Sun',hint:'Leave blank to derive from order day + lead time.'},{l:'Status',type:'select',opt:['Active','Inactive']}]},
       {l:'Inherited from Vendor (read-only)',f:[{l:'Delivery Model',ro:1,v:'Direct-to-Store (DTS)'},{l:'Min Order (₱)',ro:1,v:'25,000'}]}]},
   ordercalendar:{no:'',list:'ordercalendar',title:'New Calendar Exception',desc:'Add a company holiday or a per-vendor blackout that overlays the weekly Vendor Schedule.',ref:'New Exception · Draft',cta:'Save Exception',footNote:'A suppressed order day skips ordering (demand rolls to the next order weekday); a suppressed delivery date rolls the delivery forward.',
-    sections:[{l:'Exception',f:[{l:'Scope',type:'select',req:1,opt:['Company Holiday','Vendor Blackout']},{l:'Company',type:'select',req:1,opt:BUYERS},{l:'Vendor',type:'select',opt:['— Not applicable (company holiday) —',...VEN],hint:'Required only for a Vendor Blackout.'},{l:'Date',type:'date',v:'2026-08-21'},{l:'Type',type:'select',req:1,opt:['Non-order','Non-delivery','Both']},{l:'Label',span:'full',ph:'e.g. Ninoy Aquino Day'}]}]},
+    sections:[{l:'Exception',f:[{l:'Scope',type:'select',req:1,opt:['Company Holiday','Vendor Blackout']},{l:'Company',type:'select',req:1,opt:[]},{l:'Vendor',type:'select',opt:[],hint:'Required only for a Vendor Blackout.'},{l:'Date',type:'date',v:'2026-08-21'},{l:'Type',type:'select',req:1,opt:['Non-order','Non-delivery','Both']},{l:'Label',span:'full',ph:'e.g. Ninoy Aquino Day'}]}]},
   rpolicy:{no:'',list:'rpolicy',title:'New Replenishment Policy',desc:'Set resupply parameters for a profile × merchandise scope.',ref:'New Policy · Draft',cta:'Save Policy',footNote:'Most-specific scope wins: a SKU-level policy overrides a category-level one for the same profile.',
-    sections:[{l:'Scope',f:[{l:'Target Profile',type:'select',req:1,opt:['Metro Fast-Movers','Provincial Weekly','Minimart 2×/Week']},{l:'Item Scope Type',type:'select',req:1,opt:['Merchandise Hierarchy Node','Specific SKU']},{l:'Hierarchy Node / SKU',span:'full',req:1,ph:'e.g. 0110 · Dairy & Chilled  OR  100482 · Alaska Fresh Milk 1L'}]},
+    sections:[{l:'Scope',f:[{l:'Target Profile',type:'select',req:1,opt:[]},{l:'Item Scope Type',type:'select',req:1,opt:['Merchandise Hierarchy Node','Specific SKU']},{l:'Hierarchy Node / SKU',span:'full',req:1,ph:'e.g. 0110 · Dairy & Chilled  OR  100482 · Alaska Fresh Milk 1L'}]},
       {l:'Parameters',f:[{l:'Method',type:'select',req:1,opt:['Min / Max (reorder point)','Days-of-Supply','Top-off (order-up-to)']},{l:'Target',span:'full',ph:'Min/Max days, Target days, or Order-up-to level (per method)',hint:'Min & Max for Min/Max; Target days for Days-of-Supply; Order-up-to level for Top-off.'},{l:'Safety Stock (days)',type:'number',v:'5'},{l:'Service Level',type:'select',opt:['95.0%','97.5%','98.0%','99.0%']},{l:'Status',type:'select',opt:['Active','Inactive']}]}]},
   allowance:{no:4,list:'allowance',title:'New Vendor Allowance',desc:'Record a trade agreement / allowance.',ref:'New Allowance · Draft',cta:'Save Allowance',
-    sections:[{l:'Agreement',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Allowance Type',type:'select',opt:['Volume Rebate','Listing Fee','Promo Allowance','Display / Facing','Markdown Support']},{l:'Basis',type:'select',opt:['% of Purchase','Fixed Amount','Per Case']},{l:'Rate / Amount',ph:'e.g. 3.50% or ₱ 12.00'},{l:'Valid From',type:'date',v:'2026-08-01'},{l:'Valid To',type:'date',v:'2026-12-31'}]}]},
-  transfer:{no:13,list:'transfer',title:'New Store-to-Store Transfer',desc:'Move stock between branches.',ref:'TR-6602 · Draft',cta:'Submit Transfer',
+    sections:[{l:'Agreement',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Allowance Type',type:'select',opt:['Volume Rebate','Listing Fee','Promo Allowance','Display / Facing','Markdown Support']},{l:'Basis',type:'select',opt:['% of Purchase','Fixed Amount','Per Case']},{l:'Rate / Amount',ph:'e.g. 3.50% or ₱ 12.00'},{l:'Valid From',type:'date',v:'2026-08-01'},{l:'Valid To',type:'date',v:'2026-12-31'},{l:'Status',type:'select',opt:['Pending','Active','Expiring']}]}]},
+  transfer:{no:13,list:'transfer',title:'New Store-to-Store Transfer',desc:'Move stock between branches.',ref:'TR-6602 · Draft',cta:'Submit Transfer',draft:1,
     sections:[{l:'Header',f:[{l:'From Branch',type:'select',opt:BR,req:1},{l:'To Branch',type:'select',opt:BR,req:1},{l:'Reason',type:'select',opt:['Rebalance','Promo Support','Near Expiry']},{l:'Transfer Date',type:'date',v:'2026-07-15'}]}],
     lines:{title:'Items to Transfer',cols:[{t:'Item'},{t:'UOM'},{t:'Qty',num:1}],rows:[['<span class="t-title">Alaska Fresh Milk 1L</span>','PC',ci('120')],['<span class="t-title">Gardenia White Bread 600g</span>','PC',ci('40')]]}},
-  rtv:{no:14,list:'rtv',title:'New Return To Vendor',desc:'Return goods to a supplier; generates a debit memo.',ref:'RTV-3321 · Draft',cta:'Submit RTV',
+  rtv:{no:14,list:'rtv',title:'New Return To Vendor',desc:'Return goods to a supplier; generates a debit memo.',ref:'RTV-3321 · Draft',cta:'Submit RTV',draft:1,
     sections:[{l:'Header',f:[{l:'Vendor',type:'select',opt:VEN,req:1},{l:'Branch',type:'select',opt:BR},{l:'Reason',type:'select',opt:['Expired','Damaged','Recall','Overstock']},{l:'RTV Date',type:'date',v:'2026-07-15'}]}],
     lines:{title:'Items to Return',cols:[{t:'Item'},{t:'UOM'},{t:'Qty',num:1},{t:'Unit Cost',num:1}],rows:[['<span class="t-title">Alaska Fresh Milk 1L</span>','PC',ci('48'),ci('58.20')]]}},
-  adjust:{no:15,list:'adjust',title:'New Inventory Adjustment',desc:'Correct stock from count, spoilage or shrink.',ref:'ADJ-7713 · Draft',cta:'Submit for Approval',
+  adjust:{no:15,list:'adjust',title:'New Inventory Adjustment',desc:'Correct stock from count, spoilage or shrink.',ref:'ADJ-7713 · Draft',cta:'Submit for Approval',draft:1,
     sections:[{l:'Header',f:[{l:'Entry Mode',type:'select',opt:['Manual lines','Bulk upload (CSV / XLSX)','Annual physical count']},{l:'Count File',type:'file',hint:'Used for Bulk upload / Annual physical count — system matches on item code and computes the variance.'},{l:'Branch',type:'select',opt:BR,req:1},{l:'Reason',type:'select',opt:['Cycle Count','Annual Physical Count','Spoilage','Shrink','System Correction']},{l:'Adjustment Date',type:'date',v:'2026-07-15'}]}],
     lines:{title:'Items',cols:[{t:'Item'},{t:'System Qty',num:1},{t:'Counted',num:1}],rows:[['<span class="t-title">Alaska Fresh Milk 1L</span>','1,480',ci('1,462')]]}},
   makeup:{no:16,list:'makeup',title:'New Conversion',desc:'Make-up / break-up bundle or fresh cut-up batch.',ref:'New Conversion · Draft',cta:'Post Conversion',
@@ -1979,20 +2029,24 @@ const CREATE = {
     sections:[{l:'Run Scope',f:[{l:'Company',type:'select',opt:['All Companies',...BUYERS]},{l:'Store',type:'select',opt:['All Stores',...BR]},{l:'Respect Vendor Order Schedule',type:'select',opt:['Yes — only lines whose vendor orders today','No — all below-target lines']},{l:'Respect Order Calendar',type:'select',opt:['Yes','No']}]},
       {l:'Formula Parameters',f:[{l:'Coverage / Review Period (days)',type:'number',v:'7'},{l:'Safety Stock (days cover)',type:'number',v:'5'},{l:'Service Level',type:'select',opt:['95.0%','97.5%','98.0%','99.0%']},{l:'Round to Order Increment',type:'select',opt:['Yes','No']},{l:'Enforce MOQ',type:'select',opt:['Yes','No']},{l:'Show full assortment (0-qty lines)',type:'select',opt:['Yes','No — only due-today lines']}]}]},
 };
-const CREATE_BTN = {'New User':'user','New Purchase Order':'po','New Item':'item','New Product':'item','New Vendor':'vendor','New Category':'vencat','New Sub-Category':'vencat','Add Vendor Product':'vencatalog','New Vendor Schedule':'vendorschedule','New Calendar Exception':'ordercalendar','New Company':'company','New Branch':'branch','New Price Zone':'pricezone','New Cost Zone':'costzone','New Assortment Cluster':'cluster','New Replenishment Profile':'replenpolicy','New Replenishment Policy':'rpolicy','New Price Event':'price','New Cost Event':'cost','New Assortment Plan':'assort','New Allowance':'allowance','New Transfer':'transfer','New RTV':'rtv','New Adjustment':'adjust','New Conversion':'makeup','New Node':'node','New Receipt':'receipt','Upload Batch':'salesbatch','Run Now':'replenrun'};
+const CREATE_BTN = {'New User':'user','New Purchase Order':'po','New Item':'item','New Product':'item','New Vendor':'vendor','New Category':'vencat','New Sub-Category':'vencat','Add Vendor Product':'vencatalog','New Vendor Schedule':'vendorschedule','New Calendar Exception':'ordercalendar','New Company':'company','New Branch':'branch','New Price Zone':'pricezone','New Cost Zone':'costzone','New Assortment Cluster':'cluster','New Replenishment Profile':'replenpolicy','New Replenishment Policy':'rpolicy','New Price Event':'price','New Cost Event':'cost','New Assortment Plan':'assort','New Allowance':'allowance','New Transfer':'transfer','New RTV':'rtv','New Adjustment':'adjust','New Conversion':'makeup','New Node':'node','New Receipt':'receipt','Upload Batch':'salesbatch','Run Now':'replenrun','New Brand':'brand','New Product Attribute':'attribute'};
 function gv(m,label){ const el=m.querySelector('[data-f="'+CSS.escape(label)+'"]'); return el?el.value:''; }
 function selId(m,label){ const el=m.querySelector('[data-f="'+CSS.escape(label)+'"]'); return el&&el.selectedOptions[0]?Number(el.selectedOptions[0].dataset.id)||null:null; }
+function setV(m,label,val){ const el=m.querySelector('[data-f="'+CSS.escape(label)+'"]'); if(el) el.value = (val==null?'':val); }
+function setSelId(m,label,id){ const el=m.querySelector('[data-f="'+CSS.escape(label)+'"]'); if(!el) return; for(const o of el.options){ if(Number(o.dataset.id)===Number(id)){ o.selected=true; return; } } }
 const SAVE = {
-  company: {route:'/companies', page:'company', body:m=>({code:gv(m,'Company Code'),legalName:gv(m,'Legal Name'),tradeName:gv(m,'Trade Name'),tin:gv(m,'TIN'),fiscalYearStart:gv(m,'Fiscal Year Start'),baseCurrency:gv(m,'Base Currency'),defaultVat:gv(m,'Default VAT'),priceIncludesVat:gv(m,'Price Includes VAT'),registeredAddress:gv(m,'Registered Address'),contactPerson:gv(m,'Contact Person'),status:'Active'})},
-  vendor:  {route:'/vendors', page:'vendor', body:m=>({name:gv(m,'Vendor Name'),tin:gv(m,'TIN'),code:gv(m,'Vendor Code'),deliveryModel:gv(m,'Delivery Model'),paymentTerms:gv(m,'Payment Terms'),leadTime:gv(m,'Lead Time'),minOrder:money(gv(m,'Min Order (₱)')),rtvAllowed:gv(m,'RTV Allowed'),registeredAddress:gv(m,'Registered Address'),contactPerson:gv(m,'Contact Person'),phone:gv(m,'Phone'),email:gv(m,'Email'),status:'Active'})},
-  branch:  {route:'/branches', page:'branch', body:m=>({code:gv(m,'Branch Code'),name:gv(m,'Branch Name'),format:gv(m,'Format'),region:gv(m,'Region'),companyId:selId(m,'Company'),inventoryLocations:gv(m,'Inventory Locations'),crossDockHub:gv(m,'Cross-Dock Hub'),openingDate:gv(m,'Opening Date'),street:gv(m,'Street / Building'),city:gv(m,'City / Municipality'),province:gv(m,'Province'),priceZoneId:selId(m,'Price Zone'),costZoneId:selId(m,'Cost Zone'),assortmentClusterId:selId(m,'Assortment Cluster'),replenishmentProfileId:selId(m,'Replenishment Profile'),status:'Active'})},
-  pricezone:{route:'/price-zones', page:'pricezone', body:m=>({name:gv(m,'Zone Name'),code:gv(m,'Zone Code'),companyId:selId(m,'Company'),status:'Active',description:gv(m,'Description')})},
-  costzone: {route:'/cost-zones', page:'costzone', body:m=>({name:gv(m,'Zone Name'),code:gv(m,'Zone Code'),companyId:selId(m,'Company'),status:'Active',description:gv(m,'Description')})},
-  cluster:  {route:'/assortment-clusters', page:'cluster', body:m=>({name:gv(m,'Cluster Name'),code:gv(m,'Cluster Code'),companyId:selId(m,'Company'),status:'Active',description:gv(m,'Description'),storeProfile:gv(m,'Store Profile'),tradeArea:gv(m,'Trade Area')})},
-  replenpolicy:{route:'/replenishment-profiles', page:'replenpolicy', body:m=>({name:gv(m,'Profile Name'),code:gv(m,'Profile Code'),companyId:selId(m,'Company'),status:'Active',description:gv(m,'Description')})},
+  company: {route:'/companies', page:'company', body:m=>({code:gv(m,'Company Code'),legalName:gv(m,'Legal Name'),tradeName:gv(m,'Trade Name'),tin:gv(m,'TIN'),fiscalYearStart:gv(m,'Fiscal Year Start'),baseCurrency:gv(m,'Base Currency'),defaultVat:gv(m,'Default VAT'),priceIncludesVat:gv(m,'Price Includes VAT'),registeredAddress:gv(m,'Registered Address'),contactPerson:gv(m,'Contact Person'),status:gv(m,'Status')||'Active'})},
+  vendor:  {route:'/vendors', page:'vendor', body:m=>({name:gv(m,'Vendor Name'),tin:gv(m,'TIN'),code:gv(m,'Vendor Code'),vendorType:gv(m,'Vendor Type'),deliveryModel:gv(m,'Delivery Model'),paymentTerms:gv(m,'Payment Terms'),leadTime:gv(m,'Lead Time'),minOrder:money(gv(m,'Min Order (₱)')),rtvAllowed:gv(m,'RTV Allowed'),registeredAddress:gv(m,'Registered Address'),contactPerson:gv(m,'Contact Person'),phone:gv(m,'Phone'),email:gv(m,'Email'),status:gv(m,'Status')||'Active'})},
+  branch:  {route:'/branches', page:'branch', body:m=>({code:gv(m,'Branch Code'),name:gv(m,'Branch Name'),format:gv(m,'Format'),region:gv(m,'Region'),companyId:selId(m,'Company'),inventoryLocations:gv(m,'Inventory Locations'),crossDockHub:gv(m,'Cross-Dock Hub'),openingDate:gv(m,'Opening Date'),street:gv(m,'Street / Building'),city:gv(m,'City / Municipality'),province:gv(m,'Province'),priceZoneId:selId(m,'Price Zone'),costZoneId:selId(m,'Cost Zone'),assortmentClusterId:selId(m,'Assortment Cluster'),replenishmentProfileId:selId(m,'Replenishment Profile'),status:gv(m,'Status')||'Active'})},
+  pricezone:{route:'/price-zones', page:'pricezone', body:m=>({name:gv(m,'Zone Name'),code:gv(m,'Zone Code'),companyId:selId(m,'Company'),status:gv(m,'Status')||'Active',description:gv(m,'Description')})},
+  costzone: {route:'/cost-zones', page:'costzone', body:m=>({name:gv(m,'Zone Name'),code:gv(m,'Zone Code'),companyId:selId(m,'Company'),status:gv(m,'Status')||'Active',description:gv(m,'Description')})},
+  cluster:  {route:'/assortment-clusters', page:'cluster', body:m=>({name:gv(m,'Cluster Name'),code:gv(m,'Cluster Code'),companyId:selId(m,'Company'),status:gv(m,'Status')||'Active',description:gv(m,'Description'),storeProfile:gv(m,'Store Profile'),tradeArea:gv(m,'Trade Area')})},
+  replenpolicy:{route:'/replenishment-profiles', page:'replenpolicy', body:m=>({name:gv(m,'Profile Name'),code:gv(m,'Profile Code'),companyId:selId(m,'Company'),status:gv(m,'Status')||'Active',description:gv(m,'Description')})},
   vencat:   {route:'/vendor-categories', page:'vencat', body:m=>({vendorId:selId(m,'Vendor'),level:gv(m,'Level'),parentCategoryId:selId(m,'Parent Category'),nodeName:gv(m,'Node Name'),nodeCode:gv(m,'Node Code'),allowanceEligible:gv(m,'Allowance / Promo Eligible'),status:'Active'})},
-  vendorschedule:{route:'/vendor-schedules', page:'vendorschedule', body:m=>({companyId:selId(m,'Company'),vendorId:selId(m,'Vendor'),orderDays:gv(m,'Order Days'),leadTimeDays:Number(gv(m,'Lead Time (days)')),deliveryDays:gv(m,'Delivery Days (optional)'),status:'Active'})},
-  allowance:{route:'/vendor-allowances', page:'allowance', body:m=>({vendorId:selId(m,'Vendor'),allowanceType:gv(m,'Allowance Type'),basis:gv(m,'Basis'),rateAmount:gv(m,'Rate / Amount'),validFrom:gv(m,'Valid From'),validTo:gv(m,'Valid To'),status:'Active'})},
+  vendorschedule:{route:'/vendor-schedules', page:'vendorschedule', body:m=>({companyId:selId(m,'Company'),vendorId:selId(m,'Vendor'),orderDays:gv(m,'Order Days'),leadTimeDays:Number(gv(m,'Lead Time (days)')),deliveryDays:gv(m,'Delivery Days (optional)'),status:gv(m,'Status')||'Active'})},
+  rpolicy:{route:'/replenishment-policies', page:'rpolicy', body:m=>({profileId:selId(m,'Target Profile'), itemScopeType:gv(m,'Item Scope Type'), scopeRef:gv(m,'Hierarchy Node / SKU'), method:gv(m,'Method'), target:gv(m,'Target'), safetyStockDays:Number(gv(m,'Safety Stock (days)'))||null, serviceLevel:gv(m,'Service Level'), status:gv(m,'Status')||'Active'})},
+  ordercalendar:{route:'/order-calendar-exceptions', page:'ordercalendar', body:m=>({scope:gv(m,'Scope'), companyId:selId(m,'Company'), vendorId:selId(m,'Vendor'), date:gv(m,'Date'), type:gv(m,'Type'), label:gv(m,'Label'), status:'Active'})},
+  allowance:{route:'/vendor-allowances', page:'allowance', body:m=>({vendorId:selId(m,'Vendor'),allowanceType:gv(m,'Allowance Type'),basis:gv(m,'Basis'),rateAmount:gv(m,'Rate / Amount'),validFrom:gv(m,'Valid From'),validTo:gv(m,'Valid To'),status:gv(m,'Status')||'Active'})},
   vencatalog:{route:'/vendor-products', page:'vencatalog', body:m=>({
     companyId:selId(m,'Company'),
     vendorId:selId(m,'Vendor'),
@@ -2024,8 +2078,11 @@ const SAVE = {
     sellingUom: gv(m,'Selling UOM'),
     standardCost: money(gv(m,'Standard Cost')),
     baseRetail: money(gv(m,'Base Retail (VAT-inc)'))||money(gv(m,'Base Retail')),
-    status:'Active'
+    status:gv(m,'Status')||'Active',
+    attributes: ATTR_DRAFT.map(a=>({name:a.n||a.name, value:a.v||a.value}))
   })},
+  brand:{route:'/brands', page:'brand', body:m=>({name:gv(m,'Brand Name'),code:gv(m,'Brand Code'),manufacturerId:selId(m,'Manufacturer'),status:gv(m,'Status')||'Active',description:gv(m,'Description')})},
+  attribute:{route:'/product-attributes', page:'attribute', body:m=>({name:gv(m,'Attribute Name'),code:gv(m,'Attribute Code'),allowedValues:gv(m,'Allowed Values'),status:gv(m,'Status')||'Active',description:gv(m,'Description')})},
   node: {route:'/merch-nodes', page:'hierarchy', body:m=>({
     level: gv(m,'Level'),
     parentId: selId(m,'Parent Node'),
@@ -2035,6 +2092,204 @@ const SAVE = {
     replenStrategy: gv(m,'Replen Strategy'),
     status:'Active'
   })},
+};
+function nameOf(rec){ return (rec.name!=null&&rec.name!=='') ? rec.name : (rec.legalName || rec.nodeName || rec.ref || ('Record #'+rec.id)); }
+function memberStoresHtml(branches, fk, recId){
+  const members = (branches||[]).filter(b=>b[fk]===recId);
+  const rows = members.map(b=>{
+    const mem = (String(b.code||'')+' '+String(b.name||'')+' '+String(b.region||'')).toLowerCase();
+    return '<div class="mem-row" data-mem="'+esc(mem)+'">'+esc(b.code)+' · '+esc(b.name)+' — '+esc(b.region)+'</div>';
+  }).join('');
+  const search = members.length ? '<div class="fg full"><input class="mem-search" placeholder="Search member stores…"></div>' : '';
+  const body = members.length ? '<div class="mem-list">'+rows+'</div>' : '<div class="mem-empty">No stores assigned.</div>';
+  return '<div class="panel"><div class="panel-head"><h3>Member Stores (<span class="mem-count">'+members.length+'</span>)</h3></div><div class="panel-body">'+search+body+'</div></div>';
+}
+const VIEWCFG = {
+  company:{ endpoint:'/companies', createKey:'company', label:'Company', lookups:[],
+    view:(r)=>[
+      ['Company Code','<span class="mono">'+esc(r.code)+'</span>'],
+      ['Legal Name',esc(r.legalName)],
+      ['Trade Name',esc(r.tradeName)||'—'],
+      ['TIN',esc(r.tin)||'—'],
+      ['Fiscal Year Start',esc(r.fiscalYearStart)||'—'],
+      ['Base Currency',esc(r.baseCurrency)||'—'],
+      ['Default VAT',esc(r.defaultVat)||'—'],
+      ['Price Includes VAT',esc(r.priceIncludesVat)||'—'],
+      ['Registered Address',esc(r.registeredAddress)||'—'],
+      ['Contact Person',esc(r.contactPerson)||'—'],
+      ['Branches',r.branchCount],
+      ['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]
+    ],
+    editFill:(r,m)=>{
+      setV(m,'Company Code',r.code); setV(m,'Legal Name',r.legalName); setV(m,'Trade Name',r.tradeName);
+      setV(m,'TIN',r.tin); setV(m,'Fiscal Year Start',r.fiscalYearStart); setV(m,'Base Currency',r.baseCurrency);
+      setV(m,'Default VAT',r.defaultVat); setV(m,'Price Includes VAT',r.priceIncludesVat);
+      setV(m,'Registered Address',r.registeredAddress); setV(m,'Contact Person',r.contactPerson); setV(m,'Status',r.status);
+    } },
+  branch:{ endpoint:'/branches', createKey:'branch', label:'Branch', lookups:['/companies','/price-zones','/cost-zones','/assortment-clusters','/replenishment-profiles'],
+    view:(r,lk)=>[
+      ['Branch Code','<span class="mono">'+esc(r.code)+'</span>'],
+      ['Branch Name',esc(r.name)],
+      ['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],
+      ['Format',r.format?badge('blue',esc(r.format)):'—'],
+      ['Region',esc(r.region)||'—'],
+      ['Inventory Locations',esc(r.inventoryLocations)||'—'],
+      ['Cross-Dock Hub',esc(r.crossDockHub)||'—'],
+      ['Opening Date',esc(r.openingDate)||'—'],
+      ['Price Zone',esc((lk['/price-zones'][r.priceZoneId]||{}).name)||'—'],
+      ['Cost Zone',esc((lk['/cost-zones'][r.costZoneId]||{}).name)||'—'],
+      ['Assortment Cluster',esc((lk['/assortment-clusters'][r.assortmentClusterId]||{}).name)||'—'],
+      ['Replenishment Profile',esc((lk['/replenishment-profiles'][r.replenishmentProfileId]||{}).name)||'—'],
+      ['Street / Building',esc(r.street)||'—'],
+      ['City / Municipality',esc(r.city)||'—'],
+      ['Province',esc(r.province)||'—'],
+      ['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]
+    ],
+    editFill:(r,m)=>{
+      setV(m,'Branch Code',r.code); setV(m,'Branch Name',r.name); setV(m,'Format',r.format); setV(m,'Region',r.region);
+      setSelId(m,'Company',r.companyId);
+      setV(m,'Inventory Locations',r.inventoryLocations); setV(m,'Cross-Dock Hub',r.crossDockHub); setV(m,'Opening Date',r.openingDate);
+      setSelId(m,'Price Zone',r.priceZoneId); setSelId(m,'Cost Zone',r.costZoneId);
+      setSelId(m,'Assortment Cluster',r.assortmentClusterId); setSelId(m,'Replenishment Profile',r.replenishmentProfileId);
+      setV(m,'Street / Building',r.street); setV(m,'City / Municipality',r.city); setV(m,'Province',r.province); setV(m,'Status',r.status);
+    } },
+  brand:{ endpoint:'/brands', createKey:'brand', label:'Brand', lookups:[],
+    view:(r)=>[['Brand Name',esc(r.name)],['Brand Code','<span class="mono">'+esc(r.code)+'</span>'],['Manufacturer',esc(r.manufacturerName)||'—'],['Products',r.productCount],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))],['Description',esc(r.description)]],
+    editFill:(r,m)=>{setV(m,'Brand Name',r.name);setV(m,'Brand Code',r.code);setSelId(m,'Manufacturer',r.manufacturerId);setV(m,'Status',r.status);setV(m,'Description',r.description);} },
+  attribute:{ endpoint:'/product-attributes', createKey:'attribute', label:'Product Attribute', lookups:[],
+    view:(r)=>[['Attribute Name',esc(r.name)],['Attribute Code','<span class="mono">'+esc(r.code)+'</span>'],['Allowed Values',esc(r.allowedValues)],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]],
+    editFill:(r,m)=>{setV(m,'Attribute Name',r.name);setV(m,'Attribute Code',r.code);setV(m,'Status',r.status);setV(m,'Allowed Values',r.allowedValues);} },
+  pricezone:{ endpoint:'/price-zones', createKey:'pricezone', label:'Price Zone', lookups:['/companies','/branches'],
+    view:(r,lk)=>[['Zone Name',esc(r.name)],['Zone Code','<span class="mono">'+esc(r.code)+'</span>'],['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],['Assigned Stores',r.storeCount],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))],['Description',esc(r.description)]],
+    editFill:(r,m)=>{setV(m,'Zone Name',r.name);setV(m,'Zone Code',r.code);setSelId(m,'Company',r.companyId);setV(m,'Status',r.status);setV(m,'Description',r.description);},
+    extra:(rec,lk)=>memberStoresHtml(lk['/branches'],'priceZoneId',rec.id) },
+  costzone:{ endpoint:'/cost-zones', createKey:'costzone', label:'Cost Zone', lookups:['/companies','/branches'],
+    view:(r,lk)=>[['Zone Name',esc(r.name)],['Zone Code','<span class="mono">'+esc(r.code)+'</span>'],['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],['Assigned Stores',r.storeCount],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))],['Description',esc(r.description)]],
+    editFill:(r,m)=>{setV(m,'Zone Name',r.name);setV(m,'Zone Code',r.code);setSelId(m,'Company',r.companyId);setV(m,'Status',r.status);setV(m,'Description',r.description);},
+    extra:(rec,lk)=>memberStoresHtml(lk['/branches'],'costZoneId',rec.id) },
+  cluster:{ endpoint:'/assortment-clusters', createKey:'cluster', label:'Assortment Cluster', lookups:['/companies','/branches'],
+    view:(r,lk)=>[['Cluster Name',esc(r.name)],['Cluster Code','<span class="mono">'+esc(r.code)+'</span>'],['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],['Store Profile',esc(r.storeProfile)||'—'],['Trade Area',esc(r.tradeArea)||'—'],['Assigned Stores',r.storeCount],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))],['Description',esc(r.description)]],
+    editFill:(r,m)=>{setV(m,'Cluster Name',r.name);setV(m,'Cluster Code',r.code);setSelId(m,'Company',r.companyId);setV(m,'Status',r.status);setV(m,'Description',r.description);setV(m,'Store Profile',r.storeProfile);setV(m,'Trade Area',r.tradeArea);},
+    extra:(rec,lk)=>memberStoresHtml(lk['/branches'],'assortmentClusterId',rec.id) },
+  replenpolicy:{ endpoint:'/replenishment-profiles', createKey:'replenpolicy', label:'Replenishment Profile', lookups:['/companies','/branches'],
+    view:(r,lk)=>[['Profile Name',esc(r.name)],['Profile Code','<span class="mono">'+esc(r.code)+'</span>'],['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],['Assigned Stores',r.storeCount],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))],['Description',esc(r.description)]],
+    editFill:(r,m)=>{setV(m,'Profile Name',r.name);setV(m,'Profile Code',r.code);setSelId(m,'Company',r.companyId);setV(m,'Status',r.status);setV(m,'Description',r.description);},
+    extra:(rec,lk)=>memberStoresHtml(lk['/branches'],'replenishmentProfileId',rec.id) },
+  vendor:{ endpoint:'/vendors', createKey:'vendor', label:'Vendor', lookups:[],
+    view:(r)=>{ const dmColor={'Direct-to-Store (DTS)':'green','Cross-dock':'blue','DSD':'purple'};
+      return [
+        ['Vendor Name',esc(r.name)],['Vendor Code','<span class="mono">'+esc(r.code)+'</span>'],['TIN',esc(r.tin)||'—'],
+        ['Vendor Type',esc(r.vendorType)||'—'],
+        ['Delivery Model',r.deliveryModel?badge(dmColor[r.deliveryModel]||'gray',esc(r.deliveryModel)):'—'],
+        ['Payment Terms',esc(r.paymentTerms)||'—'],['Lead Time',esc(r.leadTime)||'—'],['Min Order',peso(r.minOrder)],
+        ['RTV Allowed',badge(r.rtvAllowed==='Yes'?'green':'gray', r.rtvAllowed==='Yes'?'Allowed':'Not Allowed')],
+        ['Registered Address',esc(r.registeredAddress)||'—'],['Contact Person',esc(r.contactPerson)||'—'],
+        ['Phone',esc(r.phone)||'—'],['Email',esc(r.email)||'—'],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]
+      ]; },
+    editFill:(r,m)=>{
+      setV(m,'Vendor Name',r.name);setV(m,'TIN',r.tin);setV(m,'Vendor Code',r.code);setV(m,'Vendor Type',r.vendorType);setV(m,'Delivery Model',r.deliveryModel);
+      setV(m,'Payment Terms',r.paymentTerms);setV(m,'Lead Time',r.leadTime);setV(m,'Min Order (₱)',r.minOrder);
+      setV(m,'RTV Allowed',r.rtvAllowed);setV(m,'Registered Address',r.registeredAddress);setV(m,'Contact Person',r.contactPerson);
+      setV(m,'Phone',r.phone);setV(m,'Email',r.email);setV(m,'Status',r.status);
+    } },
+  allowance:{ endpoint:'/vendor-allowances', createKey:'allowance', label:'Vendor Allowance', lookups:['/vendors'],
+    view:(r,lk)=>[['Reference','<span class="mono">'+(esc(r.ref)||'—')+'</span>'],['Vendor',esc((lk['/vendors'][r.vendorId]||{}).name)||'—'],['Allowance Type',esc(r.allowanceType)||'—'],['Basis',esc(r.basis)||'—'],['Rate / Amount',esc(r.rateAmount)||'—'],['Valid From',esc(r.validFrom)||'—'],['Valid To',esc(r.validTo)||'—'],['Status',badge(r.status==='Active'?'green':(r.status==='Expiring'?'red':'amber'),esc(r.status)||'—')]],
+    editFill:(r,m)=>{setSelId(m,'Vendor',r.vendorId);setV(m,'Allowance Type',r.allowanceType);setV(m,'Basis',r.basis);setV(m,'Rate / Amount',r.rateAmount);setV(m,'Valid From',r.validFrom);setV(m,'Valid To',r.validTo);setV(m,'Status',r.status);} },
+  vendorschedule:{ endpoint:'/vendor-schedules', createKey:'vendorschedule', label:'Vendor Schedule', lookups:['/companies','/vendors'],
+    view:(r,lk)=>[['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],['Vendor',esc((lk['/vendors'][r.vendorId]||{}).name)||'—'],['Order Days',esc(r.orderDays)||'—'],['Lead Time (days)',r.leadTimeDays],['Delivery Days',esc(r.deliveryDays)||'—'],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]],
+    editFill:(r,m)=>{setSelId(m,'Company',r.companyId);setSelId(m,'Vendor',r.vendorId);setV(m,'Order Days',r.orderDays);setV(m,'Lead Time (days)',r.leadTimeDays);setV(m,'Delivery Days (optional)',r.deliveryDays);setV(m,'Status',r.status);} },
+  vencat:{ endpoint:'/vendor-categories', createKey:'vencat', label:'Vendor Category', lookups:['/vendors','/vendor-categories'],
+    view:(r,lk)=>[['Vendor',esc((lk['/vendors'][r.vendorId]||{}).name)||'—'],['Level',esc(r.level)||'—'],['Parent Category',esc((lk['/vendor-categories'][r.parentCategoryId]||{}).nodeName)||'—'],['Node Name',esc(r.nodeName)],['Node Code','<span class="mono">'+esc(r.nodeCode)+'</span>'],['Allowance / Promo Eligible',esc(r.allowanceEligible)||'—'],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]],
+    editFill:(r,m)=>{setSelId(m,'Vendor',r.vendorId);setV(m,'Level',r.level);setSelId(m,'Parent Category',r.parentCategoryId);setV(m,'Node Name',r.nodeName);setV(m,'Node Code',r.nodeCode);setV(m,'Allowance / Promo Eligible',r.allowanceEligible);} },
+  hierarchy:{ endpoint:'/merch-nodes', createKey:'node', label:'Hierarchy Node', lookups:['/merch-nodes'],
+    view:(r,lk)=>{ const parent=lk['/merch-nodes'][r.parentId];
+      return [['Level',esc(r.level)||'—'],['Parent Node',parent?esc(parent.code+' · '+parent.name):'—'],['Node Code','<span class="mono">'+esc(r.code)+'</span>'],['Node Name',esc(r.name)],['Merch Manager',esc(r.merchManager)||'—'],['Replen Strategy',esc(r.replenStrategy)||'—'],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]]; },
+    editFill:(r,m)=>{setV(m,'Level',r.level);setSelId(m,'Parent Node',r.parentId);setV(m,'Node Code',r.code);setV(m,'Node Name',r.name);setV(m,'Merch Manager',r.merchManager);setV(m,'Replen Strategy',r.replenStrategy);} },
+  rpolicy:{ endpoint:'/replenishment-policies', createKey:'rpolicy', label:'Replenishment Policy', lookups:[],
+    view:(r)=>[['Target Profile',esc(r.profileName)],['Item Scope Type',esc(r.itemScopeType)],['Hierarchy Node / SKU',esc(r.scopeRef)],['Method',esc(r.method)],['Target',esc(r.target)],['Safety Stock (days)',r.safetyStockDays],['Service Level',esc(r.serviceLevel)],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))]],
+    editFill:(r,m)=>{setSelId(m,'Target Profile',r.profileId);setV(m,'Item Scope Type',r.itemScopeType);setV(m,'Hierarchy Node / SKU',r.scopeRef);setV(m,'Method',r.method);setV(m,'Target',r.target);setV(m,'Safety Stock (days)',r.safetyStockDays);setV(m,'Service Level',r.serviceLevel);setV(m,'Status',r.status);} },
+  ordercalendar:{ endpoint:'/order-calendar-exceptions', createKey:'ordercalendar', label:'Calendar Exception', lookups:[],
+    view:(r)=>[['Scope',esc(r.scope)],['Company','<span class="mono">'+esc(r.companyCode)+'</span>'],['Vendor',esc(r.vendorName)||'—'],['Date','<span class="mono">'+esc(r.date)+'</span>'],['Type',esc(r.type)],['Label',esc(r.label)],['Status',badge(r.status==='Active'?'green':'gray',esc(r.status))]],
+    editFill:(r,m)=>{setV(m,'Scope',r.scope);setSelId(m,'Company',r.companyId);setSelId(m,'Vendor',r.vendorId);setV(m,'Date',r.date);setV(m,'Type',r.type);setV(m,'Label',r.label);} },
+  vencatalog:{ endpoint:'/vendor-products', createKey:'vencatalog', label:'Vendor Product', lookups:['/companies','/vendors','/products','/vendor-categories','/vendor-allowances'],
+    view:(r,lk)=>{
+      const prod=lk['/products'][r.productId]||{};
+      const catNode=lk['/vendor-categories'][r.vendorCategoryId];
+      const catParent=catNode?lk['/vendor-categories'][catNode.parentCategoryId]:null;
+      const vcLabel = catNode ? esc((catParent?catParent.nodeName+' › ':'')+catNode.nodeName) : '—';
+      const allow=lk['/vendor-allowances'][r.allowanceId];
+      return [
+        ['Item Code','<span class="mono">'+esc(prod.code)+'</span>'],
+        ['Description',esc(prod.description)||'—'],
+        ['Company',esc((lk['/companies'][r.companyId]||{}).legalName)||'—'],
+        ['Vendor',esc((lk['/vendors'][r.vendorId]||{}).name)||'—'],
+        ['Vendor Item #',esc(r.vendorItemNo)||'—'],
+        ['Vendor Category (L1 › L2)',vcLabel],
+        ['Source Priority',badge(r.sourcePriority==='Primary'?'green':'gray', esc(r.sourcePriority)||'Alternate')],
+        ['Order Pack / UOM',esc(r.orderPackUom)||'—'],
+        ['MOQ (cases)',r.moqCases==null?'—':r.moqCases],
+        ['Order Increment (cases)',r.orderIncrementCases==null?'—':r.orderIncrementCases],
+        ['Order Schedule',esc(r.orderSchedule)||'—'],
+        ['Lead Time',esc(r.leadTime)||'—'],
+        ['Cost / Case (CCM)',r.costPerCase==null?'—':peso(r.costPerCase)],
+        ['Allowance',allow?badge('blue',esc(allow.allowanceType)):'—'],
+        ['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')]
+      ];
+    },
+    editFill:(r,m)=>{
+      setSelId(m,'Company',r.companyId);
+      setSelId(m,'Vendor',r.vendorId);
+      setSelId(m,'Item / SKU',r.productId);
+      setV(m,'Vendor Item #',r.vendorItemNo);
+      setSelId(m,'Vendor Category',r.vendorCategoryId);
+      setV(m,'Source Priority',r.sourcePriority);
+      setV(m,'Order Pack / UOM',r.orderPackUom);
+      setV(m,'MOQ (cases)',r.moqCases);
+      setV(m,'Order Increment (cases)',r.orderIncrementCases);
+      setV(m,'Order Schedule',r.orderSchedule);
+      setV(m,'Lead Time',r.leadTime);
+      setSelId(m,'Allowance',r.allowanceId);
+    } },
+  item:{ endpoint:'/products', createKey:'item', label:'Product', lookups:[],
+    view:(r)=>[
+      ['Item Code','<span class="mono">'+esc(r.code)+'</span>'],
+      ['Description',esc(r.description)],
+      ['Primary Barcode',esc(r.primaryBarcode)||'—'],
+      ['Short Name (POS)',esc(r.shortName)||'—'],
+      ['Brand',esc(r.brand)||'—'],
+      ['Perishable',esc(r.perishable)||'—'],
+      ['Shelf Life',esc(r.shelfLife)||'—'],
+      ['VAT Class',esc(r.vatClass)||'—'],
+      ['Buying UOM',esc(r.buyingUom)||'—'],
+      ['Selling UOM',esc(r.sellingUom)||'—'],
+      ['Standard Cost',r.standardCost==null?'—':peso(r.standardCost)],
+      ['Base Retail (VAT-inc)',r.baseRetail==null?'—':peso(r.baseRetail)],
+      ['Margin %',r.marginPct==null?'—':r.marginPct+'%'],
+      ['Status',badge(r.status==='Active'?'green':'gray',esc(r.status)||'Active')],
+      ['Attributes', (r.attributes||[]).map(a=>esc(a.name)+': '+esc(a.value)).join(', ')||'—']
+    ],
+    // Mirrors SAVE.item.body's gv()/selId() calls one-for-one. The Dept→Sub-Dept→Class→Sub-Class
+    // cascade (selId(m,'Sub-Class') at save time) is populated live via async fillLevelSelect chains
+    // keyed off merchNodeId's ancestry — not cleanly preselectable here, so it is intentionally left
+    // for re-selection on Edit; every other field is prefilled.
+    editFill:(r,m)=>{
+      setV(m,'Description',r.description);
+      setV(m,'Primary Barcode',r.primaryBarcode);
+      setV(m,'Short Name (POS)',r.shortName);
+      setV(m,'Brand',r.brand);
+      setV(m,'Perishable',r.perishable);
+      setV(m,'Shelf Life',r.shelfLife);
+      setV(m,'VAT Class',r.vatClass);
+      setV(m,'Listing Fee',r.listingFee);
+      setV(m,'Store Range',r.storeRange);
+      setV(m,'Buying UOM',r.buyingUom);
+      setV(m,'Selling UOM',r.sellingUom);
+      setV(m,'Standard Cost',r.standardCost);
+      setV(m,'Base Retail (VAT-inc)',r.baseRetail);
+      setV(m,'Status',r.status);
+      ATTR_DRAFT = cloneAttrs(r.attributes);
+      refreshAttrs();
+    } },
 };
 function fillSelectFK(m, label, list, nameField, opts){
   const el=m.querySelector('[data-f="'+CSS.escape(label)+'"]'); if(!el) return;
@@ -2067,6 +2322,14 @@ async function fillFKSelects(key, m){
       fillSelectFK(m,'Vendor',vendors,'name');
     } else if(key==='allowance'){
       fillSelectFK(m,'Vendor', await api('/vendors'), 'name');
+    } else if(key==='rpolicy'){
+      fillSelectFK(m,'Target Profile', await api('/replenishment-profiles'), 'name');
+    } else if(key==='ordercalendar'){
+      const [companies,vendors]=await Promise.all([api('/companies'),api('/vendors')]);
+      fillSelectFK(m,'Company',companies,'legalName');
+      fillSelectFK(m,'Vendor',vendors,'name',{none:'— Not applicable (company holiday) —'});
+    } else if(key==='brand'){
+      fillSelectFK(m,'Manufacturer', (await api('/vendors')).filter(v=>String(v.vendorType||'').includes('Manufacturer')), 'name');
     } else if(key==='node'){
       const nodes = await api('/merch-nodes');
       fillSelectFK(m,'Parent Node', nodes.map(n=>({id:n.id, label:n.code+' · '+n.name})), 'label');
@@ -2083,6 +2346,8 @@ async function fillFKSelects(key, m){
         return {id:c.id, label:(parent?parent.nodeName+' › ':'')+c.nodeName};
       }), 'label', {none:'— None —'});
       fillSelectFK(m,'Allowance', allowances.map(a=>({id:a.id, label:(a.ref||('Allowance #'+a.id))+' · '+(a.allowanceType||'')})), 'label', {none:'— None —'});
+    } else if(key==='item'){
+      fillSelectFK(m,'Brand', await api('/brands'), 'name');
     }
   }catch(e){ console.error('FK select load failed', e); }
 }
@@ -2111,33 +2376,126 @@ async function initItemClassification(m){
   await fillLevelSelect(m, 'Department', 'Department (L1)');
   await onDeptChange();
 }
+// On product edit, preselect the Dept/Sub-Dept/Class/Sub-Class cascade from the
+// product's merchNodeId by walking its parentId ancestry, filling+selecting each level.
+async function prefillItemClassification(m, merchNodeId){
+  if(merchNodeId==null || !m.querySelector('#itemDept')) return;
+  const nodes = await api('/merch-nodes');
+  const byId = {}; nodes.forEach(n=>byId[n.id]=n);
+  const chain = []; let cur = byId[merchNodeId], guard = 0;
+  while(cur && guard++ < 10){ chain.unshift(cur); cur = cur.parentId!=null ? byId[cur.parentId] : null; }
+  const levelMap = {'Department (L1)':'Department','Sub-Department (L2)':'Sub-Department','Class (L3)':'Class','Sub-Class (L4)':'Sub-Class'};
+  let parentId = null;
+  for(const node of chain){
+    const label = levelMap[node.level];
+    if(!label){ parentId = node.id; continue; }
+    if(label!=='Department') await fillLevelSelect(m, label, node.level, parentId);
+    setSelId(m, label, node.id);
+    parentId = node.id;
+  }
+}
 async function openCreate(key){
   if(key==='price'){ openPriceWizard(); return; }
   if(key==='cost'){ openCostWizard(); return; }
   if(key==='assort'){ openAssortWizard(); return; }
   const cfg=CREATE[key]; if(!cfg) return;
   window.__ret=cfg.list;
+  if(key==='item') await ensureAttrMaster();
   const m=document.getElementById('main');
   m.innerHTML=createForm(cfg); m.scrollTop=0;
   renderSidebar(cfg.list);
+  bindTabs();
+  if(key==='item') bindAttrEditor();
   m.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>route(window.__ret||'home'));
   if(SAVE[key]) await fillFKSelects(key, m);
   m.querySelectorAll('[data-save]').forEach(b=>b.onclick=async ()=>{
     const cfg2 = SAVE[key];
     if(cfg2){
-      try{ await api(cfg2.route,{method:'POST',body:JSON.stringify(cfg2.body(m))}); route(cfg2.page); }
+      try{ const created=await api(cfg2.route,{method:'POST',body:JSON.stringify(cfg2.body(m))}); await persistStorePicker(key, created&&created.id); route(cfg2.page); }
       catch(e){ alert('Save failed — '+e.message); }
       return;
     }
     route(window.__ret||'home');
   });
-  if(m.querySelector('#storePicker')) initStorePicker();
+  if(m.querySelector('#storePicker')) await initStorePicker(m, key, null);
   if(m.querySelector('#pcaType')) initPcaType(m);
   if(m.querySelector('#priceScope')) initPriceScope(m);
   if(m.querySelector('#itemDept')) await initItemClassification(m);
 }
 function bindCreate(){
   document.querySelectorAll('#main .btn').forEach(b=>{const k=b.textContent.trim();if(CREATE_BTN[k])b.onclick=()=>openCreate(CREATE_BTN[k]);});
+}
+
+/* ============ GENERIC RECORD VIEW + INLINE EDIT ============ */
+async function openView(entity,id){
+  const cfg = VIEWCFG[entity]; if(!cfg) return;
+  const m = document.getElementById('main');
+  m.innerHTML = '<div class="empty">Loading…</div>';
+  try{
+    const [rec, ...lookupLists] = await Promise.all([api(cfg.endpoint+'/'+id), ...cfg.lookups.map(p=>api(p))]);
+    const lk = {}; const rawLk = {};
+    cfg.lookups.forEach((path,i)=>{ lk[path] = byId(lookupLists[i]); rawLk[path] = lookupLists[i]; });
+    const rows = cfg.view(rec, lk);
+    const actions = '<button class="btn" data-vback="1">‹ Back to list</button><button class="btn primary" data-vedit="1">Edit</button>';
+    const kv = rows.map(([k,v])=>'<div class="k">'+k+'</div><div class="v">'+((v==null||v==='')?'—':v)+'</div>').join('');
+    const extraHtml = cfg.extra ? (cfg.extra(rec, rawLk) || '') : '';
+    m.innerHTML = head('', cfg.label+' — '+esc(nameOf(rec)), 'Read-only record view.', actions)
+      + '<div class="panel"><div class="panel-body"><div class="kv">'+kv+'</div></div></div>'
+      + extraHtml;
+    renderSidebar(entity);
+    m.querySelectorAll('[data-vback]').forEach(b=>b.onclick=()=>route(entity));
+    m.querySelectorAll('[data-vedit]').forEach(b=>b.onclick=()=>editRecord(entity,id));
+    const memSearch = m.querySelector('.mem-search');
+    if(memSearch){
+      memSearch.oninput = ()=>{
+        const q = memSearch.value.trim().toLowerCase();
+        let shown = 0;
+        m.querySelectorAll('.mem-row').forEach(row=>{
+          const match = !q || (row.dataset.mem||'').includes(q);
+          row.style.display = match ? '' : 'none';
+          if(match) shown++;
+        });
+        const cnt = m.querySelector('.mem-count');
+        if(cnt) cnt.textContent = shown;
+      };
+    }
+  }catch(e){
+    m.innerHTML = '<div class="empty">Failed to load record — '+esc(e.message)+'</div>';
+    renderSidebar(entity);
+  }
+}
+async function editRecord(entity,id){
+  const cfg = VIEWCFG[entity]; if(!cfg) return;
+  const key = cfg.createKey, ccfg = CREATE[key]; if(!ccfg) return;
+  if(key==='item') await ensureAttrMaster();
+  const m = document.getElementById('main');
+  m.innerHTML = createForm({...ccfg, title:'Edit '+cfg.label, ref:'Edit '+cfg.label, cta:'Save Changes', _edit:true});
+  m.scrollTop = 0;
+  renderSidebar(entity);
+  bindTabs();
+  if(key==='item') bindAttrEditor();
+  if(m.querySelector('#pcaType')) initPcaType(m);
+  if(m.querySelector('#priceScope')) initPriceScope(m);
+  if(m.querySelector('#itemDept')) await initItemClassification(m);
+  await fillFKSelects(key, m);
+  let rec = null;
+  try{
+    rec = await api(cfg.endpoint+'/'+id);
+    cfg.editFill(rec, m);
+    if(key==='item') await prefillItemClassification(m, rec.merchNodeId);
+    if(m.querySelector('#storePicker')) await initStorePicker(m, key, rec.id);
+  }catch(e){ alert('Failed to load record — '+e.message); }
+  m.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>openView(entity,id));
+  m.querySelectorAll('[data-save]').forEach(b=>b.onclick=async ()=>{
+    try{
+      const body = SAVE[key].body(m);
+      // Preserve a status the form can't set (no Status field on this form) so editing doesn't reset it to Active.
+      if(rec && !m.querySelector('[data-f="Status"]')) body.status = rec.status;
+      await api(SAVE[key].route+'/'+id, {method:'PUT', body:JSON.stringify(body)});
+      await persistStorePicker(key, id);
+      openView(entity,id);
+    }catch(e){ alert('Save failed — '+e.message); }
+  });
 }
 
 /* ============ POS SALES BATCH — DETAIL VIEW ============ */
@@ -2411,6 +2769,59 @@ function postRender(id){
   document.querySelectorAll('#main [data-costdup]').forEach(b=>b.onclick=()=>openCostWizard(costSeed(b.dataset.costdup)));
   document.querySelectorAll('#main [data-assortdup]').forEach(b=>b.onclick=()=>openAssortWizard(assortSeed(b.dataset.assortdup)));
   document.querySelectorAll('#main [data-route]').forEach(el=>el.onclick=()=>route(el.dataset.route));
+  document.querySelectorAll('#main [data-view]').forEach(el=>{el.style.cursor='pointer';el.onclick=()=>{const [e,i]=el.dataset.view.split(':');openView(e,i);};});
+  bindFilters();
+}
+// Generic, no-per-page live list filtering. Binds every .filters bar to the
+// table in its panel (or the next panel's table for page-level bars):
+//  · text <input> → live substring match over each row's full text
+//  · <select>     → exact cell-value match, but ONLY bound when the select's
+//                   options actually align with the table's cell values, so a
+//                   mismatched control (e.g. a Company picker showing legal
+//                   names over a code column) stays a harmless no-op instead of
+//                   hiding every row. Combined with AND; the pager count is live.
+function bindFilters(){
+  const main = document.getElementById('main');
+  if(!main) return;
+  const isAll = t => /^all(\s|$)/i.test(String(t).trim());
+  main.querySelectorAll('.filters').forEach(bar=>{
+    let scope = bar.closest('.panel');
+    let table = scope ? scope.querySelector('table') : null;
+    if(!table){
+      let el = bar.nextElementSibling;
+      while(el && !(el.matches && el.matches('.panel') && el.querySelector('table'))) el = el.nextElementSibling;
+      if(el){ scope = el; table = el.querySelector('table'); }
+    }
+    if(!table || !table.tBodies[0]) return;
+    const rows = Array.from(table.tBodies[0].rows);
+    if(!rows.length) return;
+    const rowData = rows.map(tr=>({
+      tr,
+      text: tr.textContent.toLowerCase(),
+      cells: Array.from(tr.cells).map(td=>td.textContent.trim().toLowerCase())
+    }));
+    const cellUniverse = new Set(rowData.flatMap(r=>r.cells));
+    const inputs = Array.from(bar.querySelectorAll('input'));
+    const selects = Array.from(bar.querySelectorAll('select')).filter(sel=>
+      Array.from(sel.options).some(o=>!isAll(o.text) && cellUniverse.has(o.text.trim().toLowerCase())));
+    const foot = scope ? scope.querySelector('.foot b') : null;
+    const footTotal = foot ? foot.textContent : null;
+    function apply(){
+      const terms = inputs.map(i=>i.value.trim().toLowerCase()).filter(Boolean);
+      const picks = selects.map(s=>s.value.trim().toLowerCase()).filter(v=>v && !isAll(v));
+      let shown=0;
+      rowData.forEach(r=>{
+        const vis = terms.every(t=>r.text.includes(t)) && picks.every(v=>r.cells.includes(v));
+        r.tr.style.display = vis ? '' : 'none';
+        if(vis) shown++;
+      });
+      if(foot) foot.textContent = (terms.length||picks.length) ? String(shown) : footTotal;
+    }
+    inputs.forEach(i=>i.addEventListener('input',apply));
+    selects.forEach(s=>s.addEventListener('change',apply));
+    const applyBtn = Array.from(bar.querySelectorAll('button')).find(b=>/apply|filter/i.test(b.textContent));
+    if(applyBtn) applyBtn.addEventListener('click',e=>{e.preventDefault();apply();});
+  });
 }
 function route(id){
   const main = document.getElementById('main');

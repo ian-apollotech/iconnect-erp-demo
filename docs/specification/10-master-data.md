@@ -133,6 +133,14 @@ after onboarding.
 
 **API:** `GET/POST /vendors`, `GET/PUT /vendors/{id}`.
 
+### Phase-2 extension (payables) ⚑ DR-34
+
+Added when module `payables` is enabled (`17 §2.1`): `bankName`, `bankAccountNo`,
+`bankAccountName` (remit-to), `preferredPaymentMethod` (`Check` · `Bank Transfer`),
+`ewtCodeId` (default BIR ATC classification), `vatClass` (`VATable` · `VAT Exempt` ·
+`Zero-rated`, defaults from company `defaultVat`). `tin` becomes required for Active
+vendors (feeds Form 2307).
+
 ---
 
 ## 5. Vendor Category Hierarchy

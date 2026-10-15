@@ -21,7 +21,7 @@ class VendorAllowanceApiTest {
         String body = """
             {"name":"%s","rtvAllowed":"Yes","status":"Active"}
             """.formatted(name);
-        String response = mvc.perform(post("/api/vendors").contentType("application/json").content(body))
+        String response = mvc.perform(post("/backend/vendors").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andReturn().getResponse().getContentAsString();
         return mapper.readTree(response).get("id").asLong();
@@ -36,13 +36,13 @@ class VendorAllowanceApiTest {
              "rateAmount":"3.50%%","validFrom":"2026-01-01","validTo":"2026-12-31","status":"Active"}
             """.formatted(vendorId);
 
-        mvc.perform(post("/api/vendor-allowances").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendor-allowances").contentType("application/json").content(body))
            .andExpect(status().isCreated())
            .andExpect(jsonPath("$.allowanceType").value("Volume Rebate"))
            .andExpect(jsonPath("$.rateAmount").value("3.50%"))
            .andExpect(jsonPath("$.ref").value(org.hamcrest.Matchers.startsWith("AL-")));
 
-        mvc.perform(get("/api/vendor-allowances"))
+        mvc.perform(get("/backend/vendor-allowances"))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$[?(@.allowanceType=='Volume Rebate')]").exists());
     }
@@ -52,7 +52,7 @@ class VendorAllowanceApiTest {
         String body = """
             {"vendorId":999999,"allowanceType":"Volume Rebate","basis":"% of Purchase","rateAmount":"3.50%"}
             """;
-        mvc.perform(post("/api/vendor-allowances").contentType("application/json").content(body))
+        mvc.perform(post("/backend/vendor-allowances").contentType("application/json").content(body))
            .andExpect(status().isBadRequest());
     }
 }

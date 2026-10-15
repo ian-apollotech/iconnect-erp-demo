@@ -31,10 +31,23 @@ decision here and the referencing spec section is what changes.
 | DR-23 | Vendor Schedule unique per (companyId, vendorId). | "The key is Company · Vendor" — prototype didn't enforce it. | 12 §5 |
 | DR-24 | SRO status set extended with `Cancelled` (discard path) alongside Pending Confirmation → Confirmed → Exported. | Buyers need a way to discard a generated order. | 12 §7.4 |
 | DR-25 | Audit-log entries for edits carry a before/after field summary. | "Edit" rows without a diff have little audit value. | 16 §5 |
+| DR-26 | **(Phase 2)** AP subledger lives in the ERP; GL/CoA stays external — postings map to external account codes and hand off journal lines (I-3 narrowed). | Full AP control without duplicating Finance's ledger. | 17 §1, §2.5, §8 |
+| DR-27 | **(Phase 2)** Vendor invoice numbers use `VI-…`; `AP-…` already belongs to Assortment Plan. | Sequence collision in `02 §1`. | 17 §3.1 |
+| DR-28 | **(Phase 2)** Philippine tax model: input VAT codes + BIR EWT (ATC) + Form 2307 at payment. No US 1099 concepts. | Deployment is Philippine (`00 §7`, `01 §7`). | 17 §2.2, §6.3 |
+| DR-29 | **(Phase 2)** PHP-only AP; no FX/exchange-rate table. | Planning assumption `00 §7`; multi-currency would be a breaking change anyway. | 17 §1.2 |
+| DR-30 | **(Phase 2)** Posting-period entity with Open/Closed control for AP postings; company `fiscalYearStart` reused as the calendar anchor. | Company master has fiscal defaults but no period close. | 17 §2.3 |
+| DR-31 | **(Phase 2)** RTV debit memos (`DM-…`) become open credit items netted in payment runs — the "payables reversal, future finance hand-off" of `14 §6`. | The document already exists in Phase 1; AP is its consumer. | 17 §4.1 |
+| DR-32 | **(Phase 2)** Vendor allowance accrual computed from typed rates (DR-12) into approvable allowance credit memos, settled as payment deductions. | Closes the deferred accrual item below. | 17 §4.2 |
+| DR-33 | **(Phase 2)** AP ends at payment execution + manual/imported `Cleared`; full bank reconciliation stays Finance-side. | Keeps the module inside the merchandising ERP's boundary. | 17 §6.2 |
+| DR-34 | **(Phase 2)** Vendor master extended with remit-to bank details, payment method, EWT class; `tin` required for Active vendors when payables is enabled. | AP cannot pay or withhold without them. | 17 §2.1, 10 §4 |
+| DR-35 | **(Phase 2)** GR/IR accrual is a computed view over GRN-vs-invoiced quantities at receipt cost — no manual accrual document. | The stock ledger and GRN costing already carry the values. | 17 §5 |
 
 ## Open items intentionally deferred (not decisions)
 
-- Accrual computation for vendor allowances (finance scope, integration I-3).
-- Automated POS feed, WMS live sync, GL hand-off — integration points I-1…I-5 (`01 §8`).
+- ~~Accrual computation for vendor allowances (finance scope, integration I-3).~~
+  Now specified for Phase 2 — DR-32, `17 §4.2`.
+- Automated POS feed, WMS live sync — integration points I-1, I-4 (`01 §8`). GL hand-off
+  (I-3) is narrowed by DR-26: AP subledger specified in `17`; GL/CoA and bank
+  reconciliation remain deferred Finance-side.
 - Markdown management for OTB sell-through (mentioned in Procurement; scheduling a
   markdown module is a future phase).

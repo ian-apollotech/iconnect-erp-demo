@@ -26,6 +26,7 @@ public class Vendor extends BaseEntity {
     private String phone;
     private String email;
     private String status = "Active";
+    private String vendorType = "Manufacturer & Distributor";   // "Manufacturer" | "Distributor" | "Manufacturer & Distributor"
 
     public String getCode() { return code; }
     public void setCode(String code) { this.code = code; }
@@ -53,4 +54,6 @@ public class Vendor extends BaseEntity {
     public void setEmail(String email) { this.email = email; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getVendorType() { return vendorType; }
+    public void setVendorType(String vendorType) { this.vendorType = vendorType; }
 }

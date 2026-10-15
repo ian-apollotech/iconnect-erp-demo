@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/vendors")
+@RequestMapping("/backend/vendors")
 public class VendorController
         extends AbstractCrudController<Vendor, VendorDtos.Request, VendorDtos.Response> {
 
@@ -34,6 +34,7 @@ public class VendorController
         v.setPhone(req.phone());
         v.setEmail(req.email());
         if (req.status() != null) v.setStatus(req.status());
+        v.setVendorType(req.vendorType() != null ? req.vendorType() : "Manufacturer & Distributor");
     }
 
     @Override
@@ -41,6 +42,7 @@ public class VendorController
         return new VendorDtos.Response(
             v.getId(), v.getCode(), v.getName(), v.getTin(), v.getDeliveryModel(),
             v.getPaymentTerms(), v.getLeadTime(), v.getMinOrder(), v.getRtvAllowed(),
-            v.getRegisteredAddress(), v.getContactPerson(), v.getPhone(), v.getEmail(), v.getStatus());
+            v.getRegisteredAddress(), v.getContactPerson(), v.getPhone(), v.getEmail(), v.getStatus(),
+            v.getVendorType());
     }
 }

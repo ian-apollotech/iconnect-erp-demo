@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/merch-nodes")
+@RequestMapping("/backend/merch-nodes")
 public class MerchNodeController
         extends AbstractCrudController<MerchNode, MerchNodeDtos.Request, MerchNodeDtos.Response> {
 
@@ -21,7 +21,7 @@ public class MerchNodeController
         this.nodes = nodes;
     }
 
-    // Inherited zero-arg list() (mapped to unconditioned GET /api/merch-nodes) handles the
+    // Inherited zero-arg list() (mapped to unconditioned GET /backend/merch-nodes) handles the
     // no-filter case. These two params-conditioned mappings take precedence when the
     // corresponding query param is present, giving parentId priority over level — matching
     // "if parentId!=null filter findByParentId, else if level!=null filter findByLevel, else findAll".

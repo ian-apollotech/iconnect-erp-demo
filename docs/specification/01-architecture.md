@@ -50,6 +50,7 @@ for every environment (a dev realm export is part of the repo).
 | `inventory` | StockLedger, StockPosition, MerchandiseIssuance, InventoryAdjustment, StockTransfer, Rtv (+DebitMemo), Conversion (make-up/break-up/cut-up) | 14 |
 | `sales` | SalesBatch (+transactions, tender summary, cashier summary), balancing results | 15 |
 | `admin` | UserAccount (Keycloak mirror), Role, RolePermission, AccessScope, AuditLog | 16 |
+| `payables` (**Phase 2**) | VendorInvoice (+lines), AllowanceCreditMemo, ApOpenItem, PaymentProposal (+lines), Payment (+applications), TaxCode, EwtCode, PostingPeriod, HouseBank, AccountMapping, JournalLine | 17 |
 
 ### 2.2 Inter-module rules
 
@@ -72,6 +73,8 @@ for every environment (a dev realm export is part of the repo).
 | `SalesBatchReleased` | sales | inventory (sales stock deduction), planning (demand history) |
 | `StockMovementPosted` | inventory | planning (net position refresh) |
 | `SroConfirmed` | planning | procurement (optional conversion to POs — future), export job |
+| `VendorInvoicePosted` (**Phase 2**) | payables | journal hand-off queue (`17 §8`) |
+| `PaymentExecuted` (**Phase 2**) | payables | journal hand-off queue, payment file adapter (`17 §6`) |
 | `BranchCreated` | masterdata | inventory (seed inventory locations) |
 | `UserProvisioned` | admin | audit |
 
@@ -160,7 +163,7 @@ user's View permissions.
 |---|---|---|---|
 | I-1 | POS sales feed | POS → ERP | Manual batch file upload (`15-sales.md`) |
 | I-2 | Store order export | ERP → legacy iConnect | CSV download/export on SRO confirm (`12 §7.6`) |
-| I-3 | Finance / GL journal hand-off | ERP → Finance | None; events (`GoodsReceiptPosted`, `SalesBatchReleased`, adjustment postings) are the future feed |
+| I-3 | Finance / GL journal hand-off | ERP → Finance | None; events (`GoodsReceiptPosted`, `SalesBatchReleased`, adjustment postings) are the future feed. **Phase 2 narrows this** ⚑ DR-26: the AP subledger moves into the ERP (`17-accounts-payable.md`); I-3 becomes mapped journal-line export (`17 §8`) + payment file adapter; GL/CoA and bank reconciliation stay Finance-side |
 | I-4 | 3PL WMS cross-dock sync | WMS ⇄ ERP | Manual status updates on ASN records (`13-procurement.md §4`) |
 | I-5 | Vendor EDI / portal | ERP ⇄ Vendor | None |
 

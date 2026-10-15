@@ -16,11 +16,20 @@ import com.puregold.iconnect.grouping.PriceZone;
 import com.puregold.iconnect.grouping.PriceZoneRepository;
 import com.puregold.iconnect.grouping.ReplenishmentProfile;
 import com.puregold.iconnect.grouping.ReplenishmentProfileRepository;
+import com.puregold.iconnect.product.Brand;
+import com.puregold.iconnect.product.BrandRepository;
 import com.puregold.iconnect.product.MerchNode;
 import com.puregold.iconnect.product.MerchNodeRepository;
 import com.puregold.iconnect.product.Product;
+import com.puregold.iconnect.product.ProductAttribute;
+import com.puregold.iconnect.product.ProductAttributeRepository;
+import com.puregold.iconnect.product.ProductAttrValue;
 import com.puregold.iconnect.product.ProductPackUom;
 import com.puregold.iconnect.product.ProductRepository;
+import com.puregold.iconnect.replenishment.OrderCalendarException;
+import com.puregold.iconnect.replenishment.OrderCalendarExceptionRepository;
+import com.puregold.iconnect.replenishment.ReplenishmentPolicy;
+import com.puregold.iconnect.replenishment.ReplenishmentPolicyRepository;
 import com.puregold.iconnect.vendor.Vendor;
 import com.puregold.iconnect.vendor.VendorAllowance;
 import com.puregold.iconnect.vendor.VendorAllowanceRepository;
@@ -57,6 +66,10 @@ public class DataSeeder implements CommandLineRunner {
     private final MerchNodeRepository merchNodes;
     private final ProductRepository products;
     private final AssortmentPlanRepository assortmentPlans;
+    private final BrandRepository brands;
+    private final ProductAttributeRepository productAttributes;
+    private final ReplenishmentPolicyRepository replenishmentPolicies;
+    private final OrderCalendarExceptionRepository orderCalendarExceptions;
 
     // Filled in during seedGroupings(), keyed by grouping name, reused by seedBranches().
     private final Map<String, Long> priceZoneIdByName = new LinkedHashMap<>();
@@ -83,7 +96,11 @@ public class DataSeeder implements CommandLineRunner {
                        BranchRepository branches,
                        MerchNodeRepository merchNodes,
                        ProductRepository products,
-                       AssortmentPlanRepository assortmentPlans) {
+                       AssortmentPlanRepository assortmentPlans,
+                       BrandRepository brands,
+                       ProductAttributeRepository productAttributes,
+                       ReplenishmentPolicyRepository replenishmentPolicies,
+                       OrderCalendarExceptionRepository orderCalendarExceptions) {
         this.companies = companies;
         this.priceZones = priceZones;
         this.costZones = costZones;
@@ -98,6 +115,10 @@ public class DataSeeder implements CommandLineRunner {
         this.merchNodes = merchNodes;
         this.products = products;
         this.assortmentPlans = assortmentPlans;
+        this.brands = brands;
+        this.productAttributes = productAttributes;
+        this.replenishmentPolicies = replenishmentPolicies;
+        this.orderCalendarExceptions = orderCalendarExceptions;
     }
 
     @Override
@@ -111,8 +132,12 @@ public class DataSeeder implements CommandLineRunner {
         seedBranches();
         seedMerchNodes();
         seedProducts();
+        seedBrands();
+        seedProductAttributes();
         seedVendorProducts();
         seedAssortmentPlans();
+        seedReplenishmentPolicies();
+        seedOrderCalendarExceptions();
     }
 
     // ---------------------------------------------------------------- companies
@@ -217,13 +242,13 @@ public class DataSeeder implements CommandLineRunner {
             vendors.findAll().forEach(v -> vendorIdByName.put(v.getName(), v.getId()));
             return;
         }
-        Vendor v1 = vendor("V-1004", "Alaska Milk Corporation", "Cross-dock", "30 days", "2 days", "Yes", "Active");
-        Vendor v2 = vendor("V-1027", "Gardenia Bakeries PH", "DSD", "7 days", "Daily", "Yes", "Active");
-        Vendor v3 = vendor("V-1033", "Selecta Ice Cream (RFM)", "DSD", "15 days", "Daily", "Yes", "Active");
-        Vendor v4 = vendor("V-1140", "Nestlé Philippines", "Direct-to-Store (DTS)", "45 days", "3 days", "Yes", "Active");
-        Vendor v5 = vendor("V-1208", "San Miguel Foods", "Direct-to-Store (DTS)", "30 days", "2 days", "No", "Active");
-        Vendor v6 = vendor("V-1315", "Monde Nissin Corp.", "Cross-dock", "30 days", "4 days", "Yes", "On Hold");
-        Vendor v7 = vendor("V-1422", "Universal Robina Corp.", "Direct-to-Store (DTS)", "30 days", "2 days", "No", "Active");
+        Vendor v1 = vendor("V-1004", "Alaska Milk Corporation", "Cross-dock", "30 days", "2 days", "Yes", "Active", "Manufacturer");
+        Vendor v2 = vendor("V-1027", "Gardenia Bakeries PH", "DSD", "7 days", "Daily", "Yes", "Active", "Manufacturer");
+        Vendor v3 = vendor("V-1033", "Selecta Ice Cream (RFM)", "DSD", "15 days", "Daily", "Yes", "Active", "Manufacturer");
+        Vendor v4 = vendor("V-1140", "Nestlé Philippines", "Direct-to-Store (DTS)", "45 days", "3 days", "Yes", "Active", "Manufacturer");
+        Vendor v5 = vendor("V-1208", "San Miguel Foods", "Direct-to-Store (DTS)", "30 days", "2 days", "No", "Active", "Manufacturer");
+        Vendor v6 = vendor("V-1315", "Monde Nissin Corp.", "Cross-dock", "30 days", "4 days", "Yes", "On Hold", "Manufacturer");
+        Vendor v7 = vendor("V-1422", "Universal Robina Corp.", "Direct-to-Store (DTS)", "30 days", "2 days", "No", "Active", "Manufacturer");
 
         for (Vendor v : List.of(v1, v2, v3, v4, v5, v6, v7)) {
             Vendor saved = vendors.save(v);
@@ -232,7 +257,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private Vendor vendor(String code, String name, String deliveryModel, String paymentTerms,
-                           String leadTime, String rtvAllowed, String status) {
+                           String leadTime, String rtvAllowed, String status, String vendorType) {
         Vendor v = new Vendor();
         v.setCode(code);
         v.setName(name);
@@ -241,6 +266,7 @@ public class DataSeeder implements CommandLineRunner {
         v.setLeadTime(leadTime);
         v.setRtvAllowed(rtvAllowed);
         v.setStatus(status);
+        v.setVendorType(vendorType);
         return v;
     }
 
@@ -467,13 +493,13 @@ public class DataSeeder implements CommandLineRunner {
             "ALASKA F.MILK 1L", "Alaska", freshMilk, "58.20", "72.00");
         product("100517", "Gardenia White Bread 600g", "4800092770019",
             "GARDENIA BREAD 600G", "Gardenia", null, "46.50", "59.75");
-        product("100630", "Nescafé Classic 100g", "4800361001236",
+        Product nescafe = product("100630", "Nescafé Classic 100g", "4800361001236",
             "NESCAFE CLASSIC 100G", "Nestlé", null, "118.00", "149.75");
         product("100744", "Selecta Cornetto Choco 110ml", "4800016114009",
             "SELECTA CORNETTO CHOC", "Selecta", null, "22.80", "32.00");
         product("100901", "Fresh Eggs Medium Tray 30s", "4806507050014",
             "FRESH EGGS MED TRAY30", "San Miguel", null, "196.00", "238.00");
-        product("101120", "Lucky Me Pancit Canton 60g", "4800024570017",
+        Product luckyMe = product("101120", "Lucky Me Pancit Canton 60g", "4800024570017",
             "LUCKY ME PANCIT CANT", "Monde Nissin", null, "9.20", "13.50");
         product("900014", "Pure Basics All-Purpose Flour 1kg", "4809014000148",
             "PB FLOUR 1KG", "Pure Basics (Own)", null, "44.00", "55.00");
@@ -484,7 +510,24 @@ public class DataSeeder implements CommandLineRunner {
         addPackUom(alaska, "Base", "PC", 1, "4800016641107", false, true);
         addPackUom(alaska, "Inner", "PACK-6", 6, "14800016641104", true, false);
         addPackUom(alaska, "Case", "CASE-12", 12, "24800016641101", true, false);
+        addAttrValue(alaska, "Net Content", "1 L");
+        addAttrValue(alaska, "Packaging", "Tetra Pak");
         products.save(alaska);
+
+        addAttrValue(nescafe, "Net Content", "100 g");
+        addAttrValue(nescafe, "Packaging", "Sachet");
+        products.save(nescafe);
+
+        addAttrValue(luckyMe, "Net Content", "60 g");
+        addAttrValue(luckyMe, "Flavor", "Classic");
+        products.save(luckyMe);
+    }
+
+    private void addAttrValue(Product product, String attributeName, String value) {
+        ProductAttrValue av = new ProductAttrValue();
+        av.setAttributeName(attributeName);
+        av.setValue(value);
+        product.getAttributes().add(av);
     }
 
     private Product product(String code, String description, String barcode, String shortName,
@@ -512,6 +555,63 @@ public class DataSeeder implements CommandLineRunner {
         pu.setOrderable(orderable);
         pu.setSellable(sellable);
         product.getPackUoms().add(pu);
+    }
+
+    // ---------------------------------------------------------------- brands
+
+    private void seedBrands() {
+        if (brands.count() > 0) return;
+
+        brand("Alaska", "BR-ALASKA", "V-1004", "Dairy, creamer and evaporated/condensed milk brand.");
+        brand("Gardenia", "BR-GARDEN", "V-1027", "Packaged bread and bakery brand.");
+        brand("Nescafé", "BR-NESCAFE", "V-1140", "Instant and roast-and-ground coffee brand.");
+        brand("Selecta", "BR-SELECTA", "V-1033", "Ice cream and frozen novelties brand.");
+        brand("Magnolia", "BR-MAGNOLIA", "V-1208", "Poultry, eggs, butter and spreads brand.");
+        brand("Lucky Me", "BR-LUCKYME", "V-1315", "Instant noodles and pancit canton brand.");
+        brand("Jack 'n Jill", "BR-JNJ", "V-1422", "Snacks, biscuits and confectionery brand.");
+    }
+
+    private void brand(String name, String code, String vendorCode, String description) {
+        Long mfrId = vendors.findByCode(vendorCode)
+            .orElseThrow(() -> new IllegalStateException("Cannot seed brand " + code + ": vendor " + vendorCode + " not found"))
+            .getId();
+
+        Brand b = new Brand();
+        b.setName(name);
+        b.setCode(code);
+        b.setManufacturerId(mfrId);
+        b.setStatus("Active");
+        b.setDescription(description);
+        brands.save(b);
+    }
+
+    // ---------------------------------------------------------------- product attributes
+
+    private void seedProductAttributes() {
+        if (productAttributes.count() > 0) return;
+
+        attribute("Size", "ATT-SIZE", "XS, S, M, L, XL",
+            "Garment / pack size. Applied to apparel and variant SKUs.");
+        attribute("Color", "ATT-COLOR", "Red, Blue, Green, Black, White",
+            "Product colour variant.");
+        attribute("Material", "ATT-MATERIAL", "Cotton, Plastic, Glass, Metal, Paper",
+            "Primary material of the product or its packaging.");
+        attribute("Net Content", "ATT-NETCONT", "60 g, 100 g, 110 ml, 400 g, 600 g, 1 L, 1 kg",
+            "Declared net weight / volume of the pack.");
+        attribute("Flavor", "ATT-FLAVOR", "Classic, Chocolate, Vanilla, Strawberry, Original",
+            "Flavour variant for food & beverage SKUs.");
+        attribute("Packaging", "ATT-PACK", "Tetra Pak, Poly Bag, Glass Jar, PET Bottle, Can, Sachet, Carton",
+            "Packaging format of the SKU.");
+    }
+
+    private void attribute(String name, String code, String allowedValues, String description) {
+        ProductAttribute a = new ProductAttribute();
+        a.setName(name);
+        a.setCode(code);
+        a.setAllowedValues(allowedValues);
+        a.setStatus("Active");
+        a.setDescription(description);
+        productAttributes.save(a);
     }
 
     // ---------------------------------------------------------------- vendor products
@@ -607,5 +707,67 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         assortmentPlans.save(plan);
+    }
+
+    // ---------------------------------------------------------------- replenishment policies
+
+    private void seedReplenishmentPolicies() {
+        if (replenishmentPolicies.count() > 0) return;
+
+        replenishmentPolicy("Metro Fast-Movers", "Merchandise Hierarchy Node", "0110 · Dairy & Chilled",
+            "Days-of-Supply", "DOS 7", 5, "97.5%");
+        replenishmentPolicy("Metro Fast-Movers", "Specific SKU", "SKU 100482 · Alaska Fresh Milk 1L",
+            "Top-off", "Order-up-to 120", 3, "99.0%");
+        replenishmentPolicy("Provincial Weekly", "Merchandise Hierarchy Node", "01 · Grocery Food",
+            "Min / Max", "Min 3 / Max 8 days", 6, "95.0%");
+        replenishmentPolicy("Provincial Weekly", "Specific SKU", "SKU 100238 · Nescafé Classic 100g",
+            "Min / Max", "Min 4 / Max 10 days", 7, "97.5%");
+        replenishmentPolicy("Minimart 2×/Week", "Merchandise Hierarchy Node", "0110-01 · Milk",
+            "Days-of-Supply", "DOS 5", 4, "95.0%");
+    }
+
+    private void replenishmentPolicy(String profileName, String itemScopeType, String scopeRef,
+                                      String method, String target, int safetyStockDays, String serviceLevel) {
+        Long pid = replenProfileIdByName.get(profileName);
+        if (pid == null) {
+            throw new IllegalStateException("Cannot seed replenishment policy: profile not found: " + profileName);
+        }
+        ReplenishmentPolicy p = new ReplenishmentPolicy();
+        p.setProfileId(pid);
+        p.setItemScopeType(itemScopeType);
+        p.setScopeRef(scopeRef);
+        p.setMethod(method);
+        p.setTarget(target);
+        p.setSafetyStockDays(safetyStockDays);
+        p.setServiceLevel(serviceLevel);
+        p.setStatus("Active");
+        replenishmentPolicies.save(p);
+    }
+
+    // ---------------------------------------------------------------- order calendar exceptions
+
+    private void seedOrderCalendarExceptions() {
+        if (orderCalendarExceptions.count() > 0) return;
+        Long pgold = companies.findByCode("PGOLD").orElseThrow().getId();
+
+        orderCalendarException(pgold, "V-1140", LocalDate.of(2026, 12, 24), "Both", "Year-end plant shutdown");
+        orderCalendarException(pgold, "V-1004", LocalDate.of(2026, 9, 15), "Non-delivery", "Fleet maintenance");
+        orderCalendarException(pgold, "V-1422", LocalDate.of(2026, 10, 5), "Non-order", "System cutover");
+    }
+
+    private void orderCalendarException(Long companyId, String vendorCode, LocalDate date, String type, String label) {
+        Long vendorId = vendors.findByCode(vendorCode).orElseThrow(
+            () -> new IllegalStateException("Cannot seed order calendar exception: vendor not found: " + vendorCode)
+        ).getId();
+
+        OrderCalendarException e = new OrderCalendarException();
+        e.setScope("Vendor Blackout");
+        e.setCompanyId(companyId);
+        e.setVendorId(vendorId);
+        e.setDate(date);
+        e.setType(type);
+        e.setLabel(label);
+        e.setStatus("Active");
+        orderCalendarExceptions.save(e);
     }
 }

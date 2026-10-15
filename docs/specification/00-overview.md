@@ -33,7 +33,8 @@ are added only where required to make a listed module function.
 **Out of scope for Phase 1** (defined as future integration points only — see `01-architecture.md §8`):
 
 - External POS system integration (Phase 1 ingests POS batch files)
-- Finance / GL hand-off (journal entries from receiving, adjustments, sales)
+- Finance / GL hand-off (journal entries from receiving, adjustments, sales) — the AP
+  subledger portion is specified for **Phase 2** in `17-accounts-payable.md` (⚑ DR-26)
 - Vendor EDI / portal, e-commerce, BI / data warehouse
 - 3PL WMS live integration (Phase 1 models the cross-dock statuses; live sync is future)
 
@@ -93,6 +94,9 @@ Navigation and module grouping (also the Vue side-menu structure):
 
 Functional specifications: files `10-…` through `16-…`.
 
+**Phase 2** adds group **Finance · Payables** — Vendor Invoice (matching), Payment
+Processing, AP open items/aging (`17-accounts-payable.md`); not part of the Phase-1 build.
+
 ## 5. Key Domain Concepts (glossary)
 
 | Term | Meaning |
@@ -120,6 +124,7 @@ Functional specifications: files `10-…` through `16-…`.
 System Administrator, Category Manager, Buyer, Pricing Analyst, Store Manager,
 Receiving Clerk, Sales Auditor, Inventory Controller, Vendor Coordinator, Viewer.
 Role capabilities are defined by the permission matrix (`16-administration.md`).
+Phase 2 adds AP Clerk and AP Supervisor (`17 §10`).
 
 ## 7. Planning Assumptions (stated, not contractual)
 
@@ -144,3 +149,4 @@ Role capabilities are defined by the permission matrix (`16-administration.md`).
 | `14-inventory.md` | Positions, Adjustment, Transfer, RTV, Make-up/Break-up |
 | `15-sales.md` | POS Sales batches and balancing |
 | `16-administration.md` | Users, Roles, Branch Access, Audit Log |
+| `17-accounts-payable.md` | **Phase 2** — Vendor Invoices, matching, payments, open items, BIR withholding |

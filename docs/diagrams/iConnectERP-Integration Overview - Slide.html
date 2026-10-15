@@ -1,0 +1,276 @@
+<meta charset="utf-8">
+<title>iConnect ERP — Integration Overview (Slide)</title>
+<style>
+  :root {
+    --bg: #F3F5F8;
+    --stage-bg: #E4E8EE;
+    --grid-line: #DCE2EA;
+    --surface: #FFFFFF;
+    --ink: #1B2430;
+    --muted: #5C6779;
+    --line: #C7CFDA;
+    --erp: #2C5AA0;
+    --wms: #B8722E;
+    --tms: #3A8768;
+    --pay: #7B4F9E;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 8px 24px rgba(27,36,48,0.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10151C;
+      --stage-bg: #05070A;
+      --grid-line: #1D2530;
+      --surface: #182029;
+      --ink: #E8ECF2;
+      --muted: #8C97A8;
+      --line: #384252;
+      --erp: #6F9EDD;
+      --wms: #DDA060;
+      --tms: #67C09C;
+      --pay: #B98FD1;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10151C;
+    --stage-bg: #05070A;
+    --grid-line: #1D2530;
+    --surface: #182029;
+    --ink: #E8ECF2;
+    --muted: #8C97A8;
+    --line: #384252;
+    --erp: #6F9EDD;
+    --wms: #DDA060;
+    --tms: #67C09C;
+    --pay: #B98FD1;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px rgba(0,0,0,0.35);
+  }
+  :root[data-theme="light"] {
+    --bg: #F3F5F8;
+    --stage-bg: #E4E8EE;
+    --grid-line: #DCE2EA;
+    --surface: #FFFFFF;
+    --ink: #1B2430;
+    --muted: #5C6779;
+    --line: #C7CFDA;
+    --erp: #2C5AA0;
+    --wms: #B8722E;
+    --tms: #3A8768;
+    --pay: #7B4F9E;
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 8px 24px rgba(27,36,48,0.06);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--stage-bg);
+    font-family: "Segoe UI", "Avenir Next", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--bg);
+    color: var(--ink);
+    border-radius: 6px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    padding: 34px 46px 24px;
+    overflow: hidden;
+  }
+
+  .eyebrow {
+    font-family: "SFMono-Regular", "Cascadia Code", Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  .subtitle b { color: var(--ink); font-weight: 600; }
+
+  .diagram-frame {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    border: 1px solid var(--grid-line);
+    border-radius: 8px;
+    background:
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px 32px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px 32px),
+      var(--surface);
+  }
+  .diagram-frame svg { display: block; width: 100%; height: 100%; }
+
+  .card-badge {
+    display: inline-block;
+    font-family: "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 9px;
+    border-radius: 5px;
+    color: #fff;
+  }
+  .card-title {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 9px 0 5px;
+    letter-spacing: -0.005em;
+  }
+  .card-desc {
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .edge-label {
+    font-family: "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+    font-size: 13px;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .legend {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .legend-item b { color: var(--ink); font-weight: 600; }
+  .legend-swatch {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex: none;
+  }
+</style>
+
+<div class="slide">
+  <p class="eyebrow">System Architecture</p>
+  <h1>iConnect ERP — Integration Overview</h1>
+  <p class="subtitle">
+    <b>ERP · WMS · TMS</b> fully interconnected (bidirectional) &nbsp;&middot;&nbsp; <b>PayConnect-ERP</b> connects to ERP only, for payment switch &amp; financial-module integration.
+  </p>
+
+  <div class="diagram-frame">
+    <svg viewBox="0 0 1305 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram showing PayConnect-ERP connected to iConnect ERP, and ERP, WMS, and TMS connected to each other by bidirectional data flows">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"></path>
+        </marker>
+      </defs>
+
+      <!-- edges (drawn first, under cards) -->
+      <line x1="320" y1="300" x2="585" y2="100" stroke="var(--line)" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+      <line x1="650" y1="180" x2="460" y2="420" stroke="var(--line)" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+      <line x1="820" y1="180" x2="1010" y2="420" stroke="var(--line)" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+      <line x1="505" y1="500" x2="965" y2="500" stroke="var(--line)" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"></line>
+
+      <!-- edge labels -->
+      <foreignObject x="343" y="175" width="220" height="50">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="edge-label" style="background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:6px 12px;">
+          Payment &amp; Settlement Data
+        </div>
+      </foreignObject>
+
+      <foreignObject x="445" y="270" width="220" height="60">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="edge-label" style="background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:6px 12px;">
+          Inventory &amp; Order Data
+        </div>
+      </foreignObject>
+
+      <foreignObject x="805" y="270" width="220" height="60">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="edge-label" style="background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:6px 12px;">
+          Shipment &amp; Delivery Data
+        </div>
+      </foreignObject>
+
+      <foreignObject x="625" y="472" width="220" height="56">
+        <div xmlns="http://www.w3.org/1999/xhtml" class="edge-label" style="background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:6px 12px;">
+          Dispatch &amp; Logistics Data
+        </div>
+      </foreignObject>
+
+      <!-- PayConnect-ERP card (left) -->
+      <foreignObject x="20" y="220" width="300" height="160">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="background:var(--surface); border:1.5px solid var(--pay); border-radius:10px; padding:16px 18px; height:100%;">
+          <span class="card-badge" style="background:var(--pay);">PAY</span>
+          <p class="card-title">PayConnect-ERP</p>
+          <p class="card-desc">Payment switch (authorization, settlement) &amp; financial modules (GL posting, AP/AR, reconciliation).</p>
+        </div>
+      </foreignObject>
+
+      <!-- ERP card (top-center) -->
+      <foreignObject x="585" y="20" width="300" height="160">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="background:var(--surface); border:1.5px solid var(--erp); border-radius:10px; padding:16px 18px; height:100%;">
+          <span class="card-badge" style="background:var(--erp);">ERP</span>
+          <p class="card-title">iConnect ERP</p>
+          <p class="card-desc">Merchandising, replenishment, pricing &amp; master data — the system of record.</p>
+        </div>
+      </foreignObject>
+
+      <!-- WMS card (bottom-left) -->
+      <foreignObject x="205" y="420" width="300" height="160">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="background:var(--surface); border:1.5px solid var(--wms); border-radius:10px; padding:16px 18px; height:100%;">
+          <span class="card-badge" style="background:var(--wms);">WMS</span>
+          <p class="card-title">Warehouse Management</p>
+          <p class="card-desc">Receiving, put-away, picking &amp; stock accuracy in the warehouse.</p>
+        </div>
+      </foreignObject>
+
+      <!-- TMS card (bottom-right) -->
+      <foreignObject x="965" y="420" width="300" height="160">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="background:var(--surface); border:1.5px solid var(--tms); border-radius:10px; padding:16px 18px; height:100%;">
+          <span class="card-badge" style="background:var(--tms);">TMS</span>
+          <p class="card-title">Transport Management</p>
+          <p class="card-desc">Carrier selection, freight booking, tracking &amp; delivery confirmation.</p>
+        </div>
+      </foreignObject>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--erp);"></span><b>ERP</b>&nbsp;iConnect ERP</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--wms);"></span><b>WMS</b>&nbsp;Warehouse Mgmt</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--tms);"></span><b>TMS</b>&nbsp;Transport Mgmt</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:var(--pay);"></span><b>PAY</b>&nbsp;PayConnect-ERP</div>
+  </div>
+</div>
